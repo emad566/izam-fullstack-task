@@ -24,8 +24,12 @@ class ProductController extends BaseController
     function index(Request $request)
     {
         return $this->indexInit($request, function ($items) use($request){
-            // Add image URLs to each product
 
+            if($request->category_name){
+                $items = $items->whereHas('category', function ($query) use ($request) {
+                    $query->like('name', $request->category_name);
+                });
+            }
             return [$items];
         }, [], isListTrashed(), function ($items) {
             return [$items];
