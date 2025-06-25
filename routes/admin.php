@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /**
@@ -21,3 +22,9 @@ Route::resource('products', ProductController::class)->names('products');
 Route::put('products/{product}/toggleActive/{state}', [ProductController::class, 'toggleActive'])
     ->where(['id' => '[0-9]+', 'state' => 'true|false'])->name('products.toggleActive');
 // End::Product ===================================================== //
+
+// Start::Order ===================================================== //
+Route::resource('orders', OrderController::class)->names('orders');
+Route::put('orders/{order}/toggleActive/{state}', [OrderController::class, 'toggleActive'])
+    ->where(['id' => '[0-9]+', 'state' => 'true|false'])->name('orders.toggleActive');
+// End::Order ===================================================== //

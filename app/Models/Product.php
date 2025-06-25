@@ -60,6 +60,18 @@ class Product extends Model implements HasMedia
         return $this->belongsTo(Category::class);
     }
 
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'order_products')
+                    ->withPivot('quantity', 'unit_price', 'total_price')
+                    ->withTimestamps();
+    }
+
+    public function orderProducts()
+    {
+        return $this->hasMany(OrderProduct::class);
+    }
+
     // Helper method to get image URLs
     public function getImageUrls()
     {

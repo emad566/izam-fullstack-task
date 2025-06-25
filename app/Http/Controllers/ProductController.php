@@ -48,8 +48,9 @@ class ProductController extends BaseController
     function show($id)
     {
         return $this->showInit($id, function ($item) {
-            // Add image URLs to the product
-             return [$item];
+            // Load the category relation for the resource
+            $item->load('category');
+            return [$item];
         }, isListTrashed());
     }
 
@@ -92,6 +93,8 @@ class ProductController extends BaseController
     function edit($id)
     {
         return $this->editInit($id, function ($item) {
+            // Load the category relation for the resource
+            $item->load('category');
             return [$item];
         }, isListTrashed());
     }
