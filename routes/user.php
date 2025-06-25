@@ -5,6 +5,9 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /**
- * Those routes are protected by the auth user middleware
+ * this route file is protected by the auth user middleware in bootstrap/app.php
+ * it contains the routes for the user controllers
  */
+
+
 

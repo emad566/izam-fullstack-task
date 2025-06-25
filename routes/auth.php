@@ -4,6 +4,11 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\UserAuthController;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * this file is public and not protected by any auth middleware in bootstrap/app.php
+ * it contains the routes for the auth controllers
+ */
+
 /* ================================ Start:: Public Auth Routes ================================ */
 Route::prefix('user')->group(function () {
     Route::post('login', [UserAuthController::class, 'login'])->name('user.login');
