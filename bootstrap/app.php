@@ -27,10 +27,12 @@ return Application::configure(basePath: dirname(__DIR__))
 
 
             Route::middleware([ApiLocalization::class, UserMiddleware::class])
+                ->name('user.')
                 ->prefix('api/user/')
                 ->group(base_path('routes/user.php'));
 
             Route::middleware([ApiLocalization::class, AdminMiddleware::class])
+                ->name('admin.')
                 ->prefix('api/admin/')
                 ->group(base_path('routes/admin.php'));
 
