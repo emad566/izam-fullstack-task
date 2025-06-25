@@ -355,4 +355,129 @@ class ProductTest extends TestCase
         $this->assertArrayHasKey('data', $responseData);
         $this->assertNotEmpty($responseData['data']);
     }
+
+    public function test_admin_can_filter_products_by_min_price()
+    {
+        $category = Category::factory()->create();
+
+        $product1 = Product::factory()->create(['price' => 10.00, 'category_id' => $category->id]);
+        $product2 = Product::factory()->create(['price' => 25.00, 'category_id' => $category->id]);
+        $product3 = Product::factory()->create(['price' => 50.00, 'category_id' => $category->id]);
+
+        // Filter products with minimum price of 20
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', ['min_price' => 20.00]));
+
+        $response->assertStatus(200);
+
+        $responseData = $response->json();
+        $this->assertArrayHasKey('data', $responseData);
+        $this->assertNotEmpty($responseData['data']);
+    }
+
+    public function test_admin_can_filter_products_by_max_price()
+    {
+        $category = Category::factory()->create();
+
+        $product1 = Product::factory()->create(['price' => 10.00, 'category_id' => $category->id]);
+        $product2 = Product::factory()->create(['price' => 25.00, 'category_id' => $category->id]);
+        $product3 = Product::factory()->create(['price' => 50.00, 'category_id' => $category->id]);
+
+        // Filter products with maximum price of 30
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', ['max_price' => 30.00]));
+
+        $response->assertStatus(200);
+
+        $responseData = $response->json();
+        $this->assertArrayHasKey('data', $responseData);
+        $this->assertNotEmpty($responseData['data']);
+    }
+
+    public function test_admin_can_filter_products_by_price_range()
+    {
+        $category = Category::factory()->create();
+
+        $product1 = Product::factory()->create(['price' => 10.00, 'category_id' => $category->id]);
+        $product2 = Product::factory()->create(['price' => 25.00, 'category_id' => $category->id]);
+        $product3 = Product::factory()->create(['price' => 35.00, 'category_id' => $category->id]);
+        $product4 = Product::factory()->create(['price' => 50.00, 'category_id' => $category->id]);
+
+        // Filter products with price between 20 and 40
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', [
+                'min_price' => 20.00,
+                'max_price' => 40.00
+            ]));
+
+        $response->assertStatus(200);
+
+        $responseData = $response->json();
+        $this->assertArrayHasKey('data', $responseData);
+        $this->assertNotEmpty($responseData['data']);
+    }
+
+    public function test_admin_can_combine_price_and_category_filters()
+    {
+        $electronics = Category::factory()->create(['name' => 'Electronics']);
+        $clothing = Category::factory()->create(['name' => 'Clothing']);
+
+        // Create products in different categories with different prices
+        $product1 = Product::factory()->create(['price' => 15.00, 'category_id' => $electronics->id]);
+        $product2 = Product::factory()->create(['price' => 25.00, 'category_id' => $electronics->id]);
+        $product3 = Product::factory()->create(['price' => 35.00, 'category_id' => $clothing->id]);
+        $product4 = Product::factory()->create(['price' => 45.00, 'category_id' => $electronics->id]);
+
+        // Filter Electronics products with price between 20 and 50
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', [
+                'category_name' => 'Electronics',
+                'min_price' => 20.00,
+                'max_price' => 50.00
+            ]));
+
+        $response->assertStatus(200);
+
+        $responseData = $response->json();
+        $this->assertArrayHasKey('data', $responseData);
+        $this->assertNotEmpty($responseData['data']);
+    }
+
+    public function test_price_filter_returns_correct_products_for_range()
+    {
+        // Clear any existing products first (including soft deleted)
+        Product::withTrashed()->forceDelete();
+
+        $category = Category::factory()->create();
+
+        $product1 = Product::factory()->create(['price' => 10.00, 'category_id' => $category->id, 'name' => 'Product 1']);
+        $product2 = Product::factory()->create(['price' => 20.00, 'category_id' => $category->id, 'name' => 'Product 2']);
+        $product3 = Product::factory()->create(['price' => 150.00, 'category_id' => $category->id, 'name' => 'Product 3']);
+
+        // Filter with price range 100-200 (should only return product3)
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', [
+                'min_price' => 100.00,
+                'max_price' => 200.00
+            ]));
+
+        $response->assertStatus(200);
+
+        $responseData = $response->json();
+        $this->assertArrayHasKey('data', $responseData);
+
+        // Verify the response contains only products within the price range
+        if (isset($responseData['data']['items']['data'])) {
+            $products = $responseData['data']['items']['data'];
+
+            $this->assertCount(1, $products, 'Should return exactly 1 product in price range 100-200');
+
+            // Verify the returned product is the correct one
+            $returnedProduct = $products[0];
+            $this->assertEquals(150.00, $returnedProduct['price']);
+            $this->assertEquals('Product 3', $returnedProduct['name']);
+        } else {
+            $this->fail('No products data found in response: ' . json_encode($responseData));
+        }
+    }
 }

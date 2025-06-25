@@ -18,7 +18,7 @@ class ProductController extends BaseController
 
     function __construct()
     {
-        parent::__construct(Product::class);
+        parent::__construct(Product::class, ['price']);
     }
 
     function index(Request $request)
@@ -37,6 +37,15 @@ class ProductController extends BaseController
                         $query->whereIn('name', $request->category_names);
                     }
                 });
+            }
+
+            // Price range filtering
+            if($request->min_price){
+                $items = $items->where('price', '>=', $request->min_price);
+            }
+
+            if($request->max_price){
+                $items = $items->where('price', '<=', $request->max_price);
             }
 
             return [$items];
