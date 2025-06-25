@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class MakeFullResource extends Command
 {
-    protected $signature = 'make:fr {name} {--fields=} {--api} {--version-folder=v1} {--route-file=supper-admin}';
+    protected $signature = 'make:fr {name} {--fields=} {--api} {--version-folder=} {--route-file=api}';
     protected $description = 'Create a full resource including migration, model, controller, API resource, and routes';
 
     public function handle()
