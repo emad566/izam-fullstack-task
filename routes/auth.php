@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\v1\AuthController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 /* ================================ Start:: Public Auth Routes ================================ */
@@ -11,6 +11,6 @@ Route::post('register', [AuthController::class, 'register'])->name('auth.registe
 /* ================================ Start:: Protected Auth Routes ================================ */
 Route::middleware('auth:sanctum')->group(function () {
     // Routes for all authenticated users
-    Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout'); 
+    Route::post('logout', [AuthController::class, 'logout'])->name('auth.logout');
 });
 /* ================================ End:: Protected Auth Routes ================================ */
