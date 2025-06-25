@@ -5,7 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Tests\Feature\BaseTest;
 
-class AuthTest extends BaseTest
+class UserAuthTest extends BaseTest
 {
     protected string $testName = 'Tested user';
     protected string $testEmail = 'test_user@gmail.com';
