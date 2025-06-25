@@ -9,11 +9,12 @@ class ProductResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $this->getImageUrls();
         return [
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'image' => $this->image,
+            'image_urls' => $this->getImageUrls(),
             'price' => $this->price,
             'stock' => $this->stock,
             'category' => new CategoryResource($this->category),

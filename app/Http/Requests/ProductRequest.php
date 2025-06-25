@@ -11,10 +11,17 @@ class ProductRequest extends CustomFormRequest
 
     public function rules()
     {
+        $imageRule = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120'; // 5MB max
+
+        // For store operation, image is required
+        if ($this->isMethod('post') && !$this->_method) {
+            $imageRule = 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120';
+        }
+
         $this->roles = [
             'name' => 'required|string|max:255|unique:products,name,' . $this->id,
             'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image' => $imageRule,
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'category_id' => 'required|exists:categories,id',

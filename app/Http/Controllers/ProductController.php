@@ -24,6 +24,8 @@ class ProductController extends BaseController
     function index(Request $request)
     {
         return $this->indexInit($request, function ($items) use($request){
+            // Add image URLs to each product
+
             return [$items];
         }, [], isListTrashed(), function ($items) {
             return [$items];
@@ -32,7 +34,10 @@ class ProductController extends BaseController
 
     function show($id)
     {
-        return $this->showInit($id, null, isListTrashed());
+        return $this->showInit($id, function ($item) {
+            // Add image URLs to the product
+             return [$item];
+        }, isListTrashed());
     }
 
     public function create(?Request $request = null)
@@ -48,7 +53,21 @@ class ProductController extends BaseController
     {
         try {
             $inputs = $request->validated();
+
+            // Remove image from inputs as we'll handle it separately
+            unset($inputs['image']);
+
             $item = $this->model::create($inputs);
+
+            // Handle image upload if provided
+            if ($request->hasFile('image')) {
+                $media = $item->addMediaFromRequest('image')
+                    ->toMediaCollection('images');
+
+                // Force conversion processing
+                $media->refresh();
+            }
+
             return $this->sendResponse(true, [
                 'item' => new $this->resource($item->refresh()),
             ], trans('Created'), null, 201, $request);
@@ -59,15 +78,33 @@ class ProductController extends BaseController
 
     function edit($id)
     {
-        return $this->editInit($id, null, isListTrashed());
+        return $this->editInit($id, function ($item) {
+            return [$item];
+        }, isListTrashed());
     }
 
     public function update(ProductRequest $request, $id)
     {
         try {
             $inputs = $request->validated();
+
+            // Remove image from inputs as we'll handle it separately
+            unset($inputs['image']);
+
             $item = $this->model::find($id);
             $item->update($inputs);
+
+            // Handle image upload if provided
+            if ($request->hasFile('image')) {
+                // Clear existing images and add new one
+                $item->clearMediaCollection('images');
+                $media = $item->addMediaFromRequest('image')
+                    ->toMediaCollection('images');
+
+                // Force conversion processing
+                $media->refresh();
+            }
+
             return $this->sendResponse(true, [
                 'item' => new $this->resource($item->refresh()),
             ], trans('msg.created'), null, 200, $request);
