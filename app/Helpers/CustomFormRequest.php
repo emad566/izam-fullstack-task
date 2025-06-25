@@ -29,12 +29,20 @@ class CustomFormRequest extends FormRequest
             }
         }
 
+        // Filter out file uploads to prevent serialization errors
+        $input = $this->all();
+        foreach ($input as $key => $value) {
+            if ($this->hasFile($key)) {
+                $input[$key] = '[FILE]';
+            }
+        }
+
         $response = response()->json([
            'status' => false,
            'message' => $message,
            'data' => [],
            'errors' => $errorsArr,
-           'input' => $this->all(),
+           'input' => $input,
         ], 422);
 
         throw new ValidationException($validator, $response);

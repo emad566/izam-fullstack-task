@@ -11,12 +11,8 @@ class ProductRequest extends CustomFormRequest
 
     public function rules()
     {
+        // Image is always optional - user can create/update products without images
         $imageRule = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120'; // 5MB max
-
-        // For store operation, image is required
-        if ($this->isMethod('post') && !$this->_method) {
-            $imageRule = 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120';
-        }
 
         $this->roles = [
             'name' => 'required|string|max:255|unique:products,name,' . $this->id,
