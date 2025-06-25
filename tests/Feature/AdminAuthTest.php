@@ -8,9 +8,6 @@ use Tests\Feature\BaseTest;
 
 class AdminAuthTest extends BaseTest
 {
-
-
-
     public function test_admin_can_login()
     {
         $admin = Admin::first();
