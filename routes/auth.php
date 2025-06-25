@@ -4,13 +4,15 @@ use App\Http\Controllers\UserAuthController;
 use Illuminate\Support\Facades\Route;
 
 /* ================================ Start:: Public Auth Routes ================================ */
-Route::post('login', [UserAuthController::class, 'login'])->name('auth.login');
-Route::post('register', [UserAuthController::class, 'register'])->name('auth.register');
+Route::prefix('user')->group(function () {
+    Route::post('login', [UserAuthController::class, 'login'])->name('auth.login');
+    Route::post('register', [UserAuthController::class, 'register'])->name('auth.register');
+ });
 /* ================================ End:: Public Auth Routes ================================ */
 
 /* ================================ Start:: Protected Auth Routes ================================ */
 Route::middleware('auth:sanctum')->group(function () {
     // Routes for all authenticated users
-    Route::post('logout', [UserAuthController::class, 'logout'])->name('auth.logout');
+    Route::post('user/logout', [UserAuthController::class, 'logout'])->name('auth.logout');
 });
 /* ================================ End:: Protected Auth Routes ================================ */

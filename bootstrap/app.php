@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Middleware\ApiLocalization;
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\UserMiddleware;
 use App\Http\Controllers\BaseController;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -21,6 +23,16 @@ return Application::configure(basePath: dirname(__DIR__))
             Route::middleware([ApiLocalization::class])
                 ->prefix('api/auth/')
                 ->group(base_path('routes/auth.php'));
+
+
+
+            Route::middleware([ApiLocalization::class, UserMiddleware::class])
+                ->prefix('api/user/')
+                ->group(base_path('routes/user.php'));
+
+            Route::middleware([ApiLocalization::class, AdminMiddleware::class])
+                ->prefix('api/admin/')
+                ->group(base_path('routes/admin.php'));
 
             Route::middleware([ApiLocalization::class])
                 ->prefix('api/')
