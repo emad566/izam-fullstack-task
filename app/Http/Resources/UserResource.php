@@ -22,4 +22,9 @@ class UserResource extends JsonResource
             'updated_at' => $this->updated_at,
         ];
     }
+
+    public function heading(): array
+    {
+        return array_keys($this->toArray(request()));
+    }
 }

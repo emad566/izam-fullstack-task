@@ -17,7 +17,12 @@ class AdminResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'email' => $this->email, 
+            'email' => $this->email,
         ];
+    }
+
+    public function heading(): array
+    {
+        return array_keys($this->toArray(request()));
     }
 }
