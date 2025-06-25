@@ -15,7 +15,7 @@ class AdminAuthTest extends BaseTest
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Accept-Language' => 'en'
-        ])->postJson(route('admin.login'), [
+        ])->postJson(route('auth.admin.login'), [
             'email' => config('seeder.admin.email'),
             'password' => config('seeder.admin.password'),
         ]);
@@ -35,7 +35,7 @@ class AdminAuthTest extends BaseTest
 
     public function test_admin_can_logout()
     {
-        $response = $this->withAuth($this->admin)->postJson(route('admin.logout'));
+        $response = $this->withAuth($this->admin)->postJson(route('auth.admin.logout'));
 
         $response->assertStatus(200);
     }

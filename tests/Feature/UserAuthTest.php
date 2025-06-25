@@ -23,7 +23,7 @@ class UserAuthTest extends BaseTest
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Accept-Language' => 'en'
-        ])->postJson(route('auth.register'), $userData);
+        ])->postJson(route('auth.user.register'), $userData);
 
         $response->assertStatus(201)
             ->assertJsonStructure([
@@ -57,7 +57,7 @@ class UserAuthTest extends BaseTest
         $response = $this->withHeaders([
             'Accept' => 'application/json',
             'Accept-Language' => 'en'
-        ])->postJson(route('auth.login'), [
+        ])->postJson(route('auth.user.login'), [
             'email' => $this->testEmail,
             'password' => $this->testPassword,
         ]);
@@ -79,7 +79,7 @@ class UserAuthTest extends BaseTest
 
     public function test_user_can_logout()
     {
-        $response = $this->withAuth($this->user)->postJson(route('auth.logout'));
+        $response = $this->withAuth($this->user)->postJson(route('auth.user.logout'));
 
         $response->assertStatus(200);
     }

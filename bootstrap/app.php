@@ -21,10 +21,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(base_path('routes/web.php'));
 
             Route::middleware([ApiLocalization::class])
+                ->name('auth.')
                 ->prefix('api/auth/')
                 ->group(base_path('routes/auth.php'));
 
-
+            Route::middleware([ApiLocalization::class])
+                ->name('guest.')
+                ->prefix('api/guest/')
+                ->group(base_path('routes/guest.php'));
 
             Route::middleware([ApiLocalization::class, UserMiddleware::class])
                 ->name('user.')
@@ -37,6 +41,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(base_path('routes/admin.php'));
 
             Route::middleware([ApiLocalization::class])
+                ->name('api.')
                 ->prefix('api/')
                 ->group(base_path('routes/api.php'));
 
