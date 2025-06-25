@@ -66,7 +66,7 @@ trait IndexTrait
                 $items = $items->with($with);
             }
 
-         
+
 
             $items = $items->paginate($request->per_page ?? config('constants.per_page'));
             if($load){

@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Services\FailedValidation;
 
 class BaseController extends Controller
 {
@@ -73,4 +74,11 @@ class BaseController extends Controller
         return $this->sendResponse(false, $data, 'Server Technical Error: ' . $msg . " $thStr", null, 500);
     }
 
+    public function checkValidator($validator)
+    {
+        $failedValidation = new FailedValidation($validator);
+        if ($failedValidation->status) {
+            return $failedValidation->response;
+        } else return false;
+    }
 }

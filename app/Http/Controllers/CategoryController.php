@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\\BaseController;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\CategoryRequest;
 use Illuminate\Http\Request;
 use App\Http\Traits\Controller\DestroyTrait;
@@ -48,7 +48,7 @@ class CategoryController extends BaseController
     {
         try {
             $inputs = $request->validated();
-            $item = $this->model::updateOrCreate(['id' => $inputs['id']], $inputs);
+            $item = $this->model::updateOrCreate(['name' => $inputs['name']], $inputs);
             return $this->sendResponse(true, [
                 'item' => new $this->resource($item->refresh()),
             ], trans('Created'), null, 201, $request);
@@ -67,7 +67,8 @@ class CategoryController extends BaseController
         try {
             $inputs = $request->validated();
             $item = $this->model::find($id);
-            $item->updateOrCreate(['id' => $inputs['id']], $inputs);
+            $item->update($inputs);
+
             return $this->sendResponse(true, [
                 'item' => new $this->resource($item->refresh()),
             ], trans('msg.created'), null, 200, $request);

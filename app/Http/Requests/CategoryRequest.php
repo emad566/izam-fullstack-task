@@ -8,13 +8,14 @@ use Illuminate\Contracts\Validation\Validator;
 class CategoryRequest extends CustomFormRequest
 {
 
+    protected $roles = [];
 
     public function rules()
     {
-        $rules = [
+        $this->roles = [
             'name' => 'required|string|max:255|unique:categories,name,' . $this->id,
         ];
-        return $rules;
+        return $this->roles;
     }
 
     protected function prepareForValidation()
