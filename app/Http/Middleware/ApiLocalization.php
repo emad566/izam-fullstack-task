@@ -27,7 +27,7 @@ class ApiLocalization extends BaseController
         }
 
         // Validate if the locale is supported
-        if (!array_key_exists($locale, config('app.supported_languages'))) {
+        if (!array_key_exists($locale, config('app.supported_languages')?? ['ar', 'en'])) {
             $locale = config('app.locale');
         }
 
