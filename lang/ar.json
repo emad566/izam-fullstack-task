@@ -1,0 +1,27 @@
+{
+    "technicalError": "خطأ فني!",
+    "disabledAccount": "تم تعطيل الحساب. الرجاء الاتصال بنا لحل المشكلة",
+    "tryAgainAfter": "الرجاء الانتظار :seconds ثانية، ثم حاول مرة أخرى",
+    "otpHasBeenSentToYourMobile": "تم إرسال  كود التحقق إلى هاتفك المحمول",
+    "otpHasBeenExpired": "انتهت صلاحية  كود التحقق!",
+    "invalidOtp": "كود التحقق غير صالح",
+    "successfullLogin": "تم تسجيل الدخول بنجاح",
+    "and": " و ",
+    "moreValidation": " خطأ أخر ",
+    "successfullUpload": "تم رفع الملف",
+    "successfullDelete": "تم الحذف",
+    "successfullUpdate": "تم التحديث",
+    "inActiveAccount": "حساب معطل",
+    "Listed": "تم جلب البيانات",
+    "CategoryHasBeenCreated": "تم انشاء القائمة",
+    "NotValidEmail": "بريد الكتروني غير موثوق",
+    "youAreNotAllowedToDoThisAction": " غير مسموح لك بتنفيذ هذه العملية ",
+    "Under review": "قيد المراجعة",
+    "UnderReview": "قيد المراجعة",
+    "Rejected": "مرفوض",
+    "Active": "نشط",
+    "Complete": "مكتمل",
+    "Stopped": "متوقف",
+    "Ended": "منتهي"
+
+}
