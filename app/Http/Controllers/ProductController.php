@@ -25,11 +25,20 @@ class ProductController extends BaseController
     {
         return $this->indexInit($request, function ($items) use($request){
 
-            if($request->category_name){
+            if($request->category_name || $request->category_names){
                 $items = $items->whereHas('category', function ($query) use ($request) {
-                    $query->like('name', $request->category_name);
+                    // filter by like category name
+                    if($request->category_name){
+                        $query->like('name', $request->category_name);
+                    }
+
+                    // filter by in category names
+                    if($request->category_names){
+                        $query->whereIn('name', $request->category_names);
+                    }
                 });
             }
+
             return [$items];
         }, [], isListTrashed(), function ($items) {
             return [$items];

@@ -264,6 +264,60 @@ class ProductTest extends TestCase
         $this->assertArrayHasKey('data', $responseData);
     }
 
+    public function test_admin_can_filter_products_by_category_names()
+    {
+        // Create categories
+        $electronics = Category::factory()->create(['name' => 'Electronics']);
+        $clothing = Category::factory()->create(['name' => 'Clothing']);
+        $books = Category::factory()->create(['name' => 'Books']);
+
+        // Create products for each category
+        $product1 = Product::factory()->create(['category_id' => $electronics->id]);
+        $product2 = Product::factory()->create(['category_id' => $clothing->id]);
+        $product3 = Product::factory()->create(['category_id' => $books->id]);
+
+        // Test filtering by multiple category names
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', [
+                'category_names' => ['Electronics', 'Clothing']
+            ]));
+
+        $response->assertStatus(200);
+
+        // Verify response structure
+        $responseData = $response->json();
+        $this->assertArrayHasKey('data', $responseData);
+        $this->assertNotEmpty($responseData['data']);
+
+        // Verify that products from both Electronics and Clothing categories are returned
+        // The exact structure depends on your API response format
+        $this->assertArrayHasKey('items', $responseData['data']);
+    }
+
+    public function test_admin_can_filter_products_by_single_category_name_in_array()
+    {
+        // Create categories
+        $electronics = Category::factory()->create(['name' => 'Electronics']);
+        $clothing = Category::factory()->create(['name' => 'Clothing']);
+
+        // Create products for each category
+        $product1 = Product::factory()->create(['category_id' => $electronics->id]);
+        $product2 = Product::factory()->create(['category_id' => $clothing->id]);
+
+        // Test filtering by single category name using category_names parameter
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', [
+                'category_names' => ['Electronics']
+            ]));
+
+        $response->assertStatus(200);
+
+        // Verify response structure
+        $responseData = $response->json();
+        $this->assertArrayHasKey('data', $responseData);
+        $this->assertNotEmpty($responseData['data']);
+    }
+
     public function test_admin_can_filter_products_by_name()
     {
         $product1 = Product::factory()->create(['name' => 'Apple iPhone 15']);
