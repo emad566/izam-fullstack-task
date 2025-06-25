@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Artisan;
@@ -10,6 +11,7 @@ abstract class TestCase extends BaseTestCase
 {
 
     protected ?User $user;
+    protected ?Admin $admin;
 
     protected $list_format = [
         'status',
@@ -58,22 +60,24 @@ abstract class TestCase extends BaseTestCase
 
         try {
             $this->user = User::first();
+            $this->admin = Admin::first();
         } catch (\Exception $e) {
             Artisan::call('migrate:fresh');
             Artisan::call('db:seed');
-            
+
             $this->user = User::first();
+            $this->admin = Admin::first();
         }
 
     }
 
-    protected function getAuthToken(User $user): string
+    protected function getAuthToken($authed): string
     {
-        return $user->createToken('test-token')->plainTextToken;
+        return $authed->createToken('test-token')->plainTextToken;
     }
 
-    protected function withAuth(User $user): self
+    protected function withAuth($authed): self
     {
-        return $this->withHeader('Authorization', 'Bearer ' . $this->getAuthToken($user));
+        return $this->withHeader('Authorization', 'Bearer ' . $this->getAuthToken($authed));
     }
 }

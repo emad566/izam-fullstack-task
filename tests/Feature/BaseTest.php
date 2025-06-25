@@ -1,8 +1,8 @@
 <?php
 
 namespace Tests\Feature;
-
-use App\Enums\UserRole;
+ 
+use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -20,6 +20,7 @@ class BaseTest extends TestCase
 
         // Create test users with different roles
         $this->user = User::first();
+        $this->admin = Admin::first();
     }
 
 

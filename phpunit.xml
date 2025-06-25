@@ -12,6 +12,7 @@
             <directory>tests/Feature</directory>
         </testsuite>
         <testsuite name="Api">
+            <file>tests/Feature/AdminAuthTest.php</file>
             <file>tests/Feature/UserAuthTest.php</file>
         </testsuite>
     </testsuites>
