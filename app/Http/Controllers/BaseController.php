@@ -55,6 +55,17 @@ class BaseController extends Controller
 
     public function sendResponse($status = true, $data = null, $message = '', $errors = null, $code = 200, $request = null)
     {
+        // Filter out file uploads from request data to prevent serialization errors
+        $requestData = null;
+        if ($request) {
+            $requestData = $request->all();
+            foreach ($requestData as $key => $value) {
+                if ($request->hasFile($key)) {
+                    $requestData[$key] = '[FILE]';
+                }
+            }
+        }
+
         $response = [
             'status' =>  $status,
             'message' => $message,
@@ -63,7 +74,7 @@ class BaseController extends Controller
 
             // TODO:: comment this lines
             'response_code' => $code,
-            'request_data' => $request?->all(),
+            'request_data' => $requestData,
         ];
         return response()->json($response, $code);
     }
