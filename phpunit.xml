@@ -14,6 +14,7 @@
         <testsuite name="Api">
             <file>tests/Feature/AdminAuthTest.php</file>
             <file>tests/Feature/UserAuthTest.php</file>
+            <file>tests/Feature/CategoryTest.php</file>
         </testsuite>
     </testsuites>
     <source>
