@@ -11,11 +11,7 @@ class CacheNamesTest extends TestCase
     {
         $expectedValues = [
             'products_list',
-            'products_filtered',
-            'product_detail',
-            'categories_list',
-            'orders_list',
-            'user_orders'
+            'product_detail'
         ];
 
         $this->assertEquals($expectedValues, CacheNames::values());
@@ -37,16 +33,7 @@ class CacheNamesTest extends TestCase
         $this->assertEquals(46, strlen($cacheKey)); // products_list_ (14) + md5 hash (32)
     }
 
-    public function test_user_key_generation()
-    {
-        $userId = 123;
-        $params = ['status' => 'active'];
-        $userKey = CacheNames::USER_ORDERS->userKey($userId, $params);
 
-        $this->assertStringStartsWith('user_orders_', $userKey);
-        // Should include user_id in the parameters
-        $this->assertStringContainsString(md5(http_build_query(['status' => 'active', 'user_id' => 123])), $userKey);
-    }
 
     public function test_paginated_key_generation()
     {
