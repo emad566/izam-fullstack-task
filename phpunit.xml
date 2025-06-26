@@ -16,6 +16,7 @@
             <file>tests/Feature/UserAuthTest.php</file>
             <file>tests/Feature/CategoryTest.php</file>
             <file>tests/Feature/ProductTest.php</file>
+            <file>tests/Unit/CacheNamesTest.php</file>
             <file>tests/Feature/OrderTest.php</file>
         </testsuite>
     </testsuites>
