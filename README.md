@@ -155,7 +155,7 @@ This project showcases advanced Laravel development with **custom-built design p
 - **🔐 Multi-Guard Authentication**: Sophisticated role-based access control
 - **⚡ Smart Cache Invalidation**: Event-driven cache management
 
-👉 *See detailed explanation in [Custom Design Patterns](#-custom-design-patterns) section*
+👉 *See detailed explanation in [Custom Design Patterns](#️-custom-design-patterns) section*
 
 ### Key Highlights
 
