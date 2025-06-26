@@ -17,7 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
-            Route::middleware([ApiLocalization::class, 'web'])
+            Route::middleware(['web'])
                 ->group(base_path('routes/web.php'));
 
             Route::middleware([ApiLocalization::class])
