@@ -32,10 +32,57 @@ class OrderController extends BaseController
                 $items = $items->where('user_id', $request->user()->id);
             }
 
+            // Filter by user name (like search)
+            if ($request->user_name) {
+                $items = $items->whereHas('user', function ($query) use ($request) {
+                    $query->like('name', $request->user_name);
+                });
+            }
+
+            // Filter by user names (exact match)
+            if ($request->user_names) {
+                $items = $items->whereHas('user', function ($query) use ($request) {
+                    $query->whereIn('name', $request->user_names);
+                });
+            }
+
+            // Filter by user IDs
+            if ($request->user_ids) {
+                $items = $items->whereIn('user_id', $request->user_ids);
+            }
+
+            // Filter by category names
+            if ($request->category_names) {
+                $items = $items->whereHas('orderProducts.product.category', function ($query) use ($request) {
+                    $query->whereIn('name', $request->category_names);
+                });
+            }
+
+            // Filter by category IDs
+            if ($request->category_ids) {
+                $items = $items->whereHas('orderProducts.product', function ($query) use ($request) {
+                    $query->whereIn('category_id', $request->category_ids);
+                });
+            }
+
+            // Filter by product names (exact match)
+            if ($request->product_names) {
+                $items = $items->whereHas('orderProducts.product', function ($query) use ($request) {
+                    $query->whereIn('name', $request->product_names);
+                });
+            }
+
+            // Filter by product name (like search)
+            if ($request->product_name) {
+                $items = $items->whereHas('orderProducts.product', function ($query) use ($request) {
+                    $query->like('name', $request->product_name);
+                });
+            }
+
             return [$items];
         }, [], isListTrashed(), function ($items) {
             return [$items];
-        }, null, null, ['user', 'orderProducts.product']);
+        }, null, null, ['user', 'orderProducts.product.category']);
     }
 
     function show($id)

@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\User;
 use Tests\TestCase;
 use Illuminate\Support\Facades\DB;
+use App\Models\OrderProduct;
 
 class OrderTest extends TestCase
 {
@@ -542,5 +543,712 @@ class OrderTest extends TestCase
                      'status' => false,
                      'message' => 'You are not user role'
                  ]);
+    }
+
+    public function test_admin_can_filter_orders_by_category_names()
+    {
+        // Create categories with unique names
+        $timestamp = time();
+        $electronicsCategory = Category::factory()->create(['name' => "Electronics{$timestamp}"]);
+        $clothingCategory = Category::factory()->create(['name' => "Clothing{$timestamp}"]);
+        $booksCategory = Category::factory()->create(['name' => "Books{$timestamp}"]);
+
+        // Create products in different categories
+        $laptop = Product::factory()->create([
+            'name' => "Gaming Laptop {$timestamp}",
+            'category_id' => $electronicsCategory->id,
+            'stock' => 10
+        ]);
+        $shirt = Product::factory()->create([
+            'name' => "Cotton Shirt {$timestamp}",
+            'category_id' => $clothingCategory->id,
+            'stock' => 20
+        ]);
+        $book = Product::factory()->create([
+            'name' => "Programming Book {$timestamp}",
+            'category_id' => $booksCategory->id,
+            'stock' => 15
+        ]);
+
+        // Create users and orders
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+        $user3 = User::factory()->create();
+
+        // Create orders with different products
+        $order1 = Order::factory()->create(['user_id' => $user1->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order1->id,
+            'product_id' => $laptop->id,
+            'quantity' => 1
+        ]);
+
+        $order2 = Order::factory()->create(['user_id' => $user2->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order2->id,
+            'product_id' => $shirt->id,
+            'quantity' => 2
+        ]);
+
+        $order3 = Order::factory()->create(['user_id' => $user3->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order3->id,
+            'product_id' => $book->id,
+            'quantity' => 1
+        ]);
+
+        // Test filtering by single category
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['category_names' => ["Electronics{$timestamp}"]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds);
+        $this->assertNotContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds);
+
+        // Test filtering by multiple categories
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['category_names' => ["Electronics{$timestamp}", "Clothing{$timestamp}"]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds);
+        $this->assertContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds);
+    }
+
+    public function test_admin_can_filter_orders_by_product_names()
+    {
+        // Create unique names with timestamp
+        $timestamp = time();
+        $category = Category::factory()->create(['name' => "Electronics{$timestamp}"]);
+        $laptop = Product::factory()->create([
+            'name' => "Gaming Laptop {$timestamp}",
+            'category_id' => $category->id,
+            'stock' => 10
+        ]);
+        $phone = Product::factory()->create([
+            'name' => "Smartphone {$timestamp}",
+            'category_id' => $category->id,
+            'stock' => 15
+        ]);
+        $tablet = Product::factory()->create([
+            'name' => "Tablet Pro {$timestamp}",
+            'category_id' => $category->id,
+            'stock' => 8
+        ]);
+
+        // Create users and orders
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+        $user3 = User::factory()->create();
+
+        // Create orders with different products
+        $order1 = Order::factory()->create(['user_id' => $user1->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order1->id,
+            'product_id' => $laptop->id,
+            'quantity' => 1
+        ]);
+
+        $order2 = Order::factory()->create(['user_id' => $user2->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order2->id,
+            'product_id' => $phone->id,
+            'quantity' => 1
+        ]);
+
+        $order3 = Order::factory()->create(['user_id' => $user3->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order3->id,
+            'product_id' => $tablet->id,
+            'quantity' => 1
+        ]);
+
+        // Test filtering by single product name
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['product_names' => ["Gaming Laptop {$timestamp}"]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds);
+        $this->assertNotContains($order2->id, $orderIds);
+
+        // Test filtering by multiple product names
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['product_names' => ["Gaming Laptop {$timestamp}", "Smartphone {$timestamp}"]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds);
+        $this->assertContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds);
+    }
+
+    public function test_admin_can_filter_orders_by_product_name_like_search()
+    {
+        // Use unique suffix for this test
+        $uniqueId = uniqid('test_');
+        $category = Category::factory()->create(['name' => "Electronics{$uniqueId}"]);
+
+        $iphone = Product::factory()->create([
+            'name' => "iPhone{$uniqueId} Pro",
+            'category_id' => $category->id,
+            'stock' => 10
+        ]);
+        $ipad = Product::factory()->create([
+            'name' => "iPad{$uniqueId} Air",
+            'category_id' => $category->id,
+            'stock' => 8
+        ]);
+        $macbook = Product::factory()->create([
+            'name' => "MacBook{$uniqueId} Pro",
+            'category_id' => $category->id,
+            'stock' => 5
+        ]);
+        $android = Product::factory()->create([
+            'name' => "Samsung{$uniqueId} Galaxy",
+            'category_id' => $category->id,
+            'stock' => 12
+        ]);
+
+        // Create users and orders
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+        $user3 = User::factory()->create();
+        $user4 = User::factory()->create();
+
+        // Create orders with different products
+        $order1 = Order::factory()->create(['user_id' => $user1->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order1->id,
+            'product_id' => $iphone->id,
+            'quantity' => 1
+        ]);
+
+        $order2 = Order::factory()->create(['user_id' => $user2->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order2->id,
+            'product_id' => $ipad->id,
+            'quantity' => 1
+        ]);
+
+        $order3 = Order::factory()->create(['user_id' => $user3->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order3->id,
+            'product_id' => $macbook->id,
+            'quantity' => 1
+        ]);
+
+        $order4 = Order::factory()->create(['user_id' => $user4->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order4->id,
+            'product_id' => $android->id,
+            'quantity' => 1
+        ]);
+
+        // Test filtering by partial product name (should find products containing 'Pro')
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['product_name' => "{$uniqueId} Pro"]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds); // iPhone Pro
+        $this->assertContains($order3->id, $orderIds); // MacBook Pro
+        $this->assertNotContains($order2->id, $orderIds);
+        $this->assertNotContains($order4->id, $orderIds);
+
+        // Test filtering by specific unique term
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['product_name' => "Samsung{$uniqueId}"]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order4->id, $orderIds); // Samsung Galaxy
+        $this->assertNotContains($order1->id, $orderIds);
+        $this->assertNotContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds);
+    }
+
+    public function test_user_can_filter_their_own_orders_by_product_filters()
+    {
+        // Create unique identifiers
+        $uniqueId = uniqid('user_filter_');
+        $category = Category::factory()->create(['name' => "Electronics{$uniqueId}"]);
+        $laptop = Product::factory()->create([
+            'name' => "Gaming{$uniqueId} Laptop",
+            'category_id' => $category->id,
+            'stock' => 10
+        ]);
+        $phone = Product::factory()->create([
+            'name' => "Smartphone{$uniqueId}",
+            'category_id' => $category->id,
+            'stock' => 15
+        ]);
+
+        // Create users
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+
+        // Create orders for user1
+        $order1 = Order::factory()->create(['user_id' => $user1->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order1->id,
+            'product_id' => $laptop->id,
+            'quantity' => 1
+        ]);
+
+        $order2 = Order::factory()->create(['user_id' => $user1->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order2->id,
+            'product_id' => $phone->id,
+            'quantity' => 1
+        ]);
+
+        // Create order for user2 (should not appear in user1's results)
+        $order3 = Order::factory()->create(['user_id' => $user2->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order3->id,
+            'product_id' => $laptop->id,
+            'quantity' => 1
+        ]);
+
+        // Test user can filter their own orders by product name
+        $response = $this->withAuth($user1)
+            ->getJson(route('user.orders.index', ['product_name' => "Gaming{$uniqueId}"]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds);
+        $this->assertNotContains($order2->id, $orderIds);
+
+        // Test user can filter their own orders by category
+        $response = $this->withAuth($user1)
+            ->getJson(route('user.orders.index', ['category_names' => ["Electronics{$uniqueId}"]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds); // Both user1's orders
+        $this->assertContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds); // user2's order should not appear
+    }
+
+    public function test_combined_filters_work_together()
+    {
+        // Create unique identifiers
+        $uniqueId = uniqid('combined_');
+        $electronicsCategory = Category::factory()->create(['name' => "Electronics{$uniqueId}"]);
+        $clothingCategory = Category::factory()->create(['name' => "Clothing{$uniqueId}"]);
+
+        // Create products
+        $gamingLaptop = Product::factory()->create([
+            'name' => "Gaming{$uniqueId} Laptop Pro",
+            'category_id' => $electronicsCategory->id,
+            'stock' => 5
+        ]);
+        $regularLaptop = Product::factory()->create([
+            'name' => "Business{$uniqueId} Laptop",
+            'category_id' => $electronicsCategory->id,
+            'stock' => 8
+        ]);
+        $shirt = Product::factory()->create([
+            'name' => "Gaming{$uniqueId} Shirt",
+            'category_id' => $clothingCategory->id,
+            'stock' => 20
+        ]);
+
+        // Create users and orders
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+        $user3 = User::factory()->create();
+
+        // Order with Gaming Laptop Pro (Electronics)
+        $order1 = Order::factory()->create(['user_id' => $user1->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order1->id,
+            'product_id' => $gamingLaptop->id,
+            'quantity' => 1
+        ]);
+
+        // Order with Business Laptop (Electronics)
+        $order2 = Order::factory()->create(['user_id' => $user2->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order2->id,
+            'product_id' => $regularLaptop->id,
+            'quantity' => 1
+        ]);
+
+        // Order with Gaming Shirt (Clothing)
+        $order3 = Order::factory()->create(['user_id' => $user3->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order3->id,
+            'product_id' => $shirt->id,
+            'quantity' => 1
+        ]);
+
+        // Test combining category filter with product name like filter
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', [
+                'category_names' => ["Electronics{$uniqueId}"],
+                'product_name' => "Gaming{$uniqueId}"
+            ]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds); // Only Gaming Laptop Pro from Electronics
+        $this->assertNotContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds);
+
+        // Test combining multiple filters
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', [
+                'category_names' => ["Electronics{$uniqueId}", "Clothing{$uniqueId}"],
+                'product_name' => "Gaming{$uniqueId}"
+            ]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds); // Gaming Laptop Pro
+        $this->assertContains($order3->id, $orderIds); // Gaming Shirt
+        $this->assertNotContains($order2->id, $orderIds); // Business Laptop should not appear
+    }
+
+    public function test_admin_can_filter_orders_by_user_name()
+    {
+        // Create unique identifiers
+        $uniqueId = uniqid('user_filter_');
+        $category = Category::factory()->create(['name' => "Electronics{$uniqueId}"]);
+        $product = Product::factory()->create([
+            'name' => "Test Product {$uniqueId}",
+            'category_id' => $category->id,
+            'stock' => 10
+        ]);
+
+        // Create users with unique names
+        $user1 = User::factory()->create(['name' => "John{$uniqueId} Doe"]);
+        $user2 = User::factory()->create(['name' => "Jane{$uniqueId} Smith"]);
+        $user3 = User::factory()->create(['name' => "Bob Wilson{$uniqueId}"]);
+
+        // Create orders for different users
+        $order1 = Order::factory()->create(['user_id' => $user1->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order1->id,
+            'product_id' => $product->id,
+            'quantity' => 1
+        ]);
+
+        $order2 = Order::factory()->create(['user_id' => $user2->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order2->id,
+            'product_id' => $product->id,
+            'quantity' => 1
+        ]);
+
+        $order3 = Order::factory()->create(['user_id' => $user3->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order3->id,
+            'product_id' => $product->id,
+            'quantity' => 1
+        ]);
+
+        // Test filtering by user name like search
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['user_name' => "John{$uniqueId}"]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds);
+        $this->assertNotContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds);
+
+        // Test filtering by partial user name
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['user_name' => $uniqueId]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds); // All users contain the unique ID
+        $this->assertContains($order2->id, $orderIds);
+        $this->assertContains($order3->id, $orderIds);
+    }
+
+    public function test_admin_can_filter_orders_by_user_names()
+    {
+        // Create unique identifiers
+        $uniqueId = uniqid('user_names_');
+        $category = Category::factory()->create(['name' => "Electronics{$uniqueId}"]);
+        $product = Product::factory()->create([
+            'name' => "Test Product {$uniqueId}",
+            'category_id' => $category->id,
+            'stock' => 10
+        ]);
+
+        // Create users with unique names
+        $user1 = User::factory()->create(['name' => "Alice{$uniqueId}"]);
+        $user2 = User::factory()->create(['name' => "Bob{$uniqueId}"]);
+        $user3 = User::factory()->create(['name' => "Charlie{$uniqueId}"]);
+
+        // Create orders for different users
+        $order1 = Order::factory()->create(['user_id' => $user1->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order1->id,
+            'product_id' => $product->id,
+            'quantity' => 1
+        ]);
+
+        $order2 = Order::factory()->create(['user_id' => $user2->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order2->id,
+            'product_id' => $product->id,
+            'quantity' => 1
+        ]);
+
+        $order3 = Order::factory()->create(['user_id' => $user3->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order3->id,
+            'product_id' => $product->id,
+            'quantity' => 1
+        ]);
+
+        // Test filtering by single user name
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['user_names' => ["Alice{$uniqueId}"]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds);
+        $this->assertNotContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds);
+
+        // Test filtering by multiple user names
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['user_names' => ["Alice{$uniqueId}", "Bob{$uniqueId}"]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds);
+        $this->assertContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds);
+    }
+
+    public function test_admin_can_filter_orders_by_user_ids()
+    {
+        // Create unique identifiers
+        $uniqueId = uniqid('user_ids_');
+        $category = Category::factory()->create(['name' => "Electronics{$uniqueId}"]);
+        $product = Product::factory()->create([
+            'name' => "Test Product {$uniqueId}",
+            'category_id' => $category->id,
+            'stock' => 10
+        ]);
+
+        // Create users
+        $user1 = User::factory()->create(['name' => "User1{$uniqueId}"]);
+        $user2 = User::factory()->create(['name' => "User2{$uniqueId}"]);
+        $user3 = User::factory()->create(['name' => "User3{$uniqueId}"]);
+
+        // Create orders for different users
+        $order1 = Order::factory()->create(['user_id' => $user1->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order1->id,
+            'product_id' => $product->id,
+            'quantity' => 1
+        ]);
+
+        $order2 = Order::factory()->create(['user_id' => $user2->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order2->id,
+            'product_id' => $product->id,
+            'quantity' => 1
+        ]);
+
+        $order3 = Order::factory()->create(['user_id' => $user3->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order3->id,
+            'product_id' => $product->id,
+            'quantity' => 1
+        ]);
+
+        // Test filtering by single user ID
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['user_ids' => [$user1->id]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds);
+        $this->assertNotContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds);
+
+        // Test filtering by multiple user IDs
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['user_ids' => [$user1->id, $user2->id]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds);
+        $this->assertContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds);
+    }
+
+    public function test_admin_can_filter_orders_by_category_ids()
+    {
+        // Create unique identifiers
+        $uniqueId = uniqid('cat_ids_');
+
+        // Create categories
+        $electronicsCategory = Category::factory()->create(['name' => "Electronics{$uniqueId}"]);
+        $clothingCategory = Category::factory()->create(['name' => "Clothing{$uniqueId}"]);
+        $booksCategory = Category::factory()->create(['name' => "Books{$uniqueId}"]);
+
+        // Create products in different categories
+        $laptop = Product::factory()->create([
+            'name' => "Laptop {$uniqueId}",
+            'category_id' => $electronicsCategory->id,
+            'stock' => 10
+        ]);
+        $shirt = Product::factory()->create([
+            'name' => "Shirt {$uniqueId}",
+            'category_id' => $clothingCategory->id,
+            'stock' => 20
+        ]);
+        $book = Product::factory()->create([
+            'name' => "Book {$uniqueId}",
+            'category_id' => $booksCategory->id,
+            'stock' => 15
+        ]);
+
+        // Create users and orders
+        $user1 = User::factory()->create();
+        $user2 = User::factory()->create();
+        $user3 = User::factory()->create();
+
+        // Create orders with different products
+        $order1 = Order::factory()->create(['user_id' => $user1->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order1->id,
+            'product_id' => $laptop->id,
+            'quantity' => 1
+        ]);
+
+        $order2 = Order::factory()->create(['user_id' => $user2->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order2->id,
+            'product_id' => $shirt->id,
+            'quantity' => 1
+        ]);
+
+        $order3 = Order::factory()->create(['user_id' => $user3->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order3->id,
+            'product_id' => $book->id,
+            'quantity' => 1
+        ]);
+
+        // Test filtering by single category ID
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['category_ids' => [$electronicsCategory->id]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds);
+        $this->assertNotContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds);
+
+        // Test filtering by multiple category IDs
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', ['category_ids' => [$electronicsCategory->id, $clothingCategory->id]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds);
+        $this->assertContains($order2->id, $orderIds);
+        $this->assertNotContains($order3->id, $orderIds);
+    }
+
+    public function test_all_filters_work_together_comprehensively()
+    {
+        // Create unique identifiers
+        $uniqueId = uniqid('all_filters_');
+
+        // Create categories
+        $electronicsCategory = Category::factory()->create(['name' => "Electronics{$uniqueId}"]);
+        $clothingCategory = Category::factory()->create(['name' => "Clothing{$uniqueId}"]);
+
+        // Create products
+        $laptop = Product::factory()->create([
+            'name' => "Gaming{$uniqueId} Laptop",
+            'category_id' => $electronicsCategory->id,
+            'stock' => 10
+        ]);
+        $shirt = Product::factory()->create([
+            'name' => "Gaming{$uniqueId} Shirt",
+            'category_id' => $clothingCategory->id,
+            'stock' => 20
+        ]);
+
+        // Create users with specific names
+        $user1 = User::factory()->create(['name' => "John{$uniqueId}"]);
+        $user2 = User::factory()->create(['name' => "Jane{$uniqueId}"]);
+
+        // Create orders
+        $order1 = Order::factory()->create(['user_id' => $user1->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order1->id,
+            'product_id' => $laptop->id,
+            'quantity' => 1
+        ]);
+
+        $order2 = Order::factory()->create(['user_id' => $user2->id]);
+        OrderProduct::factory()->create([
+            'order_id' => $order2->id,
+            'product_id' => $shirt->id,
+            'quantity' => 1
+        ]);
+
+        // Test combining user filter with product and category filters
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', [
+                'user_names' => ["John{$uniqueId}"],
+                'category_ids' => [$electronicsCategory->id],
+                'product_name' => "Gaming{$uniqueId}"
+            ]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds); // John's order with Gaming Laptop in Electronics
+        $this->assertNotContains($order2->id, $orderIds); // Jane's order should not appear
+
+        // Test combining user IDs with category names
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.orders.index', [
+                'user_ids' => [$user1->id, $user2->id],
+                'category_names' => ["Electronics{$uniqueId}"]
+            ]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $orderIds = collect($responseData['data']['items']['data'])->pluck('id')->toArray();
+        $this->assertContains($order1->id, $orderIds); // John's Electronics order
+        $this->assertNotContains($order2->id, $orderIds); // Jane's Clothing order should not appear
     }
 }
