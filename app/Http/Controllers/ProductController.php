@@ -35,6 +35,7 @@ class ProductController extends BaseController
         $cacheKey = CacheNames::PRODUCTS_LIST->paginatedKey([
             'category_name' => $validated['category_name'] ?? null,
             'category_names' => $validated['category_names'] ?? null,
+            'category_ids' => $validated['category_ids'] ?? null,
             'min_price' => $validated['min_price'] ?? null,
             'max_price' => $validated['max_price'] ?? null,
             'name' => $validated['name'] ?? null,
@@ -49,9 +50,9 @@ class ProductController extends BaseController
         ]);
 
         return Cache::remember($cacheKey, config('constants.products_cache_duration') * 60, function () use ($request, $validated) {
-            return $this->indexInit($request, function ($items) use($validated){
+                        return $this->indexInit($request, function ($items) use($validated){
 
-                if(($validated['category_name'] ?? false) || ($validated['category_names'] ?? false)){
+                if(($validated['category_name'] ?? false) || ($validated['category_names'] ?? false) || ($validated['category_ids'] ?? false)){
                     $items = $items->whereHas('category', function ($query) use ($validated) {
                         // filter by like category name - sanitized
                         if($validated['category_name'] ?? false){
@@ -62,7 +63,13 @@ class ProductController extends BaseController
                         if($validated['category_names'] ?? false){
                             $query->whereIn('name', $validated['category_names']);
                         }
+
                     });
+                }
+
+                // Filter by category IDs - sanitized by FilterRequest
+                if ($validated['category_ids'] ?? false) {
+                    $items = $items->whereIn('category_id', $validated['category_ids']);
                 }
 
                 // Price range filtering - sanitized numeric values

@@ -659,6 +659,191 @@ class ProductTest extends TestCase
         $this->assertEquals($response1->json(), $response2->json());
     }
 
+    public function test_admin_can_filter_products_by_category_ids()
+    {
+        // Create unique identifiers to avoid conflicts
+        $uniqueId = uniqid('cat_ids_');
+
+        // Create categories
+        $electronicsCategory = Category::factory()->create(['name' => "Electronics{$uniqueId}"]);
+        $clothingCategory = Category::factory()->create(['name' => "Clothing{$uniqueId}"]);
+        $booksCategory = Category::factory()->create(['name' => "Books{$uniqueId}"]);
+
+        // Create products in different categories
+        $laptop = Product::factory()->create([
+            'name' => "Laptop {$uniqueId}",
+            'category_id' => $electronicsCategory->id,
+            'price' => 999.99,
+            'stock' => 10
+        ]);
+        $phone = Product::factory()->create([
+            'name' => "Phone {$uniqueId}",
+            'category_id' => $electronicsCategory->id,
+            'price' => 699.99,
+            'stock' => 15
+        ]);
+        $shirt = Product::factory()->create([
+            'name' => "Shirt {$uniqueId}",
+            'category_id' => $clothingCategory->id,
+            'price' => 29.99,
+            'stock' => 20
+        ]);
+        $book = Product::factory()->create([
+            'name' => "Book {$uniqueId}",
+            'category_id' => $booksCategory->id,
+            'price' => 19.99,
+            'stock' => 50
+        ]);
+
+        // Test filtering by single category ID
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', ['category_ids' => [$electronicsCategory->id]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+
+        // Verify response structure
+        $this->assertArrayHasKey('data', $responseData);
+        $this->assertArrayHasKey('items', $responseData['data']);
+        $this->assertArrayHasKey('data', $responseData['data']['items']);
+
+        $products = $responseData['data']['items']['data'];
+        $productIds = collect($products)->pluck('id')->toArray();
+
+        // Should contain electronics products only
+        $this->assertContains($laptop->id, $productIds);
+        $this->assertContains($phone->id, $productIds);
+        $this->assertNotContains($shirt->id, $productIds);
+        $this->assertNotContains($book->id, $productIds);
+
+        // Test filtering by multiple category IDs
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', ['category_ids' => [$electronicsCategory->id, $clothingCategory->id]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $products = $responseData['data']['items']['data'];
+        $productIds = collect($products)->pluck('id')->toArray();
+
+        // Should contain electronics and clothing products only
+        $this->assertContains($laptop->id, $productIds);
+        $this->assertContains($phone->id, $productIds);
+        $this->assertContains($shirt->id, $productIds);
+        $this->assertNotContains($book->id, $productIds);
+
+        // Test filtering by non-existent category ID
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', ['category_ids' => [999999]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $products = $responseData['data']['items']['data'];
+
+        // Should return empty results
+        $this->assertEmpty($products);
+    }
+
+    public function test_admin_can_combine_category_ids_with_other_filters()
+    {
+        // Create unique identifiers
+        $uniqueId = uniqid('combined_ids_');
+
+        // Create categories
+        $electronicsCategory = Category::factory()->create(['name' => "Electronics{$uniqueId}"]);
+        $clothingCategory = Category::factory()->create(['name' => "Clothing{$uniqueId}"]);
+
+        // Create products with different prices in electronics category
+        $expensiveLaptop = Product::factory()->create([
+            'name' => "Expensive Laptop {$uniqueId}",
+            'category_id' => $electronicsCategory->id,
+            'price' => 1500.00,
+            'stock' => 5
+        ]);
+        $cheapPhone = Product::factory()->create([
+            'name' => "Budget Phone {$uniqueId}",
+            'category_id' => $electronicsCategory->id,
+            'price' => 200.00,
+            'stock' => 20
+        ]);
+        $shirt = Product::factory()->create([
+            'name' => "Shirt {$uniqueId}",
+            'category_id' => $clothingCategory->id,
+            'price' => 50.00,
+            'stock' => 15
+        ]);
+
+        // Test combining category_ids with price range filter
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', [
+                'category_ids' => [$electronicsCategory->id],
+                'min_price' => 500.00,
+                'max_price' => 2000.00
+            ]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $products = $responseData['data']['items']['data'];
+        $productIds = collect($products)->pluck('id')->toArray();
+
+        // Should only contain expensive laptop (electronics + price range)
+        $this->assertContains($expensiveLaptop->id, $productIds);
+        $this->assertNotContains($cheapPhone->id, $productIds);
+        $this->assertNotContains($shirt->id, $productIds);
+
+        // Test combining category_ids with name filter
+        $response = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', [
+                'category_ids' => [$electronicsCategory->id],
+                'name' => "Budget"
+            ]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $products = $responseData['data']['items']['data'];
+        $productIds = collect($products)->pluck('id')->toArray();
+
+        // Should only contain budget phone (electronics + name contains "Budget")
+        $this->assertNotContains($expensiveLaptop->id, $productIds);
+        $this->assertContains($cheapPhone->id, $productIds);
+        $this->assertNotContains($shirt->id, $productIds);
+    }
+
+    public function test_guest_can_filter_products_by_category_ids()
+    {
+        // Create unique identifiers
+        $uniqueId = uniqid('guest_cat_ids_');
+
+        // Create categories
+        $electronicsCategory = Category::factory()->create(['name' => "Electronics{$uniqueId}"]);
+        $clothingCategory = Category::factory()->create(['name' => "Clothing{$uniqueId}"]);
+
+        // Create products
+        $laptop = Product::factory()->create([
+            'name' => "Laptop {$uniqueId}",
+            'category_id' => $electronicsCategory->id,
+            'price' => 999.99,
+            'stock' => 10
+        ]);
+        $shirt = Product::factory()->create([
+            'name' => "Shirt {$uniqueId}",
+            'category_id' => $clothingCategory->id,
+            'price' => 29.99,
+            'stock' => 20
+        ]);
+
+        // Test guest access to products filtered by category_ids
+        $response = $this->getJson(route('guest.products.index', ['category_ids' => [$electronicsCategory->id]]));
+
+        $response->assertStatus(200);
+        $responseData = $response->json();
+        $products = $responseData['data']['items']['data'];
+        $productIds = collect($products)->pluck('id')->toArray();
+
+        // Should contain electronics products only
+        $this->assertContains($laptop->id, $productIds);
+        $this->assertNotContains($shirt->id, $productIds);
+    }
+
     public function test_cache_keys_differ_for_different_filters()
     {
         // Clear cache first
