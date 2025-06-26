@@ -19,6 +19,7 @@
             <file>tests/Unit/CacheNamesTest.php</file>
             <file>tests/Feature/OrderTest.php</file>
             <file>tests/Feature/OrderEventTest.php</file>
+            <file>tests/Feature/SecurityValidationTest.php</file>
         </testsuite>
     </testsuites>
     <source>
