@@ -1419,8 +1419,23 @@
 			"type": "string"
 		},
 		{
-			"key": "domain",
+			"key": "docker",
+			"value": "http://127.0.0.1:8001/",
+			"type": "string"
+		},
+		{
+			"key": "online",
+			"value": "https://izam-task.emadw3.com/",
+			"type": "string"
+		},
+		{
+			"key": "local",
 			"value": "http://127.0.0.1:8000/",
+			"type": "string"
+		},
+		{
+			"key": "domain",
+			"value": "{{online}}",
 			"type": "string"
 		},
 		{
