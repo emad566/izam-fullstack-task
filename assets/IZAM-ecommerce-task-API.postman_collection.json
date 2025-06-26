@@ -1,211 +1,559 @@
 {
 	"info": {
-		"_postman_id": "584f04a3-aebd-427e-bec2-20e3e78b4675",
-		"name": "API",
+		"_postman_id": "fb36f55b-7be6-492d-970a-d6eb24485ed4",
+		"name": "IZAM E-commerce API",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "18838193",
-		"_collection_link": "https://emad-core-915386.postman.co/workspace/daftra_ecommerce_task~b72403a3-1a79-4d5f-a215-5e24907b541a/collection/18838193-584f04a3-aebd-427e-bec2-20e3e78b4675?action=share&source=collection_link&creator=18838193"
+		"_collection_link": "https://emad-core-915386.postman.co/workspace/daftra_ecommerce_task~b72403a3-1a79-4d5f-a215-5e24907b541a/collection/18838193-fb36f55b-7be6-492d-970a-d6eb24485ed4?action=share&source=collection_link&creator=18838193"
 	},
 	"item": [
 		{
-			"name": "Guest",
+			"name": "Auth",
 			"item": [
 				{
-					"name": "Auth",
+					"name": "User",
 					"item": [
 						{
-							"name": "User",
-							"item": [
+							"name": "Register",
+							"event": [
 								{
-									"name": "Register",
-									"event": [
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"const response = pm.response.json();",
-													"pm.globals.set('user_token', response.data.token); "
-												],
-												"type": "text/javascript",
-												"packages": {}
-											}
-										}
-									],
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\n    \"email\": \"emad.fci2020@gmail.com\",\n    \"name\": \"emad\",\n    \"password\": \"12345678\",\n    \"password_confirmation\": \"12345678\"\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{auth}}user/register",
-											"host": [
-												"{{auth}}user"
-											],
-											"path": [
-												"register"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Login",
-									"event": [
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"const response = pm.response.json();",
-													"pm.globals.set('user_token', response.data.token); "
-												],
-												"type": "text/javascript",
-												"packages": {}
-											}
-										}
-									],
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\n    \"email\": \"user@user.com\",\n    \"password\": \"12345678\"\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{auth}}user/login",
-											"host": [
-												"{{auth}}user"
-											],
-											"path": [
-												"login"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Logout",
-									"request": {
-										"auth": {
-											"type": "bearer",
-											"bearer": [
-												{
-													"key": "token",
-													"value": "{{user_token}}",
-													"type": "string"
-												}
-											]
-										},
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{auth}}user/logout",
-											"host": [
-												"{{auth}}user"
-											],
-											"path": [
-												"logout"
-											]
-										}
-									},
-									"response": []
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if (response.success && response.data && response.data.token) {",
+											"    pm.globals.set('user_token', response.data.token);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
 								}
-							]
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"user@example.com\",\n    \"name\": \"Test User\",\n    \"password\": \"12345678\",\n    \"password_confirmation\": \"12345678\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{auth}}user/register",
+									"host": [
+										"{{auth}}user"
+									],
+									"path": [
+										"register"
+									]
+								}
+							},
+							"response": []
 						},
 						{
-							"name": "Admin",
-							"item": [
+							"name": "Login",
+							"event": [
 								{
-									"name": "Login",
-									"event": [
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"const response = pm.response.json();",
-													"pm.globals.set('admin_token', response.data.token); "
-												],
-												"type": "text/javascript",
-												"packages": {}
-											}
-										}
-									],
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\n    \"email\": \"admin@admin.com\",\n    \"password\": \"12345678\"\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{auth}}admin/login",
-											"host": [
-												"{{auth}}admin"
-											],
-											"path": [
-												"login"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Logout",
-									"request": {
-										"auth": {
-											"type": "bearer",
-											"bearer": [
-												{
-													"key": "token",
-													"value": "{{admin_token}}",
-													"type": "string"
-												}
-											]
-										},
-										"method": "POST",
-										"header": [],
-										"url": {
-											"raw": "{{auth}}admin/logout",
-											"host": [
-												"{{auth}}admin"
-											],
-											"path": [
-												"logout"
-											]
-										}
-									},
-									"response": []
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if ( response.data && response.data.token) {",
+											"    pm.globals.set('user_token', response.data.token);",
+											"    console.log(pm.globals.get('user_token'));",
+											"",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
 								}
-							]
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"user@user.com\",\n    \"password\": \"12345678\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{auth}}user/login",
+									"host": [
+										"{{auth}}user"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Logout (Authenticated)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{user_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{auth}}user/logout",
+									"host": [
+										"{{auth}}user"
+									],
+									"path": [
+										"logout"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if (response.success && response.data && response.data.token) {",
+											"    pm.globals.set('admin_token', response.data.token);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"admin@admin.com\",\n    \"password\": \"12345678\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{auth}}admin/login",
+									"host": [
+										"{{auth}}admin"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Logout (Authenticated)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{auth}}admin/logout",
+									"host": [
+										"{{auth}}admin"
+									],
+									"path": [
+										"logout"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Guest (Public)",
+			"item": [
+				{
+					"name": "Categories",
+					"item": [
+						{
+							"name": "List Categories",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if (response.success && response.data && response.data.items && response.data.items.data && response.data.items.data.length > 0) {",
+											"    pm.globals.set('categoryId', response.data.items.data[0].id);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{guest}}categories?per_page=50&page=1&sortColumn=id&sortDirection=DESC&date_from=2020-01-01T00:00:00.000000Z&date_to=2050-12-31T23:59:59.000000Z",
+									"host": [
+										"{{guest}}categories"
+									],
+									"query": [
+										{
+											"key": "per_page",
+											"value": "50"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "sortColumn",
+											"value": "id"
+										},
+										{
+											"key": "sortDirection",
+											"value": "DESC"
+										},
+										{
+											"key": "date_from",
+											"value": "2020-01-01T00:00:00.000000Z"
+										},
+										{
+											"key": "date_to",
+											"value": "2050-12-31T23:59:59.000000Z"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show Category",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{guest}}categories/{{categoryId}}",
+									"host": [
+										"{{guest}}categories"
+									],
+									"path": [
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Products",
+					"item": [
+						{
+							"name": "List Products",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if (response.success && response.data && response.data.items && response.data.items.data && response.data.items.data.length > 0) {",
+											"    pm.globals.set('productId', response.data.items.data[0].id);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{guest}}products?per_page=50&page=1&sortColumn=id&sortDirection=DESC&date_from=2020-01-01T00:00:00.000000Z&date_to=2050-12-31T23:59:59.000000Z&category_ids[]=1&min_price=10&max_price=1000",
+									"host": [
+										"{{guest}}products"
+									],
+									"query": [
+										{
+											"key": "per_page",
+											"value": "50"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "sortColumn",
+											"value": "id"
+										},
+										{
+											"key": "sortDirection",
+											"value": "DESC"
+										},
+										{
+											"key": "date_from",
+											"value": "2020-01-01T00:00:00.000000Z"
+										},
+										{
+											"key": "date_to",
+											"value": "2050-12-31T23:59:59.000000Z"
+										},
+										{
+											"key": "category_ids[]",
+											"value": "1"
+										},
+										{
+											"key": "min_price",
+											"value": "10"
+										},
+										{
+											"key": "max_price",
+											"value": "1000"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show Product",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{guest}}products/{{productId}}",
+									"host": [
+										"{{guest}}products"
+									],
+									"path": [
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User (Authenticated)",
+			"item": [
+				{
+					"name": "Orders",
+					"item": [
+						{
+							"name": "List My Orders",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if (response.success && response.data && response.data.items && response.data.items.data && response.data.items.data.length > 0) {",
+											"    pm.globals.set('orderId', response.data.items.data[0].id);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{user}}orders?per_page=50&page=1&sortColumn=id&sortDirection=DESC&date_from=2020-01-01T00:00:00.000000Z&date_to=2050-12-31T23:59:59.000000Z",
+									"host": [
+										"{{user}}orders"
+									],
+									"query": [
+										{
+											"key": "per_page",
+											"value": "50"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "sortColumn",
+											"value": "id"
+										},
+										{
+											"key": "sortDirection",
+											"value": "DESC"
+										},
+										{
+											"key": "date_from",
+											"value": "2020-01-01T00:00:00.000000Z"
+										},
+										{
+											"key": "date_to",
+											"value": "2050-12-31T23:59:59.000000Z"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Order Form",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{user}}orders/create",
+									"host": [
+										"{{user}}orders"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Order",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if (response.success && response.data && response.data.item) {",
+											"    pm.globals.set('orderId', response.data.item.id);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"products\": [\n        {\n            \"product_id\": 1,\n            \"quantity\": 2\n        },\n        {\n            \"product_id\": 2,\n            \"quantity\": 1\n        }\n    ],\n    \"notes\": \"Please deliver to front door\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{user}}orders",
+									"host": [
+										"{{user}}orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show My Order",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{user}}orders/{{orderId}}",
+									"host": [
+										"{{user}}orders"
+									],
+									"path": [
+										"{{orderId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Order",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{user}}orders/{{orderId}}",
+									"host": [
+										"{{user}}orders"
+									],
+									"path": [
+										"{{orderId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Toggle Order Active",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{user}}orders/{{orderId}}/toggleActive/false",
+									"host": [
+										"{{user}}orders"
+									],
+									"path": [
+										"{{orderId}}",
+										"toggleActive",
+										"false"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				}
 			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{user_token}}",
+						"type": "string"
+					}
+				]
+			},
 			"event": [
 				{
 					"listen": "prerequest",
@@ -213,11 +561,6 @@
 						"type": "text/javascript",
 						"packages": {},
 						"exec": [
-							"var Header = require('postman-collection').Header;",
-							"",
-							"pm.request.headers.add(new Header(\"Accept: application/json\"));",
-							"pm.request.headers.add(new Header(\"Content-Type: application/json\"));",
-							"pm.request.headers.add(new Header(\"Accept-Language: \" + pm.variables.get('lang'))); // or use a static value like 'en' or 'ar'",
 							""
 						]
 					}
@@ -235,902 +578,811 @@
 			]
 		},
 		{
-			"name": "API",
+			"name": "Admin (Authenticated)",
 			"item": [
 				{
-					"name": "Admin",
+					"name": "Categories",
 					"item": [
 						{
-							"name": "Category",
-							"item": [
+							"name": "List Categories",
+							"event": [
 								{
-									"name": "List",
-									"event": [
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"const response = pm.response.json();",
-													"pm.globals.set('categoryId', response.data.items.data[0].id);",
-													" "
-												],
-												"type": "text/javascript",
-												"packages": {}
-											}
-										}
-									],
-									"protocolProfileBehavior": {
-										"disableBodyPruning": true
-									},
-									"request": {
-										"method": "GET",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\n    \"per_page\": 20,\n    \"page\": 1,\n    \"sort_column\": \"id\",\n    \"sort_direction\": \"DESC\",\n    \"date_from\": \"2021-08-27T16:51:33.000000Z\",\n    \"date_to\": \"2050-10-27T23:59:59.000000Z\"\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}categories",
-											"host": [
-												"{{admin}}categories"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Create",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{admin}}categories/create",
-											"host": [
-												"{{admin}}categories"
-											],
-											"path": [
-												"create"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Store",
-									"event": [
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"const response = pm.response.json();",
-													"pm.globals.set('categoryId', response.data.item.id);",
-													" "
-												],
-												"type": "text/javascript",
-												"packages": {}
-											}
-										}
-									],
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\n    \"name\": \"Phasion w\"\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}categories",
-											"host": [
-												"{{admin}}categories"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "View",
-									"protocolProfileBehavior": {
-										"disableBodyPruning": true
-									},
-									"request": {
-										"method": "GET",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": " ",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}categories/{{categoryId}}",
-											"host": [
-												"{{admin}}categories"
-											],
-											"path": [
-												"{{categoryId}}"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Update",
-									"request": {
-										"method": "PUT",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": " {\n    \"name\": \"Phasion Updated 3\"\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}categories/{{categoryId}}",
-											"host": [
-												"{{admin}}categories"
-											],
-											"path": [
-												"{{categoryId}}"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "DeActivate",
-									"request": {
-										"method": "PUT",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": " {\n    \"name\": \"Phasion Updated\"\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}categories/{{categoryId}}/toggleActive/false",
-											"host": [
-												"{{admin}}categories"
-											],
-											"path": [
-												"{{categoryId}}",
-												"toggleActive",
-												"false"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Activate",
-									"request": {
-										"method": "PUT",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": " {\n    \"name\": \"Phasion Updated\"\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}categories/{{categoryId}}/toggleActive/true",
-											"host": [
-												"{{admin}}categories"
-											],
-											"path": [
-												"{{categoryId}}",
-												"toggleActive",
-												"true"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Destroy",
-									"request": {
-										"method": "DELETE",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": " {\n    \"name\": \"Phasion Updated\"\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}categories/{{categoryId}}",
-											"host": [
-												"{{admin}}categories"
-											],
-											"path": [
-												"{{categoryId}}"
-											]
-										}
-									},
-									"response": []
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if (response.success && response.data && response.data.items && response.data.items.data && response.data.items.data.length > 0) {",
+											"    pm.globals.set('categoryId', response.data.items.data[0].id);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
 								}
-							]
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}categories?per_page=50&page=1&sortColumn=id&sortDirection=DESC&date_from=2020-01-01T00:00:00.000000Z&date_to=2050-12-31T23:59:59.000000Z",
+									"host": [
+										"{{admin}}categories"
+									],
+									"query": [
+										{
+											"key": "per_page",
+											"value": "50"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "sortColumn",
+											"value": "id"
+										},
+										{
+											"key": "sortDirection",
+											"value": "DESC"
+										},
+										{
+											"key": "date_from",
+											"value": "2020-01-01T00:00:00.000000Z"
+										},
+										{
+											"key": "date_to",
+											"value": "2050-12-31T23:59:59.000000Z"
+										},
+										{
+											"key": "name",
+											"value": "electronics",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
 						},
 						{
-							"name": "Product",
-							"item": [
-								{
-									"name": "List",
-									"event": [
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"const response = pm.response.json();",
-													"pm.globals.set('productId', response.data.items.data[0].id);",
-													" "
-												],
-												"type": "text/javascript",
-												"packages": {}
-											}
-										}
+							"name": "Create Category Form",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}categories/create",
+									"host": [
+										"{{admin}}categories"
 									],
-									"protocolProfileBehavior": {
-										"disableBodyPruning": true
-									},
-									"request": {
-										"method": "GET",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\n    \"per_page\": 20,\n    \"page\": 1,\n    \"sort_column\": \"id\",\n    \"sort_direction\": \"DESC\",\n    \"date_from\": \"2021-08-27T16:51:33.000000Z\",\n    \"date_to\": \"2050-10-27T23:59:59.000000Z\"\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}products",
-											"host": [
-												"{{admin}}products"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Create",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{admin}}products/create",
-											"host": [
-												"{{admin}}products"
-											],
-											"path": [
-												"create"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Store",
-									"event": [
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"const response = pm.response.json();",
-													"pm.globals.set('productId', response.data.item.id);",
-													" "
-												],
-												"type": "text/javascript",
-												"packages": {}
-											}
-										}
-									],
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "formdata",
-											"formdata": [
-												{
-													"key": "name",
-													"value": "Product 122",
-													"type": "text"
-												},
-												{
-													"key": "description",
-													"value": "this is a description",
-													"type": "text"
-												},
-												{
-													"key": "image",
-													"type": "file",
-													"src": "/Users/mac/Downloads/e3.5-in-4.5.jpg"
-												},
-												{
-													"key": "price",
-													"value": "100",
-													"type": "text"
-												},
-												{
-													"key": "stock",
-													"value": "20",
-													"type": "text"
-												},
-												{
-													"key": "category_id",
-													"value": "3",
-													"type": "text"
-												}
-											]
-										},
-										"url": {
-											"raw": "{{admin}}products",
-											"host": [
-												"{{admin}}products"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "View",
-									"protocolProfileBehavior": {
-										"disableBodyPruning": true
-									},
-									"request": {
-										"method": "GET",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": " ",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}products/{{categoryId}}",
-											"host": [
-												"{{admin}}products"
-											],
-											"path": [
-												"{{categoryId}}"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Update",
-									"event": [
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"const response = pm.response.json();",
-													"pm.globals.set('productId', response.data.item.id);",
-													" "
-												],
-												"type": "text/javascript",
-												"packages": {}
-											}
-										}
-									],
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "formdata",
-											"formdata": [
-												{
-													"key": "name",
-													"value": "Product 1222",
-													"type": "text"
-												},
-												{
-													"key": "description",
-													"value": "this is a description",
-													"type": "text"
-												},
-												{
-													"key": "image",
-													"type": "file",
-													"src": [
-														"/Users/mac/Downloads/e3.5-in-4.5.jpg",
-														"/Users/mac/Downloads/2.jpg"
-													]
-												},
-												{
-													"key": "price",
-													"value": "100",
-													"type": "text"
-												},
-												{
-													"key": "stock",
-													"value": "20",
-													"type": "text"
-												},
-												{
-													"key": "category_id",
-													"value": "3",
-													"type": "text"
-												},
-												{
-													"key": "_method",
-													"value": "PUT",
-													"type": "text"
-												}
-											]
-										},
-										"url": {
-											"raw": "{{admin}}products/{{productId}}",
-											"host": [
-												"{{admin}}products"
-											],
-											"path": [
-												"{{productId}}"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "DeActivate",
-									"request": {
-										"method": "PUT",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}products/{{productId}}/toggleActive/false",
-											"host": [
-												"{{admin}}products"
-											],
-											"path": [
-												"{{productId}}",
-												"toggleActive",
-												"false"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Activate",
-									"request": {
-										"method": "PUT",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}products/{{productId}}/toggleActive/true",
-											"host": [
-												"{{admin}}products"
-											],
-											"path": [
-												"{{productId}}",
-												"toggleActive",
-												"true"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Destroy",
-									"request": {
-										"method": "DELETE",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}products/{{productId}}",
-											"host": [
-												"{{admin}}products"
-											],
-											"path": [
-												"{{productId}}"
-											]
-										}
-									},
-									"response": []
+									"path": [
+										"create"
+									]
 								}
-							]
+							},
+							"response": []
 						},
 						{
-							"name": "Order",
-							"item": [
+							"name": "Create Category",
+							"event": [
 								{
-									"name": "List",
-									"event": [
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"const response = pm.response.json();",
-													"pm.globals.set('productId', response.data.items.data[0].id);",
-													" "
-												],
-												"type": "text/javascript",
-												"packages": {}
-											}
-										}
-									],
-									"protocolProfileBehavior": {
-										"disableBodyPruning": true
-									},
-									"request": {
-										"method": "GET",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "{\n    \"per_page\": 20,\n    \"page\": 1,\n    \"sort_column\": \"id\",\n    \"sort_direction\": \"DESC\",\n    \"date_from\": \"2021-08-27T16:51:33.000000Z\",\n    \"date_to\": \"2050-10-27T23:59:59.000000Z\"\n}",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}products",
-											"host": [
-												"{{admin}}products"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Create",
-									"request": {
-										"method": "GET",
-										"header": [],
-										"url": {
-											"raw": "{{admin}}products/create",
-											"host": [
-												"{{admin}}products"
-											],
-											"path": [
-												"create"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Store",
-									"event": [
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"const response = pm.response.json();",
-													"pm.globals.set('orderId', response.data.item.id);",
-													" "
-												],
-												"type": "text/javascript",
-												"packages": {}
-											}
-										}
-									],
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "formdata",
-											"formdata": [
-												{
-													"key": "name",
-													"value": "Product 122",
-													"type": "text"
-												},
-												{
-													"key": "description",
-													"value": "this is a description",
-													"type": "text"
-												},
-												{
-													"key": "image",
-													"type": "file",
-													"src": "/Users/mac/Downloads/e3.5-in-4.5.jpg"
-												},
-												{
-													"key": "price",
-													"value": "100",
-													"type": "text"
-												},
-												{
-													"key": "stock",
-													"value": "20",
-													"type": "text"
-												},
-												{
-													"key": "category_id",
-													"value": "3",
-													"type": "text"
-												}
-											]
-										},
-										"url": {
-											"raw": "{{admin}}orders",
-											"host": [
-												"{{admin}}orders"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "View",
-									"protocolProfileBehavior": {
-										"disableBodyPruning": true
-									},
-									"request": {
-										"method": "GET",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": " ",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}products/{{categoryId}}",
-											"host": [
-												"{{admin}}products"
-											],
-											"path": [
-												"{{categoryId}}"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Update",
-									"event": [
-										{
-											"listen": "test",
-											"script": {
-												"exec": [
-													"const response = pm.response.json();",
-													"pm.globals.set('productId', response.data.item.id);",
-													" "
-												],
-												"type": "text/javascript",
-												"packages": {}
-											}
-										}
-									],
-									"request": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "formdata",
-											"formdata": [
-												{
-													"key": "name",
-													"value": "Product 1222",
-													"type": "text"
-												},
-												{
-													"key": "description",
-													"value": "this is a description",
-													"type": "text"
-												},
-												{
-													"key": "image",
-													"type": "file",
-													"src": [
-														"/Users/mac/Downloads/e3.5-in-4.5.jpg",
-														"/Users/mac/Downloads/2.jpg"
-													]
-												},
-												{
-													"key": "price",
-													"value": "100",
-													"type": "text"
-												},
-												{
-													"key": "stock",
-													"value": "20",
-													"type": "text"
-												},
-												{
-													"key": "category_id",
-													"value": "3",
-													"type": "text"
-												},
-												{
-													"key": "_method",
-													"value": "PUT",
-													"type": "text"
-												}
-											]
-										},
-										"url": {
-											"raw": "{{admin}}products/{{productId}}",
-											"host": [
-												"{{admin}}products"
-											],
-											"path": [
-												"{{productId}}"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "DeActivate",
-									"request": {
-										"method": "PUT",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}products/{{productId}}/toggleActive/false",
-											"host": [
-												"{{admin}}products"
-											],
-											"path": [
-												"{{productId}}",
-												"toggleActive",
-												"false"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Activate",
-									"request": {
-										"method": "PUT",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}products/{{productId}}/toggleActive/true",
-											"host": [
-												"{{admin}}products"
-											],
-											"path": [
-												"{{productId}}",
-												"toggleActive",
-												"true"
-											]
-										}
-									},
-									"response": []
-								},
-								{
-									"name": "Destroy",
-									"request": {
-										"method": "DELETE",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{admin}}products/{{productId}}",
-											"host": [
-												"{{admin}}products"
-											],
-											"path": [
-												"{{productId}}"
-											]
-										}
-									},
-									"response": []
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if (response.success && response.data && response.data.item) {",
+											"    pm.globals.set('categoryId', response.data.item.id);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
 								}
-							]
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Electronics v2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{admin}}categories",
+									"host": [
+										"{{admin}}categories"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show Category",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}categories/{{categoryId}}",
+									"host": [
+										"{{admin}}categories"
+									],
+									"path": [
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit Category Form",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}categories/{{categoryId}}/edit",
+									"host": [
+										"{{admin}}categories"
+									],
+									"path": [
+										"{{categoryId}}",
+										"edit"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Category",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Electronics Updated\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{admin}}categories/{{categoryId}}",
+									"host": [
+										"{{admin}}categories"
+									],
+									"path": [
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Deactivate Category",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}categories/{{categoryId}}/toggleActive/false",
+									"host": [
+										"{{admin}}categories"
+									],
+									"path": [
+										"{{categoryId}}",
+										"toggleActive",
+										"false"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Activate Category",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}categories/{{categoryId}}/toggleActive/true",
+									"host": [
+										"{{admin}}categories"
+									],
+									"path": [
+										"{{categoryId}}",
+										"toggleActive",
+										"true"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Category",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}categories/{{categoryId}}",
+									"host": [
+										"{{admin}}categories"
+									],
+									"path": [
+										"{{categoryId}}"
+									]
+								}
+							},
+							"response": []
 						}
-					],
-					"auth": {
-						"type": "bearer",
-						"bearer": [
-							{
-								"key": "token",
-								"value": "{{admin_token}}",
-								"type": "string"
-							}
-						]
-					},
-					"event": [
+					]
+				},
+				{
+					"name": "Products",
+					"item": [
 						{
-							"listen": "prerequest",
-							"script": {
-								"type": "text/javascript",
-								"packages": {},
-								"exec": [
-									""
-								]
-							}
+							"name": "List Products",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if (response.success && response.data && response.data.items && response.data.items.data && response.data.items.data.length > 0) {",
+											"    pm.globals.set('productId', response.data.items.data[0].id);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}products?per_page=50&page=1&sortColumn=id&sortDirection=DESC&date_from=2020-01-01T00:00:00.000000Z&date_to=2050-12-31T23:59:59.000000Z&category_ids[]=97&min_price=10&max_price=1000",
+									"host": [
+										"{{admin}}products"
+									],
+									"query": [
+										{
+											"key": "per_page",
+											"value": "50"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "sortColumn",
+											"value": "id"
+										},
+										{
+											"key": "sortDirection",
+											"value": "DESC"
+										},
+										{
+											"key": "date_from",
+											"value": "2020-01-01T00:00:00.000000Z"
+										},
+										{
+											"key": "date_to",
+											"value": "2050-12-31T23:59:59.000000Z"
+										},
+										{
+											"key": "category_ids[]",
+											"value": "97"
+										},
+										{
+											"key": "min_price",
+											"value": "10"
+										},
+										{
+											"key": "max_price",
+											"value": "1000"
+										},
+										{
+											"key": "product_name",
+											"value": "laptop",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
 						},
 						{
-							"listen": "test",
-							"script": {
-								"type": "text/javascript",
-								"packages": {},
-								"exec": [
-									""
-								]
-							}
+							"name": "Create Product Form",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}products/create",
+									"host": [
+										"{{admin}}products"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Product",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if (response.success && response.data && response.data.item) {",
+											"    pm.globals.set('productId', response.data.item.id);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "MacBook Pro",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Latest MacBook Pro with M2 chip",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										},
+										{
+											"key": "price",
+											"value": "1299.99",
+											"type": "text"
+										},
+										{
+											"key": "stock",
+											"value": "50",
+											"type": "text"
+										},
+										{
+											"key": "category_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{admin}}products",
+									"host": [
+										"{{admin}}products"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show Product",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}products/{{productId}}",
+									"host": [
+										"{{admin}}products"
+									],
+									"path": [
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit Product Form",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}products/{{productId}}/edit",
+									"host": [
+										"{{admin}}products"
+									],
+									"path": [
+										"{{productId}}",
+										"edit"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Product",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "name",
+											"value": "MacBook Pro Updated",
+											"type": "text"
+										},
+										{
+											"key": "description",
+											"value": "Updated MacBook Pro with M2 chip",
+											"type": "text"
+										},
+										{
+											"key": "image",
+											"type": "file",
+											"src": []
+										},
+										{
+											"key": "price",
+											"value": "1399.99",
+											"type": "text"
+										},
+										{
+											"key": "stock",
+											"value": "45",
+											"type": "text"
+										},
+										{
+											"key": "category_id",
+											"value": "1",
+											"type": "text"
+										},
+										{
+											"key": "_method",
+											"value": "PUT",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{admin}}products/{{productId}}",
+									"host": [
+										"{{admin}}products"
+									],
+									"path": [
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Deactivate Product",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}products/{{productId}}/toggleActive/false",
+									"host": [
+										"{{admin}}products"
+									],
+									"path": [
+										"{{productId}}",
+										"toggleActive",
+										"false"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Activate Product",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}products/{{productId}}/toggleActive/true",
+									"host": [
+										"{{admin}}products"
+									],
+									"path": [
+										"{{productId}}",
+										"toggleActive",
+										"true"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Product",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}products/{{productId}}",
+									"host": [
+										"{{admin}}products"
+									],
+									"path": [
+										"{{productId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Orders",
+					"item": [
+						{
+							"name": "List All Orders",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if (response.success && response.data && response.data.items && response.data.items.data && response.data.items.data.length > 0) {",
+											"    pm.globals.set('orderId', response.data.items.data[0].id);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}orders?per_page=50&page=1&sortColumn=id&sortDirection=DESC&date_from=2020-01-01T00:00:00.000000Z&date_to=2050-12-31T23:59:59.000000Z",
+									"host": [
+										"{{admin}}orders"
+									],
+									"query": [
+										{
+											"key": "per_page",
+											"value": "50"
+										},
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "sortColumn",
+											"value": "id"
+										},
+										{
+											"key": "sortDirection",
+											"value": "DESC"
+										},
+										{
+											"key": "date_from",
+											"value": "2020-01-01T00:00:00.000000Z"
+										},
+										{
+											"key": "date_to",
+											"value": "2050-12-31T23:59:59.000000Z"
+										},
+										{
+											"key": "user_name",
+											"value": "john",
+											"disabled": true
+										},
+										{
+											"key": "category_names[]",
+											"value": "Electronics",
+											"disabled": true
+										},
+										{
+											"key": "product_name",
+											"value": "laptop",
+											"disabled": true
+										},
+										{
+											"key": "status",
+											"value": "pending",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Order Form",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}orders/create",
+									"host": [
+										"{{admin}}orders"
+									],
+									"path": [
+										"create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Order (Admin)",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const response = pm.response.json();",
+											"if (response.success && response.data && response.data.item) {",
+											"    pm.globals.set('orderId', response.data.item.id);",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"products\": [\n        {\n            \"product_id\": 1,\n            \"quantity\": 3\n        },\n        {\n            \"product_id\": 2,\n            \"quantity\": 2\n        }\n    ],\n    \"notes\": \"Admin created order\",\n    \"status\": \"pending\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{admin}}orders",
+									"host": [
+										"{{admin}}orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show Order",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}orders/{{orderId}}",
+									"host": [
+										"{{admin}}orders"
+									],
+									"path": [
+										"{{orderId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit Order Form",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}orders/{{orderId}}/edit",
+									"host": [
+										"{{admin}}orders"
+									],
+									"path": [
+										"{{orderId}}",
+										"edit"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Order",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"status\": \"completed\",\n    \"notes\": \"Order completed and shipped\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{admin}}orders/{{orderId}}",
+									"host": [
+										"{{admin}}orders"
+									],
+									"path": [
+										"{{orderId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Deactivate Order",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}orders/{{orderId}}/toggleActive/false",
+									"host": [
+										"{{admin}}orders"
+									],
+									"path": [
+										"{{orderId}}",
+										"toggleActive",
+										"false"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Activate Order",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}orders/{{orderId}}/toggleActive/true",
+									"host": [
+										"{{admin}}orders"
+									],
+									"path": [
+										"{{orderId}}",
+										"toggleActive",
+										"true"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Order",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{admin}}orders/{{orderId}}",
+									"host": [
+										"{{admin}}orders"
+									],
+									"path": [
+										"{{orderId}}"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				}
-			]
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{admin_token}}",
+						"type": "string"
+					}
+				]
+			}
 		}
 	],
 	"event": [
@@ -1179,6 +1431,11 @@
 		{
 			"key": "auth",
 			"value": "{{api}}auth/",
+			"type": "string"
+		},
+		{
+			"key": "guest",
+			"value": "{{api}}guest/",
 			"type": "string"
 		},
 		{
