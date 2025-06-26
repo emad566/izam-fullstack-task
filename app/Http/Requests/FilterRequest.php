@@ -22,8 +22,8 @@ class FilterRequest extends CustomFormRequest
             'sortDirection' => 'nullable|string|in:ASC,DESC,asc,desc',
 
             // Date filtering
-            'date_from' => 'nullable|date_format:Y-m-d\TH:i:s.v\Z|before:date_to',
-            'date_to' => 'nullable|date_format:Y-m-d\TH:i:s.v\Z|after:date_from',
+            'date_from' => 'nullable|date_format:Y-m-d\TH:i:s.u\Z|before:date_to',
+            'date_to' => 'nullable|date_format:Y-m-d\TH:i:s.u\Z|after:date_from',
 
             // Text search rules
             'q' => 'nullable|string|max:255|no_xss|no_sql_injection|no_path_traversal',
