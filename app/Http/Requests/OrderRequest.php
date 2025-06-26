@@ -47,7 +47,7 @@ class OrderRequest extends CustomFormRequest
     protected function withValidator(Validator $validator)
     {
         $validator->after(function ($validator) {
-            if ($this->has('products')) {
+            if ($this->has('products') && is_array($this->input('products'))) {
                 foreach ($this->input('products', []) as $index => $productData) {
                     if (isset($productData['product_id']) && isset($productData['quantity'])) {
                         $product = Product::find($productData['product_id']);

@@ -359,6 +359,72 @@ class OrderTest extends TestCase
             ->assertJsonValidationErrors(['products']);
     }
 
+    public function test_order_cannot_be_created_with_empty_products_array()
+    {
+        $user = User::factory()->create();
+
+        // Test with empty products array
+        $orderData = [
+            'products' => [], // Empty array should fail validation
+            'notes' => 'This should fail'
+        ];
+
+        $response = $this->withAuth($user)
+            ->postJson(route('user.orders.store'), $orderData);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['products']);
+
+        // Verify no order was created
+        $this->assertDatabaseMissing('orders', [
+            'user_id' => $user->id
+        ]);
+    }
+
+    public function test_order_cannot_be_created_with_null_products()
+    {
+        $user = User::factory()->create();
+
+        // Test with null products
+        $orderData = [
+            'products' => null, // Null should fail validation
+            'notes' => 'This should also fail'
+        ];
+
+        $response = $this->withAuth($user)
+            ->postJson(route('user.orders.store'), $orderData);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['products']);
+
+        // Verify no order was created
+        $this->assertDatabaseMissing('orders', [
+            'user_id' => $user->id
+        ]);
+    }
+
+    public function test_order_cannot_be_created_with_string_instead_of_array()
+    {
+        $user = User::factory()->create();
+
+        // Test with string instead of array
+        $orderData = [
+            'products' => 'invalid string', // String should fail validation
+            'notes' => 'This should fail too'
+        ];
+
+        $response = $this->withAuth($user)
+            ->postJson(route('user.orders.store'), $orderData);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['products']);
+
+        // Verify no order was created
+        $this->assertDatabaseMissing('orders', [
+            'user_id' => $user->id
+        ]);
+    }
+
     public function test_order_validation_requires_valid_product_data()
     {
         $user = User::factory()->create();
