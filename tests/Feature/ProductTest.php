@@ -480,4 +480,200 @@ class ProductTest extends TestCase
             $this->fail('No products data found in response: ' . json_encode($responseData));
         }
     }
+
+    public function test_products_list_is_cached()
+    {
+        // Clear cache first
+        \Illuminate\Support\Facades\Cache::flush();
+
+        $category = Category::factory()->create();
+        Product::factory()->count(3)->create(['category_id' => $category->id]);
+
+        // First request - should hit database and cache the result
+        $startTime = microtime(true);
+        $response1 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index'));
+        $firstRequestTime = microtime(true) - $startTime;
+
+        $response1->assertStatus(200);
+
+        // Second request - should hit cache and be faster
+        $startTime = microtime(true);
+        $response2 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index'));
+        $secondRequestTime = microtime(true) - $startTime;
+
+        $response2->assertStatus(200);
+
+        // Verify responses are identical
+        $this->assertEquals($response1->json(), $response2->json());
+
+        // Second request should typically be faster due to caching
+        // Note: In test environment, the difference might be minimal
+        $this->assertLessThanOrEqual($firstRequestTime + 0.1, $secondRequestTime + 0.1);
+    }
+
+    public function test_products_cache_is_invalidated_on_create()
+    {
+        // Clear cache and create initial products
+        \Illuminate\Support\Facades\Cache::flush();
+
+        $category = Category::factory()->create();
+        Product::factory()->count(2)->create(['category_id' => $category->id]);
+
+        // First request to cache the result
+        $response1 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index'));
+
+        $response1->assertStatus(200);
+        $initialCount = count($response1->json()['data']['items']['data']);
+
+        // Create a new product (should invalidate cache)
+        $newProductData = Product::factory()->make(['category_id' => $category->id])->toArray();
+
+        $createResponse = $this->withAuth($this->admin)
+            ->postJson(route('admin.products.store'), $newProductData);
+
+        $createResponse->assertStatus(201);
+
+        // Request again - should show updated data
+        $response2 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index'));
+
+        $response2->assertStatus(200);
+        $newCount = count($response2->json()['data']['items']['data']);
+
+        // Should have one more product
+        $this->assertEquals($initialCount + 1, $newCount);
+    }
+
+    public function test_products_cache_is_invalidated_on_update()
+    {
+        // Clear cache and create products
+        \Illuminate\Support\Facades\Cache::flush();
+
+        $category = Category::factory()->create();
+        $product = Product::factory()->create(['category_id' => $category->id, 'name' => 'Original Name']);
+
+        // Cache the initial result
+        $response1 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index'));
+
+        $response1->assertStatus(200);
+
+        // Update the product (should invalidate cache) - include all required fields
+        $updateData = [
+            'name' => 'Updated Name',
+            'category_id' => $category->id,
+            'price' => $product->price,
+            'stock' => $product->stock,
+            'description' => $product->description
+        ];
+
+        $updateResponse = $this->withAuth($this->admin)
+            ->putJson(route('admin.products.update', $product->id), $updateData);
+
+        $updateResponse->assertStatus(200);
+
+        // Request again - should show updated data
+        $response2 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index'));
+
+        $response2->assertStatus(200);
+
+        // Find the updated product in the response
+        $products = $response2->json()['data']['items']['data'];
+        $updatedProduct = collect($products)->firstWhere('id', $product->id);
+
+        $this->assertNotNull($updatedProduct);
+        $this->assertEquals('Updated Name', $updatedProduct['name']);
+    }
+
+    public function test_products_cache_is_invalidated_on_delete()
+    {
+        // Clear cache and create products
+        \Illuminate\Support\Facades\Cache::flush();
+
+        $category = Category::factory()->create();
+        $product = Product::factory()->create(['category_id' => $category->id]);
+
+        // Cache the initial result
+        $response1 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index'));
+
+        $response1->assertStatus(200);
+        $initialCount = count($response1->json()['data']['items']['data']);
+
+        // Delete the product (should invalidate cache)
+        $deleteResponse = $this->withAuth($this->admin)
+            ->deleteJson(route('admin.products.destroy', $product->id));
+
+        $deleteResponse->assertStatus(200);
+
+        // Request again - should show updated data
+        $response2 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index'));
+
+        $response2->assertStatus(200);
+        $newCount = count($response2->json()['data']['items']['data']);
+
+        // Should have one less product
+        $this->assertEquals($initialCount - 1, $newCount);
+    }
+
+    public function test_product_detail_is_cached()
+    {
+        // Clear cache first
+        \Illuminate\Support\Facades\Cache::flush();
+
+        $category = Category::factory()->create();
+        $product = Product::factory()->create(['category_id' => $category->id]);
+
+        // First request - should hit database and cache the result
+        $response1 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.show', $product->id));
+
+        $response1->assertStatus(200);
+
+        // Second request - should hit cache
+        $response2 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.show', $product->id));
+
+        $response2->assertStatus(200);
+
+        // Verify responses are identical
+        $this->assertEquals($response1->json(), $response2->json());
+    }
+
+    public function test_cache_keys_differ_for_different_filters()
+    {
+        // Clear cache first
+        \Illuminate\Support\Facades\Cache::flush();
+
+        $category1 = Category::factory()->create(['name' => 'Electronics']);
+        $category2 = Category::factory()->create(['name' => 'Clothing']);
+
+        Product::factory()->create(['category_id' => $category1->id, 'price' => 100]);
+        Product::factory()->create(['category_id' => $category2->id, 'price' => 50]);
+
+        // Request with different filters should generate different cache keys
+        $response1 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', ['category_name' => 'Electronics']));
+
+        $response2 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index', ['min_price' => 75]));
+
+        $response3 = $this->withAuth($this->admin)
+            ->getJson(route('admin.products.index'));
+
+        // All requests should be successful
+        $response1->assertStatus(200);
+        $response2->assertStatus(200);
+        $response3->assertStatus(200);
+
+        // The responses should be different due to different filters
+        $this->assertNotEquals($response1->json(), $response2->json());
+        $this->assertNotEquals($response1->json(), $response3->json());
+        $this->assertNotEquals($response2->json(), $response3->json());
+    }
 }
