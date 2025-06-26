@@ -4,26 +4,154 @@ A comprehensive Laravel RESTful API backend for an e-commerce system with comple
 
 ## 📋 Table of Contents
 
-- [Introduction](#-introduction)
-- [Time Tracking](#-time-tracking)
-- [Quick Start](#-quick-start)
-- [Setup Instructions](#-setup-instructions)
-  - [Docker Setup (Recommended)](#docker-setup-recommended)
-  - [Local Development Setup](#local-development-setup)
-  - [Production Apache Setup](#production-apache-setup)
-- [Authentication Flow](#-authentication-flow)
-- [API Documentation](#-api-documentation)
-- [Features](#-features)
-- [Project Structure](#-project-structure)
-- [Testing](#-testing)
-- [Security Features](#-security-features)
-- [Performance & Caching](#-performance--caching)
-- [Deployment](#-deployment)
-- [Contributing](#-contributing)
+- [IZAM E-commerce API](#izam-e-commerce-api)
+  - [📋 Table of Contents](#-table-of-contents)
+  - [🚀 Introduction](#-introduction)
+    - [🏗️ **Unique Architecture \& Custom Design Patterns**](#️-unique-architecture--custom-design-patterns)
+    - [Key Highlights](#key-highlights)
+    - [👨‍💻 **Development Attribution**](#-development-attribution)
+    - [🛠️ **Custom Development Tools**](#️-custom-development-tools)
+    - [Development Timeline](#development-timeline)
+  - [⏱️ Time Tracking](#️-time-tracking)
+    - [Development Summary](#development-summary)
+    - [Git Activity Analysis](#git-activity-analysis)
+    - [Transparency Note](#transparency-note)
+  - [⚡ Quick Start](#-quick-start)
+  - [🛠️ Setup Instructions](#️-setup-instructions)
+    - [Docker Setup (Recommended)](#docker-setup-recommended)
+      - [Prerequisites](#prerequisites)
+      - [Quick Setup](#quick-setup)
+      - [Manual Docker Setup](#manual-docker-setup)
+      - [Available Docker Commands](#available-docker-commands)
+    - [Local Development Setup](#local-development-setup)
+      - [Prerequisites](#prerequisites-1)
+      - [Installation Steps](#installation-steps)
+      - [Local Testing](#local-testing)
+    - [Production Apache Setup](#production-apache-setup)
+      - [Virtual Host Configuration](#virtual-host-configuration)
+      - [Production Environment Setup](#production-environment-setup)
+      - [Production Environment Variables](#production-environment-variables)
+  - [🔐 Authentication Flow](#-authentication-flow)
+    - [Overview](#overview)
+    - [Authentication Flow Diagram](#authentication-flow-diagram)
+    - [Authentication Endpoints](#authentication-endpoints)
+      - [User Authentication](#user-authentication)
+      - [Admin Authentication](#admin-authentication)
+    - [Authentication Examples](#authentication-examples)
+      - [User Registration](#user-registration)
+      - [User Login](#user-login)
+      - [Using Authentication Token](#using-authentication-token)
+    - [Role-Based Access Control](#role-based-access-control)
+    - [Security Features](#security-features)
+  - [📚 API Documentation](#-api-documentation)
+    - [Base URL](#base-url)
+    - [Postman Collection](#postman-collection)
+    - [API Endpoints Overview](#api-endpoints-overview)
+      - [Authentication Routes](#authentication-routes)
+      - [Guest Routes (Public Access)](#guest-routes-public-access)
+      - [User Routes (Authenticated Users)](#user-routes-authenticated-users)
+      - [Admin Routes (Admin Only)](#admin-routes-admin-only)
+    - [Advanced Filtering](#advanced-filtering)
+      - [Product Filtering](#product-filtering)
+      - [Order Filtering (Admin)](#order-filtering-admin)
+    - [Request/Response Examples](#requestresponse-examples)
+      - [Create Product (Admin)](#create-product-admin)
+      - [Create Order (User)](#create-order-user)
+    - [Error Handling](#error-handling)
+      - [Standard Error Response](#standard-error-response)
+      - [HTTP Status Codes](#http-status-codes)
+  - [✨ Features](#-features)
+    - [🔐 Authentication \& Authorization](#-authentication--authorization)
+    - [📦 Product Management](#-product-management)
+    - [🛒 Order Management](#-order-management)
+    - [🚀 Performance \& Caching](#-performance--caching)
+    - [🔒 Security Features](#-security-features)
+    - [📊 Monitoring \& Logging](#-monitoring--logging)
+  - [📁 Project Structure](#-project-structure)
+    - [Key Directories Explained](#key-directories-explained)
+      - [`/app/Http/Controllers/`](#apphttpcontrollers)
+      - [`/app/Http/Requests/`](#apphttprequests)
+      - [`/app/Models/`](#appmodels)
+  - [🏗️ Custom Design Patterns](#️-custom-design-patterns)
+    - [BaseController Pattern](#basecontroller-pattern)
+    - [Controller Traits Pattern](#controller-traits-pattern)
+      - [IndexTrait Example](#indextrait-example)
+    - [CustomFormRequest Pattern](#customformrequest-pattern)
+    - [Multi-Guard Authentication Pattern](#multi-guard-authentication-pattern)
+    - [Cache Invalidation Pattern](#cache-invalidation-pattern)
+  - [🔐 Multi-Guard Authentication System](#-multi-guard-authentication-system)
+    - [Architecture Overview](#architecture-overview)
+    - [Guard Configuration](#guard-configuration)
+    - [Authentication Flow by Role](#authentication-flow-by-role)
+      - [Admin Authentication](#admin-authentication-1)
+      - [User Authentication](#user-authentication-1)
+    - [Route Protection Strategy](#route-protection-strategy)
+      - [Admin Routes (`routes/admin.php`)](#admin-routes-routesadminphp)
+      - [User Routes (`routes/user.php`)](#user-routes-routesuserphp)
+      - [Guest Routes (`routes/guest.php`)](#guest-routes-routesguestphp)
+    - [Permission Matrix](#permission-matrix)
+    - [Security Features](#security-features-1)
+      - [Token Isolation](#token-isolation)
+      - [Middleware Chain](#middleware-chain)
+      - [Automatic Token Management](#automatic-token-management)
+    - [Advantages of Multi-Guard System](#advantages-of-multi-guard-system)
+  - [🧪 Testing](#-testing)
+    - [Test Coverage](#test-coverage)
+    - [Test Suites](#test-suites)
+      - [Feature Tests](#feature-tests)
+      - [Unit Tests](#unit-tests)
+    - [Running Tests](#running-tests)
+      - [Local Environment](#local-environment)
+      - [Docker Environment](#docker-environment)
+    - [Test Examples](#test-examples)
+      - [Product Filtering Tests](#product-filtering-tests)
+      - [Security Validation Tests](#security-validation-tests)
+  - [🔒 Security Features](#-security-features-1)
+    - [Input Validation \& Sanitization](#input-validation--sanitization)
+    - [Authentication \& Authorization](#authentication--authorization)
+    - [Data Protection](#data-protection)
+    - [Security Headers](#security-headers)
+  - [⚡ Performance \& Caching](#-performance--caching-1)
+    - [Caching Strategy](#caching-strategy)
+    - [Cache Implementation Details](#cache-implementation-details)
+    - [Cache Configuration Support](#cache-configuration-support)
+    - [Cache Implementation](#cache-implementation)
+    - [Performance Optimizations](#performance-optimizations)
+  - [🚀 Deployment](#-deployment)
+    - [Docker Deployment (Recommended)](#docker-deployment-recommended)
+      - [Development](#development)
+      - [Production](#production)
+    - [Manual Deployment](#manual-deployment)
+      - [Server Requirements](#server-requirements)
+      - [Deployment Steps](#deployment-steps)
+    - [Environment Configuration](#environment-configuration)
+      - [Production Environment Variables](#production-environment-variables-1)
+    - [Monitoring \& Maintenance](#monitoring--maintenance)
+  - [🤝 Contributing](#-contributing)
+    - [Development Workflow](#development-workflow)
+    - [Code Standards](#code-standards)
+    - [Testing Requirements](#testing-requirements)
+    - [Pull Request Process](#pull-request-process)
+  - [📞 Support \& Contact](#-support--contact)
+  - [📄 License](#-license)
 
 ## 🚀 Introduction
 
 The IZAM E-commerce API is a robust, production-ready Laravel 10 RESTful API designed for modern e-commerce applications. Built with scalability, security, and performance in mind, it provides a complete backend solution for online stores.
+
+🌟 **Try it Live**: The API is deployed and ready to test at [https://izam-task.emadw3.com/api](https://izam-task.emadw3.com/api) - no setup required!
+
+### 🏗️ **Unique Architecture & Custom Design Patterns**
+
+This project showcases advanced Laravel development with **custom-built design patterns** that set it apart:
+
+- **🎯 BaseController Pattern**: Dynamic model binding with standardized responses
+- **🔧 Controller Traits System**: Modular, reusable controller functionality (IndexTrait, ShowTrait, etc.)
+- **🛡️ CustomFormRequest Pattern**: Security-first validation with automatic input sanitization
+- **🔐 Multi-Guard Authentication**: Sophisticated role-based access control
+- **⚡ Smart Cache Invalidation**: Event-driven cache management
+
+👉 *See detailed explanation in [Custom Design Patterns](#-custom-design-patterns) section*
 
 ### Key Highlights
 
@@ -34,19 +162,50 @@ The IZAM E-commerce API is a robust, production-ready Laravel 10 RESTful API des
 - **Comprehensive Testing**: 109 test cases with 752 assertions
 - **Full API Documentation**: Postman collection with examples
 - **Event-Driven**: Order notifications and cache invalidation
+- **Custom Artisan Commands**: Automated file generation and development tools
+
+### 👨‍💻 **Development Attribution**
+
+**Core Architecture & Development**: [Emadeldeen Soliman](https://github.com/emad566)
+- Base project structure and custom design patterns
+- Core testing framework and controller architecture
+- Custom Artisan commands in `app/Console/Commands/`
+- Authentication system and security implementations
+
+**Documentation & Optimization**: Claude 4 Sonnet AI
+- Comprehensive documentation and README structure
+- Code optimization suggestions and best practices
+- Detailed API documentation and examples
+
+### 🛠️ **Custom Development Tools**
+
+The project includes custom Artisan commands for enhanced development workflow:
+
+```bash
+# Custom commands available in app/Console/Commands/
+php artisan make:full-resource {ModelName}     # Generate complete CRUD resources
+php artisan compress:project-folders           # Project optimization
+php artisan convert:msg-json                   # Localization management
+php artisan regenerate:media-conversions       # Media processing
+php artisan test:order-notification-email      # Email testing
+php artisan update:model-from-migration        # Model synchronization
+```
 
 ### Development Timeline
 
-Based on Git history analysis:
+Based on Git history analysis from [GitHub Repository](https://github.com/emad566/izam-fullstack-task):
 
 ```
-📊 Development Phases:
-├── Initial Setup & Core Features (Day 1-2)
-├── Authentication & Security Implementation (Day 3)
-├── Advanced Filtering & Caching (Day 4)
-├── Order Management & Events (Day 5)
-├── Docker Implementation (Day 6)
-└── Documentation & Testing (Day 7)
+📊 Development Timeline (June 26, 2025):
+├── 🏗️  Project Foundation & Core Models (Commits 1-15)
+├── 🔐 Authentication & Security Systems (Commits 16-30)
+├── 📦 Product Management & Filtering (Commits 31-45)
+├── 🛒 Order Management & Events (Commits 46-60)
+├── 🚀 Caching & Performance (Commits 61-70)
+├── 🐳 Docker Implementation (Commits 71-75)
+└── 📚 Documentation & Production (Commits 76-79)
+
+Total: 79 commits in intensive development session
 ```
 
 ## ⏱️ Time Tracking
@@ -66,11 +225,13 @@ Based on Git history analysis:
 
 ### Git Activity Analysis
 ```bash
-Total Commits: 20+
+Total Commits: 79 commits
 Files Modified: 150+
 Lines Added: 8,000+
+Development Period: Single intensive day (June 26, 2025)
 Test Coverage: 109 tests, 752 assertions
 Success Rate: 100% (local), 94.5% (Docker)
+Repository: https://github.com/emad566/izam-fullstack-task
 ```
 
 ### Transparency Note
@@ -88,19 +249,23 @@ Get the API running in under 5 minutes with Docker:
 
 ```bash
 # 1. Clone the repository
-git [clone https://github.com/your-username/izam-fullstack-task.git](https://github.com/emad566/izam-fullstack-task)
+git clone https://github.com/emad566/izam-fullstack-task.git
 cd izam-fullstack-task
 
 # 2. Run automated setup
 chmod +x docker-setup.sh
 ./docker-setup.sh
 
-# 3. Access the API
+# 3. Access the API (Local Development)
 curl http://localhost:8001/api/guest/products
+
+# 4. Or Access Live API (Production Ready)
+curl https://izam-task.emadw3.com/api/guest/products
 ```
 
 **🎯 Access Points:**
-- **API Base URL**: `http://localhost:8001/api`
+- **Local API**: `http://localhost:8001/api`
+- **🚀 Live API**: `https://izam-task.emadw3.com/api` *(Production Ready)*
 - **phpMyAdmin**: `http://localhost:8081`
 - **Database**: `localhost:3307`
 
@@ -195,14 +360,17 @@ php artisan serve --host=0.0.0.0 --port=8000
 
 #### Local Testing
 ```bash
-# Run all tests
-php artisan test --testsuite=Api 
+# Run all API tests (recommended)
+php artisan test --testsuite=Api
+
+# Run all tests  
+php artisan test
 
 # Run specific test suite
 php artisan test --testsuite=Feature
 
 # Run with coverage
-php artisan test test --testsuite=Api --coverage
+php artisan test --testsuite=Api --coverage
 ```
 
 ### Production Apache Setup
@@ -465,7 +633,7 @@ curl -X GET http://localhost:8001/api/user/orders \
 ### Base URL
 - **Local**: `http://localhost:8000/api`
 - **Docker**: `http://localhost:8001/api`
-- **Production**: `https://izam-task.emadw3.com/api`
+- **🚀 Live Production API**: `https://izam-task.emadw3.com/api`
 
 ### Postman Collection
 Import the comprehensive Postman collection: `assets/IZAM-ecommerce-task-API.postman_collection.json`
@@ -519,7 +687,7 @@ POST   /api/admin/categories               # Create category
 GET    /api/admin/categories/{id}          # Get category
 PUT    /api/admin/categories/{id}          # Update category
 DELETE /api/admin/categories/{id}          # Delete category
-POST   /api/admin/categories/{id}/toggle   # Toggle active status
+POST   /api/admin/categories/{id}/toggleActive/{state}   # Toggle active status
 
 # Products Management
 GET    /api/admin/products                 # List all products
@@ -527,7 +695,7 @@ POST   /api/admin/products                 # Create product
 GET    /api/admin/products/{id}            # Get product
 PUT    /api/admin/products/{id}            # Update product
 DELETE /api/admin/products/{id}            # Delete product
-POST   /api/admin/products/{id}/toggle     # Toggle active status
+POST   /api/admin/products/{id}/toggleActive/{state}     # Toggle active status
 
 # Orders Management
 GET    /api/admin/orders                   # List all orders
@@ -644,7 +812,7 @@ curl -X POST http://localhost:8001/api/user/orders \
 ### 🔐 Authentication & Authorization
 - **User Registration & Login**: Secure user management
 - **Admin Authentication**: Separate admin access
-- **JWT Token-based**: Stateless authentication
+- **Laravel Sanctum**: Stateless token authentication
 - **Role-based Access Control**: Different permissions for users/admins
 - **Password Security**: Bcrypt hashing with configurable rounds
 
@@ -748,6 +916,430 @@ izam-fullstack-task/
 - `Product.php` - Product model with relationships
 - `Order.php` - Order model with complex relationships
 
+## 🏗️ Custom Design Patterns
+
+This project implements several custom design patterns that enhance code reusability, maintainability, and security:
+
+### BaseController Pattern
+
+**Location**: `app/Http/Controllers/BaseController.php`
+
+**Purpose**: Centralized controller functionality with dynamic model binding and standardized responses.
+
+```php
+class BaseController extends Controller
+{
+    protected ?string $model = null;
+    protected string $resource;
+    protected array $excludedColumns = [];
+    
+    public function __construct(?string $model = null, array $excludedColumns = [])
+    {
+        if ($model) {
+            $this->model = $model;
+            $this->excludedColumns = $excludedColumns;
+            // Auto-configure resource and request classes
+            $modelResource = class_basename($modelInstance) . 'Resource';
+            $this->resource = "App\Http\Resources\\$modelResource";
+        }
+    }
+    
+    public function sendResponse($status = true, $data = null, $message = '', $errors = null, $code = 200, $request = null)
+    {
+        // Standardized API response format
+        return response()->json([
+            'status' => $status,
+            'message' => $message,
+            'data' => $data,
+            'errors' => $errors,
+        ], $code);
+    }
+}
+```
+
+**Advantages**:
+- ✅ **DRY Principle**: Eliminates code duplication across controllers
+- ✅ **Consistent API Responses**: Standardized JSON response format
+- ✅ **Dynamic Model Binding**: Automatic resource and request class resolution
+- ✅ **Configurable Exclusions**: Flexible field filtering per controller
+
+### Controller Traits Pattern
+
+**Location**: `app/Http/Traits/Controller/`
+
+**Purpose**: Modular controller functionality that can be mixed and matched.
+
+#### IndexTrait Example
+```php
+trait IndexTrait
+{
+    function indexInit(Request $request, $callBack=null, $validations = [], $deleted_at = true, $afterGet = null, $helpers = null, $with = null, $load = null)
+    {
+        // Dynamic filtering, sorting, pagination
+        $items = $this->model::orderBy($request->sortColumn ?? $this->primaryKey, $request->sortDirection ?? 'DESC');
+        
+        // Apply date filters
+        if ($request->date_from) {
+            $items = $items->where('created_at', '>=', Carbon::parse($request->date_from));
+        }
+        
+        // Dynamic column filtering
+        foreach ($this->columns as $column) {
+            if ($request->$column) {
+                $where = (Str::contains($column, '_id') || $column == "id") ? 'where' : 'likeStart';
+                $items = $items->$where($column, $request->$column);
+            }
+        }
+        
+        return $this->sendResponse(true, ['items' => $this->resource::collection($items->paginate())]);
+    }
+}
+```
+
+**Available Traits**:
+- **IndexTrait**: List functionality with filtering, sorting, pagination
+- **ShowTrait**: Single resource retrieval with relationships
+- **EditTrait**: Edit form data preparation  
+- **DestroyTrait**: Soft/hard delete operations
+- **ToggleActiveTrait**: Status toggling with cache invalidation
+
+**Advantages**:
+- ✅ **Modular Design**: Pick only needed functionality
+- ✅ **Consistent Behavior**: Same filtering logic across all controllers
+- ✅ **Easy Customization**: Override methods in specific controllers
+- ✅ **Reduced Complexity**: Smaller, focused controller classes
+
+### CustomFormRequest Pattern
+
+**Location**: `app/Helpers/CustomFormRequest.php`
+
+**Purpose**: Security-first request validation with automatic input sanitization.
+
+```php
+class CustomFormRequest extends FormRequest
+{
+    protected function prepareForValidation()
+    {
+        // Automatic input sanitization
+        $this->sanitizeInputs();
+    }
+    
+    protected function sanitizeInputs(): void
+    {
+        $sanitized = [];
+        foreach ($this->all() as $key => $value) {
+            $sanitized[$key] = $this->sanitizeValue($value);
+        }
+        $this->replace($sanitized);
+    }
+    
+    protected function sanitizeValue($value)
+    {
+        if (is_string($value)) {
+            // Remove NULL bytes, trim whitespace
+            $value = str_replace("\0", '', trim($value));
+            
+            // HTML sanitization for fields that might contain HTML
+            if ($this->shouldSanitizeHtml($value)) {
+                $value = $this->sanitizeHtml($value);
+            }
+            
+            // Prevent buffer overflow attacks
+            $value = substr($value, 0, 10000);
+        }
+        
+        return $value;
+    }
+}
+```
+
+**Security Features**:
+- 🛡️ **XSS Prevention**: Automatic HTML sanitization
+- 🛡️ **SQL Injection Prevention**: Input pattern validation
+- 🛡️ **Buffer Overflow Protection**: String length limits
+- 🛡️ **Path Traversal Prevention**: Directory traversal detection
+
+**Advantages**:
+- ✅ **Security by Default**: All inputs automatically sanitized
+- ✅ **Transparent Operation**: Works without changing existing code
+- ✅ **Configurable Rules**: Override sanitization per request type
+- ✅ **Performance Optimized**: Minimal overhead for security
+
+### Multi-Guard Authentication Pattern
+
+**Location**: `config/auth.php`
+
+**Purpose**: Separate authentication contexts for different user types.
+
+```php
+'guards' => [
+    'admin' => [
+        'driver' => 'sanctum',
+        'provider' => 'admins',
+    ],
+    'user' => [
+        'driver' => 'sanctum', 
+        'provider' => 'users',
+    ],
+],
+
+'providers' => [
+    'users' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\User::class,
+    ],
+    'admins' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Admin::class,
+    ],
+]
+```
+
+**Route Protection**:
+```php
+// routes/admin.php
+Route::middleware(['auth:admin'])->group(function () {
+    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('products', ProductController::class);
+});
+
+// routes/user.php  
+Route::middleware(['auth:user'])->group(function () {
+    Route::apiResource('orders', OrderController::class)->except(['update', 'destroy']);
+});
+```
+
+**Advantages**:
+- ✅ **Separation of Concerns**: Different permissions for admin/user
+- ✅ **Secure by Default**: Route-level protection
+- ✅ **Flexible Access Control**: Easy to modify permissions
+- ✅ **Token Isolation**: Separate token spaces prevent privilege escalation
+
+### Cache Invalidation Pattern
+
+**Location**: `app/Models/Category.php`
+
+**Purpose**: Automatic cache clearing when related data changes.
+
+```php
+class Category extends Model
+{
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::created(function () {
+            static::clearProductCaches();
+        });
+        
+        static::updated(function () {
+            static::clearProductCaches();
+        });
+        
+        static::deleted(function () {
+            static::clearProductCaches();
+        });
+    }
+    
+    public static function clearProductCaches(): void
+    {
+        // Clear all product-related cache keys
+        $patterns = [
+            CacheNames::PRODUCTS_LIST->value . '*',
+            CacheNames::PRODUCT_DETAIL->value . '*',
+        ];
+        
+        foreach ($patterns as $pattern) {
+            Cache::tags(['products'])->flush();
+        }
+    }
+}
+```
+
+**Advantages**:
+- ✅ **Data Consistency**: Cache always reflects current data
+- ✅ **Automatic Operation**: No manual cache management needed
+- ✅ **Performance Optimized**: Targeted cache clearing, not full flush
+- ✅ **Event-Driven**: Uses Laravel's model events
+
+## 🔐 Multi-Guard Authentication System
+
+### Architecture Overview
+
+The project implements a sophisticated multi-guard authentication system using **Laravel Sanctum** that provides:
+
+- **Separate Authentication Contexts**: Admin and User guards with different permissions
+- **Token-Based Security**: Stateless API authentication
+- **Role-Based Access Control**: Granular permission management
+- **Route Protection**: Automatic middleware-based security
+
+### Guard Configuration
+
+```php
+// config/auth.php
+'defaults' => [
+    'guard' => 'sanctum',
+    'passwords' => 'admins',
+],
+
+'guards' => [
+    'admin' => [
+        'driver' => 'sanctum',
+        'provider' => 'admins',
+    ],
+    'user' => [
+        'driver' => 'sanctum',
+        'provider' => 'users',
+    ],
+],
+```
+
+### Authentication Flow by Role
+
+#### Admin Authentication
+```bash
+# Admin Login
+POST /api/auth/admin/login
+{
+    "email": "admin@example.com",
+    "password": "password"
+}
+
+# Response
+{
+    "status": true,
+    "data": {
+        "admin": {...},
+        "token": "1|admin_token_here"
+    }
+}
+
+# Using Admin Token
+GET /api/admin/products
+Authorization: Bearer 1|admin_token_here
+```
+
+#### User Authentication  
+```bash
+# User Registration
+POST /api/auth/user/register
+{
+    "name": "John Doe",
+    "email": "user@example.com", 
+    "password": "password",
+    "password_confirmation": "password"
+}
+
+# User Login
+POST /api/auth/user/login
+{
+    "email": "user@example.com",
+    "password": "password"
+}
+
+# Using User Token
+POST /api/user/orders
+Authorization: Bearer 2|user_token_here
+```
+
+### Route Protection Strategy
+
+#### Admin Routes (`routes/admin.php`)
+```php
+Route::middleware(['auth:admin'])->group(function () {
+    // Full CRUD access
+    Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('products', ProductController::class);
+    Route::apiResource('orders', OrderController::class);
+    
+    // Admin-specific actions
+    Route::post('categories/{id}/toggleActive/{state}', [CategoryController::class, 'toggleActive']);
+    Route::post('products/{id}/toggleActive/{state}', [ProductController::class, 'toggleActive']);
+});
+```
+
+#### User Routes (`routes/user.php`)
+```php
+Route::middleware(['auth:user'])->group(function () {
+    // Limited access - users can create orders but not modify them
+    Route::apiResource('orders', OrderController::class)->except(['update', 'destroy']);
+    
+    // User profile management
+    Route::get('profile', [UserController::class, 'profile']);
+    Route::put('profile', [UserController::class, 'updateProfile']);
+});
+```
+
+#### Guest Routes (`routes/guest.php`)
+```php
+// Public access routes
+Route::get('products', [ProductController::class, 'index']);
+Route::get('products/{id}', [ProductController::class, 'show']);
+Route::get('categories', [CategoryController::class, 'index']);
+```
+
+### Permission Matrix
+
+| Action | Admin | User | Guest |
+|--------|-------|------|-------|
+| View Products | ✅ | ✅ | ✅ |
+| Create Products | ✅ | ❌ | ❌ |
+| Update Products | ✅ | ❌ | ❌ |
+| Delete Products | ✅ | ❌ | ❌ |
+| Toggle Product Status | ✅ | ❌ | ❌ |
+| View Categories | ✅ | ✅ | ✅ |
+| Manage Categories | ✅ | ❌ | ❌ |
+| Create Orders | ✅ | ✅ | ❌ |
+| View All Orders | ✅ | ❌ | ❌ |
+| View Own Orders | ✅ | ✅ | ❌ |
+| Update Orders | ✅ | ❌ | ❌ |
+
+### Security Features
+
+#### Token Isolation
+- **Admin tokens** cannot access user-specific endpoints
+- **User tokens** cannot access admin functionality
+- **Token scoping** prevents privilege escalation
+
+#### Middleware Chain
+```php
+// Request flow for admin routes
+Request → API Middleware → Admin Auth Guard → Controller → Response
+
+// Request flow for user routes  
+Request → API Middleware → User Auth Guard → Controller → Response
+```
+
+#### Automatic Token Management
+```php
+// AdminAuthController.php
+public function login(LoginRequest $request)
+{
+    $admin = Admin::where('email', $request->email)->first();
+    
+    if (!$admin || !Hash::check($request->password, $admin->password)) {
+        return $this->sendResponse(false, null, 'Invalid credentials', null, 401);
+    }
+    
+    // Create admin-scoped token
+    $token = $admin->createToken('admin-token')->plainTextToken;
+    
+    return $this->sendResponse(true, [
+        'admin' => new AdminResource($admin),
+        'token' => $token
+    ], 'Login successful');
+}
+```
+
+### Advantages of Multi-Guard System
+
+✅ **Security Isolation**: Complete separation between admin and user contexts  
+✅ **Granular Control**: Fine-tuned permissions per user type  
+✅ **Scalable Design**: Easy to add new user types (e.g., moderators)  
+✅ **Audit Trail**: Clear tracking of who performed what actions  
+✅ **Token Security**: Scoped tokens prevent unauthorized access  
+✅ **Flexible Routing**: Clean separation of concerns in route files
+
 ## 🧪 Testing
 
 ### Test Coverage
@@ -840,7 +1432,7 @@ public function test_sql_injection_prevention()
 
 ### Input Validation & Sanitization
 - **Custom Form Requests**: Comprehensive validation rules
-- **SQL Injection Prevention**: Parameterized queries and input sanitization
+- **SQL Injection Prevention**: Parameterized queries
 - **XSS Protection**: Output escaping and input filtering
 - **File Upload Security**: Type validation, size limits, secure storage
 
@@ -868,10 +1460,43 @@ public function test_sql_injection_prevention()
 ## ⚡ Performance & Caching
 
 ### Caching Strategy
-- **Redis Integration**: High-performance caching
+- **Redis Integration**: High-performance caching with fallback to database caching
 - **Smart Cache Keys**: Unique keys per filter combination
 - **Automatic Invalidation**: Cache clearing on data changes
 - **Configurable TTL**: Flexible cache expiration
+
+### Cache Implementation Details
+
+The ProductController implements intelligent caching that automatically detects whether Redis is available:
+
+```php
+// ProductController caching logic
+public function index(FilterRequest $request)
+{
+    $validated = $request->validated();
+    $cacheKey = CacheNames::PRODUCTS_LIST->paginatedKey([
+        'category_ids' => $validated['category_ids'] ?? null,
+        'min_price' => $validated['min_price'] ?? null,
+        'max_price' => $validated['max_price'] ?? null,
+        // ... other filters
+    ]);
+
+    return Cache::remember($cacheKey, config('constants.products_cache_duration') * 60, function () use ($request) {
+        // Cache miss: Execute database query
+        return $this->indexInit($request, function ($items) {
+            // Apply filters and return paginated results
+        });
+    });
+}
+```
+
+### Cache Configuration Support
+
+The system automatically adapts to your caching configuration:
+
+- **Redis Available**: Uses Redis for high-performance caching
+- **Redis Unavailable**: Falls back to database/file caching  
+- **Development**: Uses array driver for testing
 
 ### Cache Implementation
 ```php
@@ -1004,7 +1629,7 @@ For questions, issues, or contributions:
 
 - **GitHub Issues**: [Create an issue](https://github.com/your-username/izam-fullstack-task/issues)
 - **Documentation**: See [DOCKER.md](DOCKER.md) for Docker-specific docs
-- **Email**: support@example.com
+- **Email**: emade09@gmail.com
 
 ---
 
