@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'products_cache_duration' => env('products_cache_duration', 60), // 60 minutes = 1 hour
     'per_page' => 20,
     'list_validations' => [
         'per_page' => 'nullable|numeric|min:1|max:100',
@@ -10,5 +11,5 @@ return [
         'date_to' => 'nullable|date_format:Y-m-d\TH:i:s.v\Z',
     ],
 
-    'otpDelay' => 0, 
+    'otpDelay' => 0,
 ];
