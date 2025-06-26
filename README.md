@@ -12,6 +12,7 @@ A comprehensive Laravel RESTful API backend for an e-commerce system with comple
     - [👨‍💻 **Development Attribution**](#-development-attribution)
     - [🛠️ **Custom Development Tools**](#️-custom-development-tools)
     - [Development Timeline](#development-timeline)
+  - [📊 **Design Patterns Comparison**](Compare.md)
   - [⏱️ Time Tracking](#️-time-tracking)
     - [Development Summary](#development-summary)
     - [Git Activity Analysis](#git-activity-analysis)
@@ -144,6 +145,8 @@ A comprehensive Laravel RESTful API backend for an e-commerce system with comple
 The IZAM E-commerce API is a robust, production-ready Laravel 10 RESTful API designed for modern e-commerce applications. Built with scalability, security, and performance in mind, it provides a complete backend solution for online stores.
 
 🌟 **Try it Live**: The API is deployed and ready to test at [https://izam-task.emadw3.com/api](https://izam-task.emadw3.com/api) - no setup required!
+
+📊 **Design Patterns Analysis**: For a comprehensive comparison between our custom design patterns and traditional Repository Pattern, see [Compare.md](Compare.md) - includes performance benchmarks, code complexity analysis, and migration strategies.
 
 ### 🏗️ **Unique Architecture & Custom Design Patterns**
 
