@@ -1,10 +1,11 @@
 <?php
 
 namespace Tests\Feature;
- 
+
 use App\Models\Admin;
 use App\Models\User;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class BaseTest extends TestCase
@@ -15,6 +16,7 @@ class BaseTest extends TestCase
 
         // Set default locale
         app()->setLocale('en');
+        Cache::flush();
         Artisan::call('migrate:fresh');
         Artisan::call('db:seed');
 
