@@ -139,6 +139,11 @@ class OrderController extends BaseController
 
             $inputs['total_amount'] = $totalAmount;
 
+            // Generate order number if not provided
+            if (empty($inputs['order_number'])) {
+                $inputs['order_number'] = $this->model::generateOrderNumber();
+            }
+
             // Create the order
             $order = $this->model::create($inputs);
 

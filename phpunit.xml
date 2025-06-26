@@ -18,6 +18,7 @@
             <file>tests/Feature/ProductTest.php</file>
             <file>tests/Unit/CacheNamesTest.php</file>
             <file>tests/Feature/OrderTest.php</file>
+            <file>tests/Feature/OrderEventTest.php</file>
         </testsuite>
     </testsuites>
     <source>

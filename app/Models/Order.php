@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\OrderPlaced;
 use App\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,7 +30,7 @@ class Order extends Model
         'status' => OrderStatus::class,
     ];
 
-    protected static function boot()
+        protected static function boot()
     {
         parent::boot();
 
@@ -43,6 +44,11 @@ class Order extends Model
             if (empty($order->status)) {
                 $order->status = OrderStatus::default();
             }
+        });
+
+        static::created(function ($order) {
+            // Fire the OrderPlaced event after order is successfully created
+            event(new OrderPlaced($order, $order->user));
         });
     }
 
@@ -73,6 +79,14 @@ class Order extends Model
     public function updateTotal()
     {
         $this->update(['total_amount' => $this->calculateTotal()]);
+    }
+
+    /**
+     * Generate a unique order number
+     */
+    public static function generateOrderNumber()
+    {
+        return 'ORD-' . strtoupper(Str::random(8));
     }
 
     // Scopes
