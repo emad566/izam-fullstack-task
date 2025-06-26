@@ -1,0 +1,126 @@
+version: '3.8'
+
+services:
+  # Laravel Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: izam-app
+    ports:
+      - "8001:80"
+    volumes:
+      - .:/var/www/html
+      - ./storage/app:/var/www/html/storage/app
+      - ./storage/logs:/var/www/html/storage/logs
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_HOST=database
+      - DB_DATABASE=izam_ecommerce
+      - DB_USERNAME=izam_user
+      - DB_PASSWORD=izam_password
+      - REDIS_HOST=redis
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+    depends_on:
+      - database
+      - redis
+    networks:
+      - izam-network
+
+  # MySQL Database
+  database:
+    image: mysql:8.0
+    container_name: izam-database
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: izam_ecommerce
+      MYSQL_USER: izam_user
+      MYSQL_PASSWORD: izam_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - izam-network
+
+  # Redis for Caching and Sessions
+  redis:
+    image: redis:7-alpine
+    container_name: izam-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - izam-network
+
+  # phpMyAdmin (Optional - for database management)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: izam-phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: database
+      PMA_USER: izam_user
+      PMA_PASSWORD: izam_password
+    depends_on:
+      - database
+    networks:
+      - izam-network
+
+  # Laravel Queue Worker
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: izam-queue
+    volumes:
+      - .:/var/www/html
+    environment:
+      - APP_ENV=local
+      - DB_HOST=database
+      - DB_DATABASE=izam_ecommerce
+      - DB_USERNAME=izam_user
+      - DB_PASSWORD=izam_password
+      - REDIS_HOST=redis
+    command: php artisan queue:work --verbose --tries=3 --timeout=90
+    depends_on:
+      - database
+      - redis
+    networks:
+      - izam-network
+
+  # Laravel Scheduler (for cron jobs)
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: izam-scheduler
+    volumes:
+      - .:/var/www/html
+    environment:
+      - APP_ENV=local
+      - DB_HOST=database
+      - DB_DATABASE=izam_ecommerce
+      - DB_USERNAME=izam_user
+      - DB_PASSWORD=izam_password
+      - REDIS_HOST=redis
+    command: sh -c "while true; do php artisan schedule:run; sleep 60; done"
+    depends_on:
+      - database
+      - redis
+    networks:
+      - izam-network
+
+networks:
+  izam-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  redis_data:
