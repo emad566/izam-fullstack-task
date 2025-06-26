@@ -13,6 +13,7 @@ use App\Http\Traits\Controller\ToggleActiveTrait;
 use App\Models\Product;
 use App\CacheNames;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\FilterRequest;
 
 class ProductController extends BaseController
 {
@@ -27,49 +28,50 @@ class ProductController extends BaseController
         parent::__construct(Product::class, ['price']);
     }
 
-    function index(Request $request)
+    function index(FilterRequest $request)
     {
-        // Generate cache key based on request parameters
+        // Generate cache key based on validated and sanitized request parameters
+        $validated = $request->validated();
         $cacheKey = CacheNames::PRODUCTS_LIST->paginatedKey([
-            'category_name' => $request->category_name,
-            'category_names' => $request->category_names,
-            'min_price' => $request->min_price,
-            'max_price' => $request->max_price,
-            'name' => $request->name,
-            'q' => $request->q,
-            'date_from' => $request->date_from,
-            'date_to' => $request->date_to,
-            'sortColumn' => $request->sortColumn,
-            'sortDirection' => $request->sortDirection,
-            'page' => $request->page,
-            'per_page' => $request->per_page,
+            'category_name' => $validated['category_name'] ?? null,
+            'category_names' => $validated['category_names'] ?? null,
+            'min_price' => $validated['min_price'] ?? null,
+            'max_price' => $validated['max_price'] ?? null,
+            'name' => $validated['name'] ?? null,
+            'q' => $validated['q'] ?? null,
+            'date_from' => $validated['date_from'] ?? null,
+            'date_to' => $validated['date_to'] ?? null,
+            'sortColumn' => $validated['sortColumn'] ?? null,
+            'sortDirection' => $validated['sortDirection'] ?? null,
+            'page' => $validated['page'] ?? null,
+            'per_page' => $validated['per_page'] ?? null,
             'deleted_at' => isListTrashed()
         ]);
 
-        return Cache::remember($cacheKey, config('constants.products_cache_duration') * 60, function () use ($request) {
-            return $this->indexInit($request, function ($items) use($request){
+        return Cache::remember($cacheKey, config('constants.products_cache_duration') * 60, function () use ($request, $validated) {
+            return $this->indexInit($request, function ($items) use($validated){
 
-                if($request->category_name || $request->category_names){
-                    $items = $items->whereHas('category', function ($query) use ($request) {
-                        // filter by like category name
-                        if($request->category_name){
-                            $query->like('name', $request->category_name);
+                if(($validated['category_name'] ?? false) || ($validated['category_names'] ?? false)){
+                    $items = $items->whereHas('category', function ($query) use ($validated) {
+                        // filter by like category name - sanitized
+                        if($validated['category_name'] ?? false){
+                            $query->like('name', $validated['category_name']);
                         }
 
-                        // filter by in category names
-                        if($request->category_names){
-                            $query->whereIn('name', $request->category_names);
+                        // filter by in category names - sanitized array
+                        if($validated['category_names'] ?? false){
+                            $query->whereIn('name', $validated['category_names']);
                         }
                     });
                 }
 
-                // Price range filtering
-                if($request->min_price){
-                    $items = $items->where('price', '>=', $request->min_price);
+                // Price range filtering - sanitized numeric values
+                if($validated['min_price'] ?? false){
+                    $items = $items->where('price', '>=', $validated['min_price']);
                 }
 
-                if($request->max_price){
-                    $items = $items->where('price', '<=', $request->max_price);
+                if($validated['max_price'] ?? false){
+                    $items = $items->where('price', '<=', $validated['max_price']);
                 }
 
                 return [$items];

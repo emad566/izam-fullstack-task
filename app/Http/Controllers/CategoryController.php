@@ -11,6 +11,7 @@ use App\Http\Traits\Controller\EditTrait;
 use App\Http\Traits\Controller\ShowTrait;
 use App\Http\Traits\Controller\ToggleActiveTrait;
 use App\Models\Category;
+use App\Http\Requests\FilterRequest;
 
 class CategoryController extends BaseController
 {
@@ -21,7 +22,7 @@ class CategoryController extends BaseController
         parent::__construct(Category::class);
     }
 
-    function index(Request $request)
+    function index(FilterRequest $request)
     {
         return $this->indexInit($request, function ($items) use($request){
             return [$items];

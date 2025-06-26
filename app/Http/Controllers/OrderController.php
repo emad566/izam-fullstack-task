@@ -14,6 +14,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\OrderProduct;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\FilterRequest;
 
 class OrderController extends BaseController
 {
@@ -24,7 +25,7 @@ class OrderController extends BaseController
         parent::__construct(Order::class);
     }
 
-    function index(Request $request)
+    function index(FilterRequest $request)
     {
         return $this->indexInit($request, function ($items) use($request){
             // Only show user's own orders for regular users
@@ -32,50 +33,50 @@ class OrderController extends BaseController
                 $items = $items->where('user_id', $request->user()->id);
             }
 
-            // Filter by user name (like search)
-            if ($request->user_name) {
+            // Filter by user name (like search) - sanitized by FilterRequest
+            if ($request->validated()['user_name'] ?? false) {
                 $items = $items->whereHas('user', function ($query) use ($request) {
-                    $query->like('name', $request->user_name);
+                    $query->like('name', $request->validated()['user_name']);
                 });
             }
 
-            // Filter by user names (exact match)
-            if ($request->user_names) {
+            // Filter by user names (exact match) - sanitized by FilterRequest
+            if ($request->validated()['user_names'] ?? false) {
                 $items = $items->whereHas('user', function ($query) use ($request) {
-                    $query->whereIn('name', $request->user_names);
+                    $query->whereIn('name', $request->validated()['user_names']);
                 });
             }
 
-            // Filter by user IDs
-            if ($request->user_ids) {
-                $items = $items->whereIn('user_id', $request->user_ids);
+            // Filter by user IDs - sanitized by FilterRequest
+            if ($request->validated()['user_ids'] ?? false) {
+                $items = $items->whereIn('user_id', $request->validated()['user_ids']);
             }
 
-            // Filter by category names
-            if ($request->category_names) {
+            // Filter by category names - sanitized by FilterRequest
+            if ($request->validated()['category_names'] ?? false) {
                 $items = $items->whereHas('orderProducts.product.category', function ($query) use ($request) {
-                    $query->whereIn('name', $request->category_names);
+                    $query->whereIn('name', $request->validated()['category_names']);
                 });
             }
 
-            // Filter by category IDs
-            if ($request->category_ids) {
+            // Filter by category IDs - sanitized by FilterRequest
+            if ($request->validated()['category_ids'] ?? false) {
                 $items = $items->whereHas('orderProducts.product', function ($query) use ($request) {
-                    $query->whereIn('category_id', $request->category_ids);
+                    $query->whereIn('category_id', $request->validated()['category_ids']);
                 });
             }
 
-            // Filter by product names (exact match)
-            if ($request->product_names) {
+            // Filter by product names (exact match) - sanitized by FilterRequest
+            if ($request->validated()['product_names'] ?? false) {
                 $items = $items->whereHas('orderProducts.product', function ($query) use ($request) {
-                    $query->whereIn('name', $request->product_names);
+                    $query->whereIn('name', $request->validated()['product_names']);
                 });
             }
 
-            // Filter by product name (like search)
-            if ($request->product_name) {
+            // Filter by product name (like search) - sanitized by FilterRequest
+            if ($request->validated()['product_name'] ?? false) {
                 $items = $items->whereHas('orderProducts.product', function ($query) use ($request) {
-                    $query->like('name', $request->product_name);
+                    $query->like('name', $request->validated()['product_name']);
                 });
             }
 
