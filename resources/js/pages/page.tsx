@@ -13,7 +13,7 @@ import Cart from "./components/cart"
 export default function Home() {
   return (
     <div className="container mx-auto px-4">
-      <div className="ms-[120px] py-4">
+      <div className=" py-4">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -27,10 +27,14 @@ export default function Home() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className="flex gap-6  pb-10 relative">
+      {/* Fixed Filters on Left */}
+      <div className="fixed left-4 top-53 transform -translate-y-1/2 z-50">
         <Filters />
+      </div>
+
+      <div className="flex gap-6 pb-10 relative">
         <Results />
-        <div className="min-w-sm ">
+        <div className="min-w-sm">
           <Cart />
         </div>
       </div>
