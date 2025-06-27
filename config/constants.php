@@ -4,7 +4,7 @@ return [
     /**
      * Products cache duration
      */
-    'products_cache_duration' => env('PRODUCTS_CACHE_DURATION', 60), // 60 minutes = 1 hour
+    'products_cache_duration' => env('PRODUCTS_CACHE_DURATION', 10), // 60 minutes = 1 hour
 
     /**
      * Pagination validation and settings
