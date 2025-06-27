@@ -1,22 +1,18 @@
-import './bootstrap'
-import '../css/app.css'
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router-dom'
-import App from './components/App'
+import { ModalProvider } from "./contexts/modal-context"
+import MyNuqsAdapter from "./lib/nuqs"
+import MyReactQueryProvider from "./lib/react-query"
+import MyRouter from "./router"
 
-const container = document.getElementById('app')
-
-if (container) {
-  const root = createRoot(container)
-
-  root.render(
-    <React.StrictMode>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </React.StrictMode>
+function App() {
+  return (
+    <MyReactQueryProvider>
+      <ModalProvider>
+        <MyNuqsAdapter>
+          <MyRouter />
+        </MyNuqsAdapter>
+      </ModalProvider>
+    </MyReactQueryProvider>
   )
-} else {
-  console.error('Root element with id "app" not found')
 }
+
+export default App
