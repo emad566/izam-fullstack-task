@@ -2,15 +2,15 @@ import { getSession } from "@/utils/get-session"
 import { logout } from "@/utils/logout"
 import axios from "axios"
 
-const baseURL = "https://izam-task.emadw3.com/api/ "
+const baseURL = "https://izam-task.emadw3.com/api"
 
 // Create an Axios instance
-const InaashApi = axios.create({
+const Api = axios.create({
   baseURL: baseURL,
 })
 
 // Add a request interceptor to include the authentication token
-InaashApi.interceptors.request.use(
+Api.interceptors.request.use(
   async (config) => {
     const session = getSession()
 
@@ -41,7 +41,7 @@ InaashApi.interceptors.request.use(
   }
 )
 // Add a request interceptor to include the authentication token
-InaashApi.interceptors.response.use(
+Api.interceptors.response.use(
   (response) => {
     return response
   },
@@ -53,4 +53,4 @@ InaashApi.interceptors.response.use(
   }
 )
 
-export default InaashApi
+export default Api
