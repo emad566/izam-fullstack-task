@@ -25,7 +25,7 @@ export const Header = () => {
       {banner && (
         <div className="bg-black flex items-center py-2 text-white text-center px-2">
           <div></div>
-          <div className="flex  justify-center w-full text-sm grow">
+          <div className="flex  justify-center w-full text-xs md:text-sm grow">
             <p>Sign up and get 20% off to your first order. </p>
             <span className="font-bold">Sign Up Now</span>
           </div>
