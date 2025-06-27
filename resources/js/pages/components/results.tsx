@@ -32,6 +32,11 @@ const Results = () => {
         <Search />
       </CardHeader>
       <CardContent>
+        {/* Title */}
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold text-black font-semibold">Casual</h2>
+        </div>
+
         {/* Products Count Display */}
         {result.status === "success" && result.data?.data.length > 0 && (
           <div className="mb-4 text-left">
