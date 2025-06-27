@@ -25,6 +25,8 @@ import { handleFormError } from "@/utils/form-error"
 import type { LoginResponse } from "@/@types/user"
 import { LOCALSTORAGE_SESSION_KEY } from "@/config"
 import { useNavigate } from "react-router"
+import { Eye, EyeOff } from "lucide-react"
+import { useState } from "react"
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -35,6 +37,8 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [showPassword, setShowPassword] = useState(false)
+
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -65,7 +69,7 @@ export function LoginForm({
       <Card className=" max-md:border-0 shadow-none md:shadow-md">
         <CardHeader className="text-center">
           <CardTitle className="text-lg md:text-2xl font-bold">
-            Welcome backs{" "}
+            Welcome back{" "}
           </CardTitle>
           <CardDescription className="text-sm md:text-base">
             Please enter your details to sign in{" "}
@@ -102,11 +106,25 @@ export function LoginForm({
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input
-                            placeholder="Enter your password"
-                            type="password"
-                            {...field}
-                          />
+                          <div className="relative">
+                            <Input
+                              placeholder="Enter your password"
+                              type={showPassword ? "text" : "password"}
+                              {...field}
+                              className="pr-10"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword(!showPassword)}
+                              className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
+                            >
+                              {showPassword ? (
+                                <EyeOff className="h-4 w-4" />
+                              ) : (
+                                <Eye className="h-4 w-4" />
+                              )}
+                            </button>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

@@ -4,7 +4,7 @@ import { logo } from "@/assets"
 import { Button } from "@/components/ui/button"
 import { getSession } from "@/utils/get-session"
 import { logout } from "@/utils/logout"
-import { Menu, MoveRight, Search, ShoppingCart, X } from "lucide-react"
+import { Menu, MoveRight, ShoppingCart, X } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router"
 
@@ -67,38 +67,38 @@ export const Header = () => {
           )}
         </div>
         <div className="flex gap-4">
-          <img alt="logo" src={logo} className="shrink-0 w-20" />
+          <img alt="logo" src={logo} className="shrink-0 h-10" />
           <Link to={"/"}>
-            <Button className="rounded-sm max-md:hidden" variant="ghost">
+            <Button className="rounded-sm max-md:hidden text-black text-md font-semibold" variant="ghost">
               Products
             </Button>
           </Link>
 
-          <Button className="rounded-sm max-md:hidden">
+          <Button className="rounded-sm max-md:hidden  px-4 mt-1 h-9 text-sm">
             Sell Your Product
           </Button>
         </div>
         <div className="flex justify-end w-full gap-3">
-          <Link to={"/"}>
+          {/* <Link to={"/"}>
             <Button size={"icon"} variant="ghost" className=" rounded-sm">
               <Search className="size-5" />
             </Button>
-          </Link>
-          <Link to={"/cart"}>
-            <Button size={"icon"} variant="ghost" className=" rounded-sm">
-              <ShoppingCart className="size-5" />
-            </Button>
-          </Link>
+          </Link> */}
+                      <Link to={"/checkout"}>
+              <Button size={"icon"} variant="ghost" className=" rounded-sm">
+                <ShoppingCart className="size-6 mt-2 fill-black" />
+              </Button>
+            </Link>
           {isAuthenticated ? (
             <Button
               variant={"outline"}
-              className="rounded-sm"
-              onClick={() => logout()}> 
+              className="rounded-sm px-4 mt-1 h-9 text-sm"
+              onClick={() => logout()}>
               logout
             </Button>
           ) : (
             <Link to={"/auth/login"}>
-              <Button className="rounded-sm">login</Button>
+              <Button className="rounded-sm px-4 mt-1 h-9 text-sm">login</Button>
             </Link>
           )}
         </div>

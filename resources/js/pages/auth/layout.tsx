@@ -7,8 +7,10 @@ const AuthLayout = () => {
     return <Navigate to="/" replace />
   }
   return (
-    <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <Outlet />
+    <div className="flex  w-full items-center justify-center px-4 mt-24 md:pt-24">
+      <div className="w-full max-w-md">
+        <Outlet />
+      </div>
     </div>
   )
 }

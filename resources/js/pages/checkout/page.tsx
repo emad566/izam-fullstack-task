@@ -3,12 +3,14 @@ import Api from "@/services"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
 import type { ProductsResponse, Product } from "../@types"
+import { toast } from "@/utils/toast"
 
 // Import components
 import CartItemsList from "./components/cart-items-list"
 import OrderSummary from "./components/order-summary"
 import EmptyCart from "./components/empty-cart"
 import LoadingState from "./components/loading-state"
+import SuccessModal from "./components/success-modal"
 
 interface CartItem {
   id: number | string
@@ -19,6 +21,7 @@ const CheckoutPage = () => {
   const queryClient = useQueryClient()
   const navigate = useNavigate()
   const [isProcessing, setIsProcessing] = useState(false)
+  const [showSuccessModal, setShowSuccessModal] = useState(false)
 
   // Get cart from localStorage
   const getCart = (): CartItem[] => {
@@ -93,15 +96,52 @@ const CheckoutPage = () => {
   const handlePlaceOrder = async () => {
     setIsProcessing(true)
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      const cart = getCart()
+
+      // Prepare order data
+      const orderData = {
+        products: cart.map(item => ({
+          product_id: Number(item.id),
+          quantity: item.quantity
+        }))
+      }
+
+      // Call the API
+      await Api.post("/user/orders", orderData)
+
+      // Clear cart and show success modal
       saveCart([])
-      alert("Order placed successfully!")
-      navigate('/')
-    } catch {
-      alert("Failed to place order. Please try again.")
+      setShowSuccessModal(true)
+        } catch (error: unknown) {
+      // Type guard for axios error
+      const isAxiosError = error && typeof error === 'object' && 'response' in error
+
+      // Show error toast
+      let errorMessage = "Failed to place order. Please try again."
+      let shouldRedirect = false
+
+      if (isAxiosError) {
+        const axiosError = error as { response?: { status?: number; data?: { message?: string; response_code?: number } } }
+        errorMessage = axiosError.response?.data?.message || errorMessage
+        shouldRedirect = axiosError.response?.status === 400 || axiosError.response?.data?.response_code === 400
+      }
+
+      toast.error(errorMessage)
+
+      // If response code is 400, redirect to login after 5 seconds
+      if (shouldRedirect) {
+        setTimeout(() => {
+          navigate('/auth/login')
+        }, 3000)
+      }
     } finally {
       setIsProcessing(false)
     }
+  }
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false)
+    navigate('/')
   }
 
   const handleContinueShopping = () => {
@@ -116,26 +156,33 @@ const CheckoutPage = () => {
     return <EmptyCart onContinueShopping={handleContinueShopping} />
   }
 
-  return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-5 gap-8">
-          <CartItemsList
-            cartItems={cartItems}
-            onRemoveItem={removeItem}
-          />
+    return (
+    <>
+      <div className="min-h-screen bg-white">
+        <div className="max-w-6xl mx-auto px-4 py-8">
+          <div className="grid lg:grid-cols-5 gap-8">
+            <CartItemsList
+              cartItems={cartItems}
+              onRemoveItem={removeItem}
+            />
 
-          <OrderSummary
-            subtotal={subtotal}
-            shipping={shipping}
-            tax={tax}
-            total={total}
-            isProcessing={isProcessing}
-            onPlaceOrder={handlePlaceOrder}
-          />
+            <OrderSummary
+              subtotal={subtotal}
+              shipping={shipping}
+              tax={tax}
+              total={total}
+              isProcessing={isProcessing}
+              onPlaceOrder={handlePlaceOrder}
+            />
+          </div>
         </div>
       </div>
-    </div>
+
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={handleSuccessModalClose}
+      />
+    </>
   )
 }
 
