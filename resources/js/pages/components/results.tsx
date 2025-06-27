@@ -42,7 +42,7 @@ const Results = () => {
             })}
           </div>
         ) : null}
-        <div className="pt-10">
+        <div className="pt-10 pb-5">
           <PaginationWithLinks page={1} pageSize={20} totalCount={500} />
         </div>
       </CardContent>

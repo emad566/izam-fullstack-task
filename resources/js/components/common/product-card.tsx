@@ -1,6 +1,7 @@
 import type { Product } from "@/pages/@types"
 import { Card, CardContent } from "../ui/card"
 import { Badge } from "../ui/badge"
+import ProductCountButton from "./product-count-button"
 
 const ProductCard = (props: Product) => {
   return (
@@ -21,7 +22,9 @@ const ProductCard = (props: Product) => {
           <p className="font-bold">${props.price}</p>
           <span className="text-[#6B7280] text-sm">Stock : {props.stock}</span>
         </div>
-        <div></div>
+        <div>
+          <ProductCountButton id={props.id} />
+        </div>
       </CardContent>
     </Card>
   )

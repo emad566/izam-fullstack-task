@@ -26,7 +26,7 @@ export default function Home() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className="flex gap-6 ">
+      <div className="flex gap-6  pb-10">
         <Filters />
         <Results />
         <div></div>
