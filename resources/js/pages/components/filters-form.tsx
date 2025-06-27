@@ -63,7 +63,7 @@ interface CategoriesResponse {
 const FiltersForm = () => {
   const [initValues, set] = useQueryStates({
     min_price: parseAsInteger.withDefault(0),
-    max_price: parseAsInteger.withDefault(10000),
+    max_price: parseAsInteger.withDefault(1000),
     "category_ids[]": parseAsArrayOf(parseAsInteger).withDefault([]),
   })
 
@@ -165,7 +165,7 @@ const FiltersForm = () => {
                           value={field.value}
                           onValueChange={field.onChange}
                           min={0}
-                          max={10000}
+                          max={1000}
                           step={1}
                           labelPosition="bottom"
                         />
