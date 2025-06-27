@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils"
 import type { LucideIcon } from "lucide-react"
 import { parseAsString, useQueryState } from "nuqs"
 import React, { useState } from "react"
+import { Search as SearchIcon } from "lucide-react"
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -25,14 +26,19 @@ const Search = ({ className, ...props }: InputProps) => {
   }
 
   return (
-    <Input
-      placeholder={"Search by product name"}
-      variant="white"
-      {...props}
-      value={value}
-      onChange={handleChange}
-      className={cn(className)}
-    />
+    <div className="relative">
+      <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+        <SearchIcon className="w-4 h-4 text-gray-400" />
+      </div>
+      <Input
+        placeholder={"Search by product name"}
+        variant="white"
+        {...props}
+        value={value}
+        onChange={handleChange}
+        className={cn("pl-10", className)}
+      />
+    </div>
   )
 }
 
