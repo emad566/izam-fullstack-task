@@ -27,7 +27,7 @@ const Results = () => {
   })
 
   return (
-    <Card className="grow py-3 shadow-xs border-0 ">
+    <Card className="grow py-3 shadow-md bg-white rounded-lg border py-6">
       <CardHeader className="px-3">
         <Search />
       </CardHeader>

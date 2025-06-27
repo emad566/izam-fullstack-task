@@ -59,6 +59,9 @@ export function LoginForm({
         })
       )
 
+      // Dispatch custom event to notify header of auth change
+      window.dispatchEvent(new CustomEvent('authChanged'))
+
       navigate("/")
     } catch (error) {
       handleFormError(error, form)

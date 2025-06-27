@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { getSession } from "@/utils/get-session"
 import { logout } from "@/utils/logout"
 import { Menu, MoveRight, ShoppingCart, X } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Link } from "react-router"
 
 export const Header = () => {
@@ -19,7 +19,26 @@ export const Header = () => {
 
   const [isOpen, setOpen] = useState(false)
   const [banner, setBanner] = useState(true)
-  const isAuthenticated = !!getSession()?.token
+  const [isAuthenticated, setIsAuthenticated] = useState(!!getSession()?.token)
+
+  // Listen for authentication changes
+  useEffect(() => {
+    const handleAuthChange = () => {
+      setIsAuthenticated(!!getSession()?.token)
+    }
+
+    // Listen for storage changes (when localStorage is updated)
+    window.addEventListener('storage', handleAuthChange)
+
+    // Listen for custom auth events
+    window.addEventListener('authChanged', handleAuthChange)
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('storage', handleAuthChange)
+      window.removeEventListener('authChanged', handleAuthChange)
+    }
+  }, [])
 
   return (
     <header className="w-full z-10 fixed top-0 left-0 bg-background border-b">

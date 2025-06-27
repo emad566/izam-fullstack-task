@@ -95,7 +95,7 @@ const Cart = () => {
   const total = subtotal + shipping + tax
 
   return (
-    <Card className="w-full max-w-sm py-3 shadow-xs border-0 sticky top-32">
+    <Card className="w-full max-w-sm py-6 shadow-md bg-white rounded-lg border sticky top-32">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-semibold">
           Order Summary
@@ -126,7 +126,7 @@ const Cart = () => {
                   {cartItems.map((product: Product & { cartQuantity: number }) => (
                     <div key={product.id} className="flex gap-3 items-start">
                       {/* Product Image */}
-                      <div className="w-12 h-12 bg-gray-100 rounded overflow-hidden flex-shrink-0">
+                      <div className="w-14 h-17 pt-2 rounded overflow-hidden flex-shrink-0">
                         <img
                           src={product.image_urls?.thumb || product.image_urls?.medium}
                           alt={product.name}
