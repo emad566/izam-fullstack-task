@@ -20,7 +20,7 @@ import {
   parseAsInteger,
   useQueryStates,
 } from "nuqs"
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { useQuery } from "@tanstack/react-query"
 import Api from "@/services"
@@ -78,7 +78,7 @@ const FiltersForm = () => {
     },
   })
 
-  const categories = categoriesQuery.data || []
+  const categories = useMemo(() => categoriesQuery.data || [], [categoriesQuery.data])
 
   const form = useForm<{
     price: number[]
