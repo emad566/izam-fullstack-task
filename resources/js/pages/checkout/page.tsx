@@ -109,9 +109,12 @@ const CheckoutPage = () => {
       // Call the API
       await Api.post("/user/orders", orderData)
 
-      // Clear cart and show success modal
-      saveCart([])
+      // Show success modal first, then clear cart
       setShowSuccessModal(true)
+      // Clear cart after a small delay to prevent empty cart message from showing
+      setTimeout(() => {
+        saveCart([])
+      }, 100)
         } catch (error: unknown) {
       // Type guard for axios error
       const isAxiosError = error && typeof error === 'object' && 'response' in error
@@ -152,7 +155,7 @@ const CheckoutPage = () => {
     return <LoadingState />
   }
 
-  if (cartItems.length === 0) {
+  if (cartItems.length === 0 && !showSuccessModal) {
     return <EmptyCart onContinueShopping={handleContinueShopping} />
   }
 
