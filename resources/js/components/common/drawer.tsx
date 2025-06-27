@@ -87,7 +87,7 @@ export function SideModal({
           }
         }}
       >
-        <DrawerHeader className={cn("flex justify-between")}>
+        <DrawerHeader className={cn("flex justify-between border-b border-gray-200 shadow-sm")}>
           <div>
             <DrawerTitle>{title}</DrawerTitle>
             <DrawerDescription
