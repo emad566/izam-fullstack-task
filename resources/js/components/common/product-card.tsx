@@ -115,7 +115,8 @@ const ProductCard = (props: Product) => {
           />
         </div>
         <CardContent className="space-y-3">
-          <div className="flex gap-4 flex-nowrap">
+          {/* Mobile: Vertical Layout, Desktop: Horizontal */}
+          <div className="md:flex md:gap-4 md:flex-nowrap space-y-2 md:space-y-0">
             <p
               onClick={() => {
                 openModal(`product-${props.id}`)
@@ -124,16 +125,22 @@ const ProductCard = (props: Product) => {
             >
               {props.name}
             </p>
-            <Badge variant="secondary">{props.category.name}</Badge>
+            <Badge variant="secondary" className="w-fit truncate max-w-[100px]">{props.category.name}</Badge>
           </div>
-          <div className="flex gap-4 justify-between">
+
+          {/* Mobile: Vertical Stack, Desktop: Horizontal */}
+          <div className="space-y-2 md:space-y-0 md:flex md:gap-4 md:justify-between">
             <p className="font-bold">${props.price}</p>
             <span className="text-[#6B7280] text-sm">
               Stock : {props.stock}
             </span>
           </div>
-          <div>
-            <ProductCountButton id={props.id} stock={props.stock} />
+
+          {/* Product Count Button - Centered on mobile */}
+          <div className="flex justify-center">
+            <div className="scale-75 md:scale-100">
+              <ProductCountButton id={props.id} stock={props.stock} />
+            </div>
           </div>
         </CardContent>
       </Card>

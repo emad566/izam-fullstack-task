@@ -55,7 +55,7 @@ const Results = () => {
           <p className="text-red-500 text-center py-4">server error</p>
         ) : null}
         {result.status === "success" ? (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {result.data?.data.map((product) => {
               return <ProductCard {...product} key={product.id} />
             })}

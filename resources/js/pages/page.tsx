@@ -27,14 +27,25 @@ export default function Home() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      {/* Fixed Filters on Left */}
-      <div className="fixed left-4 top-53 transform -translate-y-1/2 z-50">
+      {/* Fixed Filters on Left - Hidden on mobile */}
+      <div className="hidden md:block fixed left-4 top-53 transform -translate-y-1/2 z-50">
         <Filters />
       </div>
 
-      <div className="flex gap-6 pb-10 relative">
+      {/* Desktop Layout */}
+      <div className="hidden md:flex gap-6 pb-10 relative">
         <Results />
         <div className="min-w-sm">
+          <Cart />
+        </div>
+      </div>
+
+      {/* Mobile Layout */}
+      <div className="md:hidden pb-10">
+        <div className="mb-6">
+          <Results />
+        </div>
+        <div>
           <Cart />
         </div>
       </div>
