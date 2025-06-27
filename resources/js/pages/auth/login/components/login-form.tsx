@@ -51,7 +51,7 @@ export function LoginForm({
         LOCALSTORAGE_SESSION_KEY,
         JSON.stringify({
           ...response.data.data.item,
-          toke: response.data.data.token,
+          token: response.data.data.token,
         })
       )
 
