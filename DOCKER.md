@@ -21,7 +21,7 @@ The Docker setup includes the following services:
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          ▼                       ▼                       ▼
-    Port: 8001              Port: 3306              Port: 6379
+    Port: 8000              Port: 3306              Port: 6379
 
 ┌─────────────────┐    ┌─────────────────┐
 │   phpMyAdmin    │    │  Queue Worker   │
@@ -84,7 +84,7 @@ make help  # See all available commands
 
 After successful setup, you can access:
 
-- **Application**: http://localhost:8001
+- **Application**: http://localhost:8000
 - **phpMyAdmin**: http://localhost:8080
 - **Database**: localhost:3306
 - **Redis**: localhost:6379
@@ -183,7 +183,7 @@ To change default ports, modify `docker-compose.yml`:
 services:
   app:
     ports:
-      - "8080:80"  # Change from 8001:80
+      - "8080:80"  # Change from 8000:80
   
   database:
     ports:
@@ -227,7 +227,7 @@ docker-compose exec app php artisan tinker
 #### 1. Port Already in Use
 
 ```bash
-# Error: Port 8001 is already allocated
+# Error: Port 8000 is already allocated
 # Solution: Stop other services or change port
 docker-compose down
 # Or edit docker-compose.yml to use different port

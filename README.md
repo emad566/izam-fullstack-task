@@ -264,14 +264,14 @@ chmod +x docker-setup.sh
 ./docker-setup.sh
 
 # 3. Access the API (Local Development)
-curl http://localhost:8001/api/guest/products
+curl http://localhost:8000/api/guest/products
 
 # 4. Or Access Live API (Production Ready)
 curl https://izam-task.emadw3.com/api/guest/products
 ```
 
 **🎯 Access Points:**
-- **Local API**: `http://localhost:8001/api`
+- **Local API**: `http://localhost:8000/api`
 - **🚀 Live API**: `https://izam-task.emadw3.com/api` *(Production Ready)*
 - **phpMyAdmin**: `http://localhost:8081`
 - **Database**: `localhost:3307`
@@ -577,7 +577,7 @@ POST /api/auth/admin/logout
 
 #### User Registration
 ```bash
-curl -X POST http://localhost:8001/api/auth/user/register \
+curl -X POST http://localhost:8000/api/auth/user/register \
   -H "Content-Type: application/json" \
   -d '{
     "name": "John Doe",
@@ -605,7 +605,7 @@ curl -X POST http://localhost:8001/api/auth/user/register \
 
 #### User Login
 ```bash
-curl -X POST http://localhost:8001/api/auth/user/login \
+curl -X POST http://localhost:8000/api/auth/user/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "john@example.com",
@@ -615,7 +615,7 @@ curl -X POST http://localhost:8001/api/auth/user/login \
 
 #### Using Authentication Token
 ```bash
-curl -X GET http://localhost:8001/api/user/orders \
+curl -X GET http://localhost:8000/api/user/orders \
   -H "Authorization: Bearer 1|abc123def456..."
 ```
 
@@ -639,7 +639,7 @@ curl -X GET http://localhost:8001/api/user/orders \
 
 ### Base URL
 - **Local**: `http://localhost:8000/api`
-- **Docker**: `http://localhost:8001/api`
+- **Docker**: `http://localhost:8000/api`
 - **🚀 Live Production API**: `https://izam-task.emadw3.com/api`
 
 ### Postman Collection
@@ -734,7 +734,7 @@ GET /api/admin/orders?category_ids[]=1
 
 #### Create Product (Admin)
 ```bash
-curl -X POST http://localhost:8001/api/admin/products \
+curl -X POST http://localhost:8000/api/admin/products \
   -H "Authorization: Bearer admin_token_here" \
   -H "Content-Type: multipart/form-data" \
   -F "name=Gaming Laptop" \
@@ -758,7 +758,7 @@ curl -X POST http://localhost:8001/api/admin/products \
       "price": "1299.99",
       "stock": 10,
       "category_id": 1,
-      "image_url": "http://localhost:8001/storage/products/laptop_abc123.jpg",
+      "image_url": "http://localhost:8000/storage/products/laptop_abc123.jpg",
       "category": {
         "id": 1,
         "name": "Electronics"
@@ -770,7 +770,7 @@ curl -X POST http://localhost:8001/api/admin/products \
 
 #### Create Order (User)
 ```bash
-curl -X POST http://localhost:8001/api/user/orders \
+curl -X POST http://localhost:8000/api/user/orders \
   -H "Authorization: Bearer user_token_here" \
   -H "Content-Type: application/json" \
   -d '{

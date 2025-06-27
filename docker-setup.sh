@@ -112,17 +112,33 @@ docker-compose exec app php artisan route:cache
 print_status "Creating storage link..."
 docker-compose exec app php artisan storage:link
 
+# Build React assets
+print_status "Building React assets..."
+if docker-compose exec app npm run build; then
+    print_status "React assets built successfully ✅"
+else
+    print_warning "Failed to build React assets. You may need to build them manually."
+fi
+
 print_status "Setup completed successfully! 🎉"
 echo ""
-print_status "🌐 Application: http://localhost:8001"
-print_status "🗄️  Database: localhost:3306"
-print_status "📊 phpMyAdmin: http://localhost:8080"
+print_status "🌐 Application: http://localhost:8000"
+print_status "🗄️  Database: localhost:3307"
+print_status "📊 phpMyAdmin: http://localhost:8081"
 print_status "🔴 Redis: localhost:6379"
+echo ""
+print_status "Development mode:"
+print_status "🚀 Start with hot reloading: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d"
+print_status "🌐 Vite dev server: http://localhost:5173"
+print_status "📱 Hot reloading enabled for React development"
 echo ""
 print_status "Useful commands:"
 echo "  - Stop containers: docker-compose down"
 echo "  - View logs: docker-compose logs -f"
 echo "  - Access app container: docker-compose exec app bash"
 echo "  - Run tests: docker-compose exec app php artisan test"
+echo "  - Build assets: docker-compose exec app npm run build"
+echo "  - Development mode: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d"
+echo "  - Stop dev mode: docker-compose -f docker-compose.yml -f docker-compose.dev.yml down"
 echo ""
 print_status "Happy coding! 🚀"

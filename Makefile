@@ -1,44 +1,73 @@
 # IZAM E-commerce Docker Makefile
 
-.PHONY: help build up down restart logs shell test migrate seed fresh install clean
+.PHONY: help build up down restart logs shell test migrate seed fresh install clean dev prod
 
 # Default target
 help: ## Show this help message
-	@echo "IZAM E-commerce Docker Commands"
-	@echo "================================"
-	@awk 'BEGIN {FS = ":.*##"} /^[a-zA-Z_-]+:.*##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+	@echo "🚀 IZAM E-commerce Development Commands"
+	@echo ""
+	@echo "Setup Commands:"
+	@echo "  setup          - Initial Docker setup (run once)"
+	@echo "  build          - Build Docker containers"
+	@echo "  up             - Start production containers"
+	@echo "  down           - Stop all containers"
+	@echo ""
+	@echo "Development Commands:"
+	@echo "  dev            - Start development mode with hot reloading"
+	@echo "  dev-down       - Stop development containers"
+	@echo "  assets-build   - Build React assets for production"
+	@echo "  assets-dev     - Start Vite dev server only"
+	@echo ""
+	@echo "Laravel Commands:"
+	@echo "  shell          - Access app container bash"
+	@echo "  test           - Run PHP tests"
+	@echo "  migrate        - Run database migrations"
+	@echo "  seed           - Seed the database"
+	@echo "  fresh          - Fresh migration with seed"
+	@echo ""
+	@echo "Utility Commands:"
+	@echo "  logs           - View container logs"
+	@echo "  install        - Install dependencies"
+	@echo "  cache-clear    - Clear all caches"
 
 # Docker commands
 build: ## Build Docker containers
-	docker-compose build
+	@echo "🔨 Building Docker containers..."
+	@docker-compose build
 
 up: ## Start Docker containers
-	docker-compose up -d
+	@echo "⬆️ Starting production containers..."
+	@docker-compose up -d
 
 down: ## Stop Docker containers
-	docker-compose down
+	@echo "⬇️ Stopping all containers..."
+	@docker-compose down
+	@docker-compose -f docker-compose.yml -f docker-compose.dev.yml down 2>/dev/null || true
 
 restart: ## Restart Docker containers
 	docker-compose restart
 
 logs: ## Show container logs
-	docker-compose logs -f
+	@docker-compose logs -f
 
 shell: ## Access application container shell
-	docker-compose exec app bash
+	@docker-compose exec app bash
 
 # Laravel commands
 migrate: ## Run database migrations
-	docker-compose exec app php artisan migrate
+	@echo "📊 Running database migrations..."
+	@docker-compose exec app php artisan migrate
 
 migrate-fresh: ## Fresh database migration with seeding
 	docker-compose exec app php artisan migrate:fresh --seed
 
 seed: ## Seed the database
-	docker-compose exec app php artisan db:seed
+	@echo "🌱 Seeding database..."
+	@docker-compose exec app php artisan db:seed
 
 test: ## Run tests
-	docker-compose exec app php artisan test
+	@echo "🧪 Running PHP tests..."
+	@docker-compose exec app php artisan test
 
 test-feature: ## Run feature tests only
 	docker-compose exec app php artisan test --testsuite=Feature
@@ -48,7 +77,9 @@ test-unit: ## Run unit tests only
 
 # Application commands
 install: ## Complete installation and setup
-	./docker-setup.sh
+	@echo "📦 Installing dependencies..."
+	@docker-compose exec app composer install
+	@docker-compose exec app npm install
 
 fresh: ## Fresh installation (rebuild everything)
 	make down
@@ -63,10 +94,11 @@ cache: ## Cache Laravel configuration
 	docker-compose exec app php artisan view:cache
 
 cache-clear: ## Clear all caches
-	docker-compose exec app php artisan cache:clear
-	docker-compose exec app php artisan config:clear
-	docker-compose exec app php artisan route:clear
-	docker-compose exec app php artisan view:clear
+	@echo "🧹 Clearing all caches..."
+	@docker-compose exec app php artisan cache:clear
+	@docker-compose exec app php artisan config:clear
+	@docker-compose exec app php artisan route:clear
+	@docker-compose exec app php artisan view:clear
 
 queue-work: ## Start queue worker
 	docker-compose exec app php artisan queue:work
@@ -94,12 +126,24 @@ clean-all: ## Clean up all Docker resources (including images)
 	docker volume prune -f
 
 # Development commands
-dev: ## Start development environment
-	make up
-	make logs
+dev:
+	@echo "🚀 Starting development mode with hot reloading..."
+	@docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+	@echo "✅ Development servers started!"
+	@echo "🌐 Laravel app: http://localhost:8000"
+	@echo "⚡ Vite dev server: http://localhost:5173"
 
-prod: ## Start production environment
-	docker-compose -f docker-compose.prod.yml up -d
+dev-down:
+	@echo "⬇️ Stopping development containers..."
+	@docker-compose -f docker-compose.yml -f docker-compose.dev.yml down
+
+assets-build:
+	@echo "🔨 Building React assets for production..."
+	@docker-compose exec app npm run build
+
+assets-dev:
+	@echo "⚡ Starting Vite dev server..."
+	@docker-compose -f docker-compose.yml -f docker-compose.dev.yml up vite
 
 # Database commands
 db-shell: ## Access database shell
@@ -114,3 +158,12 @@ status: ## Show container status
 
 stats: ## Show container resource usage
 	docker stats
+
+# Setup commands
+setup:
+	@echo "🚀 Running initial Docker setup..."
+	@chmod +x docker-setup.sh
+	@./docker-setup.sh
+
+prod: ## Start production environment
+	docker-compose -f docker-compose.prod.yml up -d

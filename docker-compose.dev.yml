@@ -1,0 +1,46 @@
+version: '3.8'
+
+# Development override for docker-compose.yml
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  # Override app service for development
+  app:
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_HOST=database
+      - DB_DATABASE=izam_ecommerce
+      - DB_USERNAME=izam_user
+      - DB_PASSWORD=izam_password
+      - REDIS_HOST=redis
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - QUEUE_CONNECTION=redis
+      - VITE_DEV_SERVER_URL=http://localhost:5173
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/node_modules # Prevent node_modules from being overwritten
+
+  # Vite Development Server
+  vite:
+    image: node:20-alpine
+    container_name: izam-vite-dev
+    working_dir: /var/www/html
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5173"
+    environment:
+      - NODE_ENV=development
+      - VITE_APP_URL=http://localhost:8000
+    depends_on:
+      - app
+    networks:
+      - izam-network
+
+networks:
+  izam-network:
+    external: true
