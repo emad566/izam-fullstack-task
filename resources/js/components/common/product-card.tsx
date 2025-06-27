@@ -12,7 +12,7 @@ const ProductCard = (props: Product) => {
       <Card className="border-0 pt-0">
         <div className="w-full aspect-[9/10]">
           <img
-            src={props.image_urls}
+            src={props.image_urls?.large}
             alt={props.name}
             className="w-full h-full object-cover"
           />

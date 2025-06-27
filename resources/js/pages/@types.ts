@@ -22,13 +22,20 @@ export interface Product {
   id: number
   name: string
   description: string
-  image_urls: string
+  image_urls: ImageUrls | null
   price: string
   stock: number
   category: Category
   created_at: string
   updated_at: string
   deleted_at: null
+}
+
+export interface ImageUrls {
+  original: string
+  thumb: string
+  medium: string
+  large: string
 }
 
 export interface Category {
