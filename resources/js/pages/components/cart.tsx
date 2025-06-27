@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import ProductCountButton from "@/components/common/product-count-button"
 import Api from "@/services"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
-import { Loader2, X } from "lucide-react"
+import { Loader2, Trash2 } from "lucide-react"
 import type { ProductsResponse, Product } from "../@types"
 
 interface CartItem {
@@ -124,28 +124,28 @@ const Cart = () => {
                   {cartItems.map((product: Product & { cartQuantity: number }) => (
                     <div key={product.id} className="flex gap-3 items-start">
                       {/* Product Image */}
-                      <div className="relative">
-                        <div className="w-12 h-12 bg-gray-100 rounded overflow-hidden flex-shrink-0">
-                          <img
-                            src={product.image_urls?.thumb || product.image_urls?.medium}
-                            alt={product.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        {/* Remove Button */}
-                        <button
-                          onClick={() => removeItem(product.id)}
-                          className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full flex items-center justify-center text-xs hover:bg-red-600"
-                          title="Remove item"
-                          aria-label="Remove item from cart"
-                        >
-                          <X className="w-2 h-2" />
-                        </button>
+                      <div className="w-12 h-12 bg-gray-100 rounded overflow-hidden flex-shrink-0">
+                        <img
+                          src={product.image_urls?.thumb || product.image_urls?.medium}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
 
                       {/* Product Info */}
                       <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-medium truncate">{product.name}</h4>
+                        {/* Title and Remove Button */}
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm font-medium truncate flex-1">{product.name}</h4>
+                          <button
+                            onClick={() => removeItem(product.id)}
+                            className="text-red-500 hover:text-red-600 ml-2 flex-shrink-0 p-1"
+                            title="Remove item"
+                            aria-label="Remove item from cart"
+                          >
+                            <Trash2 className="w-5 h-5" />
+                          </button>
+                        </div>
 
                         {/* Quantity and Price */}
                         <div className="flex items-center justify-between mt-2">
