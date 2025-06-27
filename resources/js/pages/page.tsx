@@ -7,11 +7,12 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import Filters from "./components/filters"
+import Results from "./components/results"
 
 export default function Home() {
   return (
-    <div className="container mx-auto">
-      <div className="ms-[120px]">
+    <div className="container mx-auto px-4">
+      <div className="ms-[120px] py-4">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -25,9 +26,9 @@ export default function Home() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className="flex gap-8">
+      <div className="flex gap-6 ">
         <Filters />
-        <div></div>
+        <Results />
         <div></div>
       </div>
     </div>
