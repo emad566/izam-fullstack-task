@@ -18,52 +18,124 @@ import { DualRangeSlider } from "@/components/ui/range-slider"
 import {
   parseAsArrayOf,
   parseAsInteger,
-  parseAsString,
   useQueryStates,
 } from "nuqs"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
-const categoryOptions = ["T-shirts", "Polo", "Jeans", "Shirts"]
+import { useQuery } from "@tanstack/react-query"
+import Api from "@/services"
+
+interface Category {
+  id: number
+  name: string
+  created_at: string
+  updated_at: string
+  deleted_at: string | null
+}
+
+interface CategoriesResponse {
+  status: boolean
+  message: string
+  data: {
+    helpers: null
+    items: {
+      data: Category[]
+      links: {
+        first: string
+        last: string
+        prev: string | null
+        next: string | null
+      }
+      meta: {
+        current_page: number
+        from: number
+        last_page: number
+        per_page: number
+        to: number
+        total: number
+      }
+    }
+  }
+  errors: null
+  response_code: number
+}
 
 const FiltersForm = () => {
   const [initValues, set] = useQueryStates({
-    "price[]": parseAsArrayOf(parseAsInteger).withDefault([0, 100]),
-    "category_ids[]": parseAsArrayOf(parseAsString).withDefault([]),
+    min_price: parseAsInteger.withDefault(0),
+    max_price: parseAsInteger.withDefault(10000),
+    "category_ids[]": parseAsArrayOf(parseAsInteger).withDefault([]),
   })
+
+  // Fetch categories from API
+  const categoriesQuery = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const result = await Api.get<CategoriesResponse>("/guest/categories", {
+        params: { per_page: 100 } // Get all categories
+      })
+      return result.data.data.items.data
+    },
+  })
+
+  const categories = categoriesQuery.data || []
+
   const form = useForm<{
     price: number[]
     all: boolean
-    category_ids: string[]
+    category_ids: number[]
   }>({
     defaultValues: {
-      all: initValues["category_ids[]"]?.length === 4,
-      price: initValues["price[]"],
+      all: initValues["category_ids[]"]?.length === categories.length,
+      price: [initValues.min_price, initValues.max_price],
       category_ids: initValues["category_ids[]"],
     },
   })
+
   const all = form.watch("all")
   const selected = form.watch("category_ids")
 
+  // Update form when categories are loaded or initValues change
+  useEffect(() => {
+    if (categories.length > 0) {
+      form.setValue("all", initValues["category_ids[]"]?.length === categories.length)
+      form.setValue("category_ids", initValues["category_ids[]"])
+    }
+  }, [categories, initValues, form])
+
   // Keep 'All' in sync with individual checkboxes
   useEffect(() => {
-    const allSelected = selected.length === categoryOptions.length
-    if (allSelected && !all) {
-      form.setValue("all", true)
-    } else if (!allSelected && all) {
-      form.setValue("all", false)
+    if (categories.length > 0) {
+      const allSelected = selected.length === categories.length
+      if (allSelected && !all) {
+        form.setValue("all", true)
+      } else if (!allSelected && all) {
+        form.setValue("all", false)
+      }
     }
-  }, [selected, all, form])
+  }, [selected, all, form, categories.length])
 
   const onSubmit = form.handleSubmit((values) => {
     set({
-      "price[]": values["price"],
-      "category_ids[]": values["category_ids"],
+      min_price: values.price[0] !== 0 ? values.price[0] : null,
+      max_price: values.price[1] !== 10000 ? values.price[1] : null,
+      "category_ids[]": values.category_ids,
     })
   })
+
   const onClear = () => {
-    set({ "price[]": [0, 100], "category_ids[]": [] })
-    form.reset({ price: [0, 100], category_ids: [], all: false })
+    set({ min_price: null, max_price: null, "category_ids[]": [] })
+    form.reset({ price: [0, 10000], category_ids: [], all: false })
   }
+
+  if (categoriesQuery.isLoading) {
+    return <div className="p-4">Loading categories...</div>
+  }
+
+  if (categoriesQuery.isError) {
+    return <div className="p-4 text-red-500">Error loading categories</div>
+  }
+
   return (
     <Form {...form}>
       <form onSubmit={onSubmit} className="flex gap-7 flex-col h-full">
@@ -93,7 +165,7 @@ const FiltersForm = () => {
                           value={field.value}
                           onValueChange={field.onChange}
                           min={0}
-                          max={100}
+                          max={10000}
                           step={1}
                           labelPosition="bottom"
                         />
@@ -124,7 +196,7 @@ const FiltersForm = () => {
                             field.onChange(checked)
                             form.setValue(
                               "category_ids",
-                              checked ? categoryOptions : []
+                              checked ? categories.map(cat => cat.id) : []
                             )
                           }}
                         />
@@ -135,13 +207,13 @@ const FiltersForm = () => {
                 />
 
                 {/* Individual categories */}
-                {categoryOptions.map((category) => (
+                {categories.map((category) => (
                   <FormField
-                    key={category}
+                    key={category.id}
                     control={form.control}
                     name="category_ids"
                     render={({ field }) => {
-                      const isChecked = field.value?.includes(category)
+                      const isChecked = field.value?.includes(category.id)
                       return (
                         <FormItem className="flex flex-row items-center space-x-3 space-y-0">
                           <FormControl>
@@ -149,16 +221,16 @@ const FiltersForm = () => {
                               checked={isChecked}
                               onCheckedChange={(checked) => {
                                 const newValues = checked
-                                  ? [...field.value, category]
+                                  ? [...field.value, category.id]
                                   : field.value.filter(
-                                      (item) => item !== category
+                                      (id) => id !== category.id
                                     )
                                 field.onChange(newValues)
                               }}
                             />
                           </FormControl>
                           <FormLabel className="text-sm font-normal">
-                            {category}
+                            {category.name}
                           </FormLabel>
                         </FormItem>
                       )
