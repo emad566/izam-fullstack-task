@@ -9,9 +9,9 @@ interface CartItemProps {
 
 const CartItem = ({ product, onRemove }: CartItemProps) => {
   return (
-    <div className="flex gap-4 items-start py-4">
+    <div className="flex gap-3 md:gap-4 items-start py-4">
       {/* Product Image */}
-      <div className="w-32 h-32 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative">
+      <div className="w-20 h-20 md:w-32 md:h-32 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative">
         <img
           src={product.image_urls?.medium || product.image_urls?.large}
           alt={product.name}
@@ -24,12 +24,12 @@ const CartItem = ({ product, onRemove }: CartItemProps) => {
       </div>
 
       {/* Product Details */}
-      <div className="flex-1">
+      <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start mb-2">
-          <div>
-            <h3 className="font-medium text-lg">{product.name}</h3>
-            <p className="text-sm text-gray-500">{product.category.name}</p>
-            <p className="text-sm text-gray-400">Stock: {product.stock}</p>
+          <div className="flex-1 min-w-0 pr-2">
+            <h3 className="font-medium text-sm md:text-lg truncate">{product.name}</h3>
+            <p className="text-xs md:text-sm text-gray-500 truncate">{product.category.name}</p>
+            <p className="text-xs md:text-sm text-gray-400">Stock: {product.stock}</p>
           </div>
           <button
             onClick={() => onRemove(product.id)}
@@ -41,11 +41,13 @@ const CartItem = ({ product, onRemove }: CartItemProps) => {
         </div>
 
         <div className="flex items-center justify-between">
-          <div className="text-lg font-semibold">
+          <div className="text-sm md:text-lg font-semibold">
             ${product.price}
           </div>
-          <div className="flex items-center gap-4">
-            <ProductCountButton id={product.id} stock={product.stock} />
+          <div className="flex items-center gap-2 md:gap-4">
+            <div className="scale-75 md:scale-100">
+              <ProductCountButton id={product.id} stock={product.stock} />
+            </div>
           </div>
         </div>
       </div>

@@ -160,7 +160,8 @@ const CheckoutPage = () => {
     <>
       <div className="min-h-screen bg-white">
         <div className="max-w-6xl mx-auto px-4 py-8">
-          <div className="grid lg:grid-cols-5 gap-8">
+          {/* Mobile: Stack vertically, Desktop: Grid layout */}
+          <div className="flex flex-col lg:grid lg:grid-cols-5 gap-8">
             <CartItemsList
               cartItems={cartItems}
               onRemoveItem={removeItem}
