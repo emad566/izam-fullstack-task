@@ -25,6 +25,9 @@ class CategoryController extends BaseController
     function index(FilterRequest $request)
     {
         return $this->indexInit($request, function ($items) use($request){
+            if(!auth('admin')->check()) {
+                $items = $items->whereHas('products');
+            }
             return [$items];
         }, [], isListTrashed(), function ($items) {
             return [$items];
