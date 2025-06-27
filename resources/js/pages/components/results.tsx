@@ -32,6 +32,15 @@ const Results = () => {
         <Search />
       </CardHeader>
       <CardContent>
+        {/* Products Count Display */}
+        {result.status === "success" && result.data?.data.length > 0 && (
+          <div className="mb-4 text-left">
+            <p className="text-sm text-gray-600">
+              Showing {result.data?.meta?.from || 1}-{result.data?.meta?.to || result.data?.data.length} of {result.data?.meta?.total || result.data?.data.length} Products
+            </p>
+          </div>
+        )}
+
         {result.status === "pending" ? (
           <div className="flex items-center justify-center min-h-[30vh]">
             <Loader2 className="size-6  animate-spin" />
