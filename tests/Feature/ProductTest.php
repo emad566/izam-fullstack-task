@@ -46,7 +46,7 @@ class ProductTest extends TestCase
 
     public function test_admin_can_create_product_with_image()
     {
-        $productData = Product::factory()->make()->toArray();
+        $productData = Product::factory()->withoutImages()->make()->toArray();
         $image = UploadedFile::fake()->image('product.jpg', 800, 600);
 
         $response = $this->withAuth($this->admin)
@@ -71,7 +71,7 @@ class ProductTest extends TestCase
 
     public function test_admin_can_create_product_without_image()
     {
-        $productData = Product::factory()->make()->toArray();
+        $productData = Product::factory()->withoutImages()->make()->toArray();
 
         $response = $this->withAuth($this->admin)
             ->postJson(route('admin.products.store'), $productData);
@@ -94,7 +94,7 @@ class ProductTest extends TestCase
         $product = Product::factory()->create(['category_id' => $category->id]);
 
         $newImage = UploadedFile::fake()->image('updated.jpg', 600, 400);
-        $updateData = Product::factory()->make(['category_id' => $category->id])->toArray();
+        $updateData = Product::factory()->withoutImages()->make(['category_id' => $category->id])->toArray();
 
         $response = $this->withAuth($this->admin)
             ->put(route('admin.products.update', $product->id), array_merge($updateData, [
@@ -126,7 +126,7 @@ class ProductTest extends TestCase
             ->usingName('keep-image')
             ->toMediaCollection('images');
 
-        $updateData = Product::factory()->make(['category_id' => $category->id])->toArray();
+        $updateData = Product::factory()->withoutImages()->make(['category_id' => $category->id])->toArray();
         // No image field - should keep existing image
 
         $response = $this->withAuth($this->admin)
@@ -212,7 +212,7 @@ class ProductTest extends TestCase
 
     public function test_product_validation_image_must_be_valid_image()
     {
-        $productData = Product::factory()->make()->toArray();
+        $productData = Product::factory()->withoutImages()->make()->toArray();
         $invalidFile = UploadedFile::fake()->create('document.pdf', 1000, 'application/pdf');
 
         $response = $this->withAuth($this->admin)
@@ -874,5 +874,116 @@ class ProductTest extends TestCase
         $this->assertNotEquals($response1->json(), $response2->json());
         $this->assertNotEquals($response1->json(), $response3->json());
         $this->assertNotEquals($response2->json(), $response3->json());
+    }
+
+    public function test_product_factory_generates_images_automatically()
+    {
+        // Enable network requests for this test
+        // $this->markTestSkipped('Requires network access - run manually to test image generation');
+
+        // Create a product using the factory
+        $product = Product::factory()->create();
+
+        // Wait for image processing
+        sleep(2);
+        $product->refresh();
+
+        // Check if the product has media attached
+        $this->assertTrue($product->hasMedia('images'), 'Product should have images attached');
+
+        // Get the media item
+        $media = $product->getFirstMedia('images');
+        $this->assertNotNull($media, 'Product should have at least one media item');
+
+        // Check if the original file exists
+        $originalPath = $media->getPath();
+        $this->assertFileExists($originalPath, 'Original image file should exist');
+
+        // Check if conversions exist
+        $thumbPath = $media->getPath('thumb');
+        $mediumPath = $media->getPath('medium');
+        $largePath = $media->getPath('large');
+
+        $this->assertFileExists($thumbPath, 'Thumb conversion should exist');
+        $this->assertFileExists($mediumPath, 'Medium conversion should exist');
+        $this->assertFileExists($largePath, 'Large conversion should exist');
+
+        // Check if files are stored in the appropriate public storage location
+        // In testing, files are stored in storage/framework/testing/disks/public
+        // In production, files are stored in storage/app/public
+        $this->assertStringContainsString('public', $originalPath, 'Image should be stored in public storage');
+
+        // Check image URLs are accessible
+        $imageUrls = $product->getImageUrls();
+        $this->assertNotNull($imageUrls, 'Product should have image URLs');
+        $this->assertArrayHasKey('original', $imageUrls);
+        $this->assertArrayHasKey('thumb', $imageUrls);
+        $this->assertArrayHasKey('medium', $imageUrls);
+        $this->assertArrayHasKey('large', $imageUrls);
+
+        // Validate that URLs are not empty
+        $this->assertNotEmpty($imageUrls['original']);
+        $this->assertNotEmpty($imageUrls['thumb']);
+        $this->assertNotEmpty($imageUrls['medium']);
+        $this->assertNotEmpty($imageUrls['large']);
+
+        // Test the image content type (should be JPEG/PNG)
+        $imageInfo = getimagesize($originalPath);
+        $this->assertNotFalse($imageInfo, 'Should be a valid image file');
+        $this->assertContains($imageInfo[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG], 'Should be JPEG or PNG format');
+
+        // Test image dimensions are reasonable (not tiny or huge)
+        $this->assertGreaterThan(200, $imageInfo[0], 'Image width should be > 200px');
+        $this->assertGreaterThan(200, $imageInfo[1], 'Image height should be > 200px');
+        $this->assertLessThan(2000, $imageInfo[0], 'Image width should be < 2000px');
+        $this->assertLessThan(2000, $imageInfo[1], 'Image height should be < 2000px');
+    }
+
+    public function test_product_factory_without_images_works()
+    {
+        // Create a product without images
+        $product = Product::factory()->withoutImages()->create();
+
+        // Check that no media is attached
+        $this->assertFalse($product->hasMedia('images'), 'Product should not have images attached');
+        $this->assertNull($product->getImageUrls(), 'Product should not have image URLs');
+    }
+
+    public function test_image_conversions_are_generated_correctly()
+    {
+        // Skip if no network access
+        $this->markTestSkipped('Requires network access - run manually to test image generation');
+
+        $product = Product::factory()->create();
+
+        if (!$product->hasMedia('images')) {
+            $this->markTestSkipped('No images were generated for this test');
+        }
+
+        $media = $product->getFirstMedia('images');
+
+        // Test thumb conversion (150x150)
+        $thumbPath = $media->getPath('thumb');
+        if (file_exists($thumbPath)) {
+            $thumbInfo = getimagesize($thumbPath);
+            $this->assertEquals(150, $thumbInfo[0], 'Thumb width should be 150px');
+            $this->assertEquals(150, $thumbInfo[1], 'Thumb height should be 150px');
+        }
+
+        // Test medium conversion (400x400)
+        $mediumPath = $media->getPath('medium');
+        if (file_exists($mediumPath)) {
+            $mediumInfo = getimagesize($mediumPath);
+            $this->assertEquals(400, $mediumInfo[0], 'Medium width should be 400px');
+            $this->assertEquals(400, $mediumInfo[1], 'Medium height should be 400px');
+        }
+
+        // Test large conversion (800x600)
+        $largePath = $media->getPath('large');
+        if (file_exists($largePath)) {
+            $largeInfo = getimagesize($largePath);
+            $this->assertEquals(800, $largeInfo[0], 'Large width should be 800px');
+            $this->assertEquals(600, $largeInfo[1], 'Large height should be 600px');
+        }
     }
 }

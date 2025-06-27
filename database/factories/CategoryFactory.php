@@ -16,8 +16,31 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
+        $clothingCategories = [
+            'T-Shirts',
+            'Polo Shirts',
+            'Dress Shirts',
+            'Casual Shirts',
+            'Jeans',
+            'Chinos',
+            'Shorts',
+            'Dresses',
+            'Blouses',
+            'Sweaters',
+            'Hoodies',
+            'Jackets',
+            'Coats',
+            'Blazers',
+            'Skirts',
+            'Pants',
+            'Activewear',
+            'Underwear',
+            'Socks',
+            'Accessories'
+        ];
+
         return [
-            'name' => $this->faker->name(),
+            'name' => $this->faker->randomElement($clothingCategories) . ' ' . $this->faker->numberBetween(1, 1000),
         ];
     }
 }
