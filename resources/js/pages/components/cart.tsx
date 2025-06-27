@@ -150,7 +150,7 @@ const Cart = () => {
                         {/* Quantity and Price */}
                         <div className="flex items-center justify-between mt-2">
                           <div className="flex items-center">
-                            <ProductCountButton id={product.id} />
+                            <ProductCountButton id={product.id} stock={product.stock} />
                           </div>
                           <div className="text-sm font-semibold">
                             ${(parseFloat(product.price) * product.cartQuantity).toFixed(2)}

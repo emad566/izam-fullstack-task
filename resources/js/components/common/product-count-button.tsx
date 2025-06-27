@@ -3,14 +3,17 @@ import { Button } from "../ui/button"
 import { useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 
-type Props = { id: number | string }
+type Props = {
+  id: number | string
+  stock?: number // Optional stock limit
+}
 
 interface CartItem {
   id: number | string
   quantity: number
 }
 
-const ProductCountButton = ({ id }: Props) => {
+const ProductCountButton = ({ id, stock }: Props) => {
   const [count, setCount] = useState(0)
 
   // query client for invalidating cart queries
@@ -104,8 +107,11 @@ const ProductCountButton = ({ id }: Props) => {
   }
 
   const increment = () => {
-    const newCount = count + 1
-    updateCart(newCount)
+    // Check if we can increment (either no stock limit or count is less than stock)
+    if (stock === undefined || count < stock) {
+      const newCount = count + 1
+      updateCart(newCount)
+    }
   }
 
   const decrement = () => {
@@ -113,13 +119,22 @@ const ProductCountButton = ({ id }: Props) => {
     updateCart(newCount)
   }
 
+  // Check if increment should be disabled
+  const isIncrementDisabled = stock !== undefined && count >= stock
+
   return (
     <div className="rounded-md overflow-hidden border w-fit flex items-center flex-nowrap">
       <Button onClick={decrement} variant="secondary" size="icon" disabled={count === 0}>
         <Minus />
       </Button>
       <div className="min-w-18 flex justify-center items-center font-medium">{count}</div>
-      <Button onClick={increment} variant="secondary" size="icon">
+      <Button
+        onClick={increment}
+        variant="secondary"
+        size="icon"
+        disabled={isIncrementDisabled}
+        title={isIncrementDisabled ? `Maximum stock: ${stock}` : undefined}
+      >
         <Plus />
       </Button>
     </div>

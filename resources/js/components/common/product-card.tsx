@@ -68,7 +68,7 @@ const ProductCard = (props: Product) => {
     }
   }, [props.id])
 
-  const handleAddToCart = () => {
+    const handleAddToCart = () => {
     if (currentQuantity > 0) {
       // Item is already in cart, close modal
       closeModal(`product-${props.id}`)
@@ -76,6 +76,12 @@ const ProductCard = (props: Product) => {
       // Show success message (you can implement a toast here)
       console.log(`Added ${currentQuantity} of ${props.name} to cart`)
     } else {
+      // Check if stock is available before adding
+      if (props.stock && props.stock <= 0) {
+        console.log("Product is out of stock")
+        return
+      }
+
       // Add one item to cart if quantity is 0
       const cart = getCart()
       const existingItemIndex = cart.findIndex(item => item.id.toString() === props.id.toString())
@@ -127,7 +133,7 @@ const ProductCard = (props: Product) => {
             </span>
           </div>
           <div>
-            <ProductCountButton id={props.id} />
+            <ProductCountButton id={props.id} stock={props.stock} />
           </div>
         </CardContent>
       </Card>
@@ -184,16 +190,22 @@ const ProductCard = (props: Product) => {
             {/* Quantity Selector - Horizontal Layout */}
             <div className="flex items-center justify-between">
               <h4 className="font-medium">Quantity</h4>
-              <ProductCountButton id={props.id} />
+              <ProductCountButton id={props.id} stock={props.stock} />
             </div>
 
             {/* Add to Cart Button */}
             <Button
-              className="w-full bg-black hover:bg-gray-800 text-white py-3 text-base font-medium"
+              className="w-full bg-black hover:bg-gray-800 text-white py-3 text-base font-medium disabled:bg-gray-400"
               size="lg"
               onClick={handleAddToCart}
+              disabled={props.stock === 0}
             >
-              {currentQuantity > 0 ? `Update Cart (${currentQuantity})` : 'Add to Cart'}
+              {props.stock === 0
+                ? 'Out of Stock'
+                : currentQuantity > 0
+                  ? `Update Cart (${currentQuantity})`
+                  : 'Add to Cart'
+              }
             </Button>
           </div>
         </div>
