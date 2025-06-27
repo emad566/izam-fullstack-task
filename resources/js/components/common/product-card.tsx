@@ -5,9 +5,99 @@ import { Button } from "../ui/button"
 import ProductCountButton from "./product-count-button"
 import { SideModal } from "./drawer"
 import { useModal } from "@/contexts/modal-context"
+import { useQueryClient } from "@tanstack/react-query"
+import { useState, useEffect } from "react"
+
+interface CartItem {
+  id: number | string
+  quantity: number
+}
 
 const ProductCard = (props: Product) => {
-  const { openModal } = useModal()
+  const { openModal, closeModal } = useModal()
+  const queryClient = useQueryClient()
+  const [currentQuantity, setCurrentQuantity] = useState(0)
+
+  // Get cart from localStorage
+  const getCart = (): CartItem[] => {
+    try {
+      const cart = localStorage.getItem('cart')
+      return cart ? JSON.parse(cart) : []
+    } catch {
+      return []
+    }
+  }
+
+  // Save cart to localStorage and trigger sync events
+  const saveCart = (cart: CartItem[]) => {
+    localStorage.setItem('cart', JSON.stringify(cart))
+    // Invalidate cart queries to trigger re-render
+    queryClient.invalidateQueries({
+      queryKey: ["cart"],
+    })
+    // Dispatch custom event to sync all ProductCountButton instances
+    window.dispatchEvent(new CustomEvent('cartUpdated', {
+      detail: { cart }
+    }))
+  }
+
+  // Load current quantity from localStorage
+  useEffect(() => {
+    const cart = getCart()
+    const item = cart.find(item => item.id.toString() === props.id.toString())
+    setCurrentQuantity(item?.quantity || 0)
+  }, [props.id])
+
+  // Listen for cart changes to update quantity
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const cart = getCart()
+      const item = cart.find(item => item.id.toString() === props.id.toString())
+      setCurrentQuantity(item?.quantity || 0)
+    }
+
+    // Listen for storage changes from other tabs/windows
+    window.addEventListener('storage', handleStorageChange)
+
+    // Listen for custom cart update events
+    window.addEventListener('cartUpdated', handleStorageChange)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('cartUpdated', handleStorageChange)
+    }
+  }, [props.id])
+
+  const handleAddToCart = () => {
+    if (currentQuantity > 0) {
+      // Item is already in cart, close modal
+      closeModal(`product-${props.id}`)
+
+      // Show success message (you can implement a toast here)
+      console.log(`Added ${currentQuantity} of ${props.name} to cart`)
+    } else {
+      // Add one item to cart if quantity is 0
+      const cart = getCart()
+      const existingItemIndex = cart.findIndex(item => item.id.toString() === props.id.toString())
+
+      if (existingItemIndex !== -1) {
+        cart[existingItemIndex].quantity = 1
+      } else {
+        cart.push({ id: props.id, quantity: 1 })
+      }
+
+      saveCart(cart)
+      setCurrentQuantity(1)
+
+      // Dispatch custom event to update other components
+      window.dispatchEvent(new CustomEvent('cartUpdated', {
+        detail: { cart }
+      }))
+
+      closeModal(`product-${props.id}`)
+    }
+  }
+
   return (
     <>
       <Card className="border-0 pt-0">
@@ -101,8 +191,9 @@ const ProductCard = (props: Product) => {
             <Button
               className="w-full bg-black hover:bg-gray-800 text-white py-3 text-base font-medium"
               size="lg"
+              onClick={handleAddToCart}
             >
-              Add to Cart
+              {currentQuantity > 0 ? `Update Cart (${currentQuantity})` : 'Add to Cart'}
             </Button>
           </div>
         </div>
