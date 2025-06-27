@@ -105,11 +105,16 @@ const ProductCard = (props: Product) => {
   return (
     <>
       <Card className="border-0 pt-0">
-        <div className="w-full aspect-[9/10]">
+        <div
+          className="w-full aspect-[9/10] cursor-pointer"
+          onClick={() => {
+            openModal(`product-${props.id}`)
+          }}
+        >
           <img
             src={props.image_urls?.large}
             alt={props.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover hover:opacity-90 transition-opacity"
           />
         </div>
         <CardContent className="space-y-3">
