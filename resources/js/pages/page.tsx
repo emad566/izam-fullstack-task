@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import Filters from "./components/filters"
 import Results from "./components/results"
+import Cart from "./components/cart"
 
 export default function Home() {
   return (
@@ -26,10 +27,12 @@ export default function Home() {
           </BreadcrumbList>
         </Breadcrumb>
       </div>
-      <div className="flex gap-6  pb-10">
+      <div className="flex gap-6  pb-10 relative">
         <Filters />
         <Results />
-        <div></div>
+        <div className="min-w-sm ">
+          <Cart />
+        </div>
       </div>
     </div>
   )

@@ -1,6 +1,6 @@
 import { Minus, Plus } from "lucide-react"
 import { Button } from "../ui/button"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { useDebouncedCallback } from "@/hooks/use-debounced-callback"
 
@@ -14,6 +14,8 @@ const ProductCountButton = ({ id }: Props) => {
   const decrement = () => {
     setCount((pre) => (pre === 0 ? 0 : --pre))
   }
+  // query client
+  const queryClient = useQueryClient()
   const mutation = useMutation({
     mutationFn: async ({ count }: { count: number }) => {
       // handle update count here
@@ -21,9 +23,17 @@ const ProductCountButton = ({ id }: Props) => {
     },
     onSuccess(data, variables, context) {
       // handle refetching cart here
+
+      queryClient.invalidateQueries({
+        queryKey: ["cart"],
+      })
     },
     onError(error, variables, context) {
       // handle error here
+
+      queryClient.invalidateQueries({
+        queryKey: ["cart"],
+      })
     },
   })
 
