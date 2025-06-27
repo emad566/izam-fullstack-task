@@ -20,11 +20,6 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import z from "zod"
-import Api from "@/services"
-import { handleFormError } from "@/utils/form-error"
-import type { LoginResponse } from "@/@types/user"
-import { LOCALSTORAGE_SESSION_KEY } from "@/config"
-import { useNavigate } from "react-router"
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -43,6 +38,7 @@ export function LoginForm({
     },
   })
 
+<<<<<<< HEAD:src/pages/auth/login/components/login-form.tsx
   const navigate = useNavigate()
   const onSubmit = form.handleSubmit(async (data) => {
     try {
@@ -60,6 +56,9 @@ export function LoginForm({
       handleFormError(error, form)
     }
   })
+=======
+  const onSubmit = form.handleSubmit(async () => {})
+>>>>>>> parent of d3b0c18 (handle login):src/pages/auth/login/components/loign-form.tsx
   return (
     <div className={cn("flex flex-col gap-6 w-full", className)} {...props}>
       <Card className=" max-md:border-0 shadow-none md:shadow-md">
@@ -113,12 +112,7 @@ export function LoginForm({
                     )}
                   />
                 </div>
-                <Button
-                  loading={form.formState.isSubmitting}
-                  size={"lg"}
-                  type="submit"
-                  className="w-full"
-                >
+                <Button size={"lg"} type="submit" className="w-full">
                   Login
                 </Button>
                 <p className="text-red-500 text-center text-sm">
