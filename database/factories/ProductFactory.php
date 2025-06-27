@@ -78,7 +78,7 @@ class ProductFactory extends Factory
             'name' => $this->faker->randomElement($clothingProducts) . ' ' . $this->faker->numberBetween(1, 1000),
             'description' => $this->faker->paragraph,
             'price' => $this->faker->randomFloat(2, 10, 1000),
-            'stock' => $this->faker->numberBetween(0, 100),
+            'stock' => $this->faker->numberBetween(0, 20),
             'category_id' => Category::factory(),
         ];
     }

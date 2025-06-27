@@ -118,14 +118,14 @@ const FiltersForm = () => {
   const onSubmit = form.handleSubmit((values) => {
     set({
       min_price: values.price[0] !== 0 ? values.price[0] : null,
-      max_price: values.price[1] !== 10000 ? values.price[1] : null,
+      max_price: values.price[1] !== 1000 ? values.price[1] : null,
       "category_ids[]": values.category_ids,
     })
   })
 
   const onClear = () => {
     set({ min_price: null, max_price: null, "category_ids[]": [] })
-    form.reset({ price: [0, 10000], category_ids: [], all: false })
+    form.reset({ price: [0, 1000], category_ids: [], all: false })
   }
 
   if (categoriesQuery.isLoading) {
