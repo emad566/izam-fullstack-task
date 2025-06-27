@@ -78,7 +78,7 @@ export function LoginForm({
             Please enter your details to sign in{" "}
           </CardDescription>
         </CardHeader>
-        <CardContent className="max-md:px-0">
+        <CardContent className="max-md:px-6">
           <Form {...form}>
             <form onSubmit={onSubmit}>
               <div className="flex flex-col gap-6 w-full">
