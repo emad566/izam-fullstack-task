@@ -3,6 +3,7 @@
 import { logo } from "@/assets"
 import { Button } from "@/components/ui/button"
 import { getSession } from "@/utils/get-session"
+import { logout } from "@/utils/logout"
 import { Menu, MoveRight, Search, ShoppingCart, X } from "lucide-react"
 import { useState } from "react"
 import { Link } from "react-router"
@@ -89,7 +90,10 @@ export const Header = () => {
             </Button>
           </Link>
           {isAuthenticated ? (
-            <Button variant={"outline"} className="rounded-sm">
+            <Button
+              variant={"outline"}
+              className="rounded-sm"
+              onClick={() => logout()}> 
               logout
             </Button>
           ) : (

@@ -4,17 +4,21 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import Api from "@/services"
 import { useQuery } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
-import { useSearchParams } from "react-router"
+import { parseAsString, useQueryState } from "nuqs"
 import type { ProductsResponse } from "../@types"
 import Search from "./search"
 
 const Results = () => {
-  const [searchParams] = useSearchParams()
+  const [q] = useQueryState("q", parseAsString.withDefault(""))
+
+  const searchParamsObj = { q }
+  console.log("🚀 ~ Results ~ searchParamsObj:", searchParamsObj)
+
   const result = useQuery({
-    queryKey: ["results", searchParams.toString()],
+    queryKey: ["results", searchParamsObj],
     queryFn: async () => {
       const result = await Api.get<ProductsResponse>("/guest/products", {
-        params: searchParams,
+        params: { ...searchParamsObj, page: 1, per_page: 9 },
       })
 
       return result.data.data.items
