@@ -52,8 +52,10 @@ USER www
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Install Node.js dependencies and build React assets
-RUN npm ci --omit=dev
+RUN rm -rf node_modules package-lock.json
+RUN npm install
 RUN npm run build
+RUN npm prune --omit=dev
 
 # Switch back to root for final setup
 USER root
