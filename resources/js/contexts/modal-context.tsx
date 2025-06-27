@@ -4,7 +4,7 @@ import { createContext, useContext, useReducer } from "react"
 
 // Types
 interface ModalState {
-  openModals: string
+  openModals: string[]
 }
 
 type ModalAction =
@@ -12,7 +12,7 @@ type ModalAction =
   | { type: "CLOSE_MODAL"; id: string }
 
 interface ModalContextType {
-  openModals: string
+  openModals: string[]
   openModal: (id: string) => void
   closeModal: (id: string) => void
 }
@@ -23,12 +23,15 @@ const ModalContext = createContext<ModalContextType | undefined>(undefined)
 function modalReducer(state: ModalState, action: ModalAction): ModalState {
   switch (action.type) {
     case "OPEN_MODAL": {
-      return { openModals: action.id }
+      if (state.openModals.includes(action.id)) {
+        return state
+      }
+      return { openModals: [...state.openModals, action.id] }
     }
 
     case "CLOSE_MODAL": {
       return {
-        openModals: "",
+        openModals: state.openModals.filter(id => id !== action.id),
       }
     }
 
@@ -39,7 +42,7 @@ function modalReducer(state: ModalState, action: ModalAction): ModalState {
 
 // Provider
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
-  const [state, dispatch] = useReducer(modalReducer, { openModals: "" })
+  const [state, dispatch] = useReducer(modalReducer, { openModals: [] })
   // const { pathname } = useRouter(); // Uncomment and fix this import if you have a custom router hook
 
   const value: ModalContextType = {
