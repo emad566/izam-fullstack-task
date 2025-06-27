@@ -72,7 +72,7 @@ const FiltersForm = () => {
     queryKey: ["categories"],
     queryFn: async () => {
       const result = await Api.get<CategoriesResponse>("/guest/categories", {
-        params: { per_page: 100 } // Get all categories
+        params: { per_page: 15 } // Get all categories
       })
       return result.data.data.items.data
     },

@@ -4,6 +4,7 @@ import ProductCountButton from "@/components/common/product-count-button"
 import Api from "@/services"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Loader2, Trash2 } from "lucide-react"
+import { useNavigate } from "react-router"
 import type { ProductsResponse, Product } from "../@types"
 
 interface CartItem {
@@ -13,6 +14,7 @@ interface CartItem {
 
 const Cart = () => {
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   // Get cart from localStorage
   const getCart = (): CartItem[] => {
@@ -183,6 +185,7 @@ const Cart = () => {
 
                 {/* Checkout Button */}
                 <Button
+                  onClick={() => navigate('/checkout')}
                   className="w-full bg-black hover:bg-gray-800 text-white py-3 text-base font-medium mt-4"
                   size="lg"
                 >

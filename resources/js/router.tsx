@@ -3,6 +3,7 @@ import AuthLayout from "./pages/auth/layout"
 import LoginPage from "./pages/auth/login/page"
 import AppLayout from "./pages/layout"
 import Home from "./pages/page"
+import CheckoutPage from "./pages/checkout/page"
 
 const MyRouter = () => {
   return (
@@ -13,6 +14,7 @@ const MyRouter = () => {
           <Route path="login" element={<LoginPage />} />
         </Route>
         <Route index element={<Home />} />
+        <Route path="checkout" element={<CheckoutPage />} />
       </Route>
     </Routes>
   )
