@@ -23,6 +23,7 @@ import {
 import { useEffect, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { useQuery } from "@tanstack/react-query"
+import { useModal } from "@/contexts/modal-context"
 import Api from "@/services"
 
 interface Category {
@@ -61,6 +62,7 @@ interface CategoriesResponse {
 }
 
 const FiltersForm = () => {
+  const { closeModal } = useModal()
   const [initValues, set] = useQueryStates({
     min_price: parseAsInteger.withDefault(0),
     max_price: parseAsInteger.withDefault(1000),
@@ -121,6 +123,8 @@ const FiltersForm = () => {
       max_price: values.price[1] !== 1000 ? values.price[1] : null,
       "category_ids[]": values.category_ids,
     })
+    // Close the filters modal after applying filters
+    closeModal("filters")
   })
 
   const onClear = () => {

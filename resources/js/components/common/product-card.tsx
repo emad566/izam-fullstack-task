@@ -69,19 +69,16 @@ const ProductCard = (props: Product) => {
   }, [props.id])
 
     const handleAddToCart = () => {
+    // Check if stock is available before adding
+    if (props.stock && props.stock <= 0) {
+      console.log("Product is out of stock")
+      return
+    }
+
     if (currentQuantity > 0) {
-      // Item is already in cart, close modal
-      closeModal(`product-${props.id}`)
-
-      // Show success message (you can implement a toast here)
-      console.log(`Added ${currentQuantity} of ${props.name} to cart`)
+      // Item is already in cart, show success message
+      console.log(`Updated ${currentQuantity} of ${props.name} in cart`)
     } else {
-      // Check if stock is available before adding
-      if (props.stock && props.stock <= 0) {
-        console.log("Product is out of stock")
-        return
-      }
-
       // Add one item to cart if quantity is 0
       const cart = getCart()
       const existingItemIndex = cart.findIndex(item => item.id.toString() === props.id.toString())
@@ -99,9 +96,10 @@ const ProductCard = (props: Product) => {
       window.dispatchEvent(new CustomEvent('cartUpdated', {
         detail: { cart }
       }))
-
-      closeModal(`product-${props.id}`)
     }
+
+    // Always close modal after any cart action
+    closeModal(`product-${props.id}`)
   }
 
   return (

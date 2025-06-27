@@ -9,7 +9,7 @@ import {
 import { useModal } from "@/contexts/modal-context"
 import { cn } from "@/lib/utils"
 import { X } from "lucide-react"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 
 interface SideModalProps {
   id: string
@@ -41,6 +41,20 @@ export function SideModal({
 }: SideModalProps) {
   const { openModals, closeModal } = useModal()
   const isOpen = openModals.includes(id)
+
+  // Hook to detect mobile screen size
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768) // md breakpoint
+    }
+
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
 
   // Close on escape key (only for top modal)
   useEffect(() => {
@@ -80,7 +94,8 @@ export function SideModal({
       <DrawerContent
         className={` w-full ${sizeClasses[size]} rounded-none !border-0 flex flex-col bg-card `}
         onInteractOutside={(e) => {
-          if (!shouldCloseOnOverlayClick) {
+          // Disable close-on-overlay on mobile or when explicitly disabled
+          if (!shouldCloseOnOverlayClick || isMobile) {
             e.preventDefault()
           } else {
             closeModal(id)

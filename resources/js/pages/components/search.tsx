@@ -34,28 +34,37 @@ const Search = ({ className, ...props }: InputProps) => {
     <>
       <div className="flex gap-2 items-center">
         <div className="relative flex-1">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+          {/* Mobile: Search icon on left */}
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none md:hidden">
             <SearchIcon className="w-4 h-4 text-gray-400" />
           </div>
+
+          {/* Mobile: Filter icon on right */}
+          <div className="absolute inset-y-0 right-0 flex items-center md:hidden">
+            <Button
+              onClick={() => openModal("filters")}
+              className="w-8 h-8 rounded-full bg-gray-200 hover:bg-gray-300 mr-1"
+              variant="ghost"
+              size="icon"
+            >
+              <SlidersHorizontal className="w-3 h-3" />
+            </Button>
+          </div>
+
+          {/* Desktop: Search icon on left */}
+          <div className="absolute inset-y-0 left-0 hidden md:flex items-center pl-3 pointer-events-none">
+            <SearchIcon className="w-4 h-4 text-gray-400" />
+          </div>
+
           <Input
             placeholder={"Search by product name"}
             variant="white"
             {...props}
             value={value}
             onChange={handleChange}
-            className={cn("pl-10", className)}
+            className={cn("pl-10 pr-10 md:pl-10", className)}
           />
         </div>
-
-        {/* Mobile Filter Button - Only visible on small screens */}
-        <Button
-          onClick={() => openModal("filters")}
-          className="md:hidden w-10 h-10 rounded-full"
-          variant="outline"
-          size="icon"
-        >
-          <SlidersHorizontal className="w-4 h-4" />
-        </Button>
       </div>
 
       {/* Mobile Filters Modal */}
