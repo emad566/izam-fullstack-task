@@ -17,6 +17,7 @@ A comprehensive React + Laravel fullstack e-commerce application featuring a mod
 - [🔐 Authentication Flow](#-authentication-flow)
 - [🚀 Running Backend & Frontend](#-running-backend--frontend)
 - [🧪 Testing](#-testing)
+- [📧 Order Email Event System](#-order-email-event-system)
 - [🎯 Custom Trait Controller Design Pattern](#-custom-trait-controller-design-pattern)
 - [🔐 Multi-Auth System](#-multi-auth-system)
 - [🛡️ Security Features](#️-security-features)
@@ -307,6 +308,55 @@ php artisan test --testsuite=Api
 # Test coverage: 109 tests, 752 assertions
 # Includes: API endpoints, Authentication, Security, Controllers
 ```
+
+## 📧 Order Email Event System
+
+### Event-Driven Order Notifications
+
+The application implements a sophisticated event-driven email notification system that automatically notifies administrators when new orders are placed.
+
+### How It Works
+
+```php
+// 1. Order Creation Triggers Event (Order Model)
+static::created(function ($order) {
+    event(new OrderPlaced($order, $order->user));
+});
+
+// 2. Event Listener Handles Notification (EventServiceProvider)
+OrderPlaced::class => [
+    SendOrderNotificationToAdmin::class,
+],
+
+// 3. Admin Notification Email Sent
+Mail::to($admin->email)->send(new OrderPlacedNotification($event->order, $event->user));
+```
+
+### Features
+
+✅ **Automatic Triggering** - Event fires immediately when order is created  
+✅ **Multi-Admin Support** - Sends notifications to all active administrators  
+✅ **Queue Support** - Implements `ShouldQueue` for background processing  
+✅ **Comprehensive Email** - Includes order details, customer info, and product list  
+✅ **Error Handling** - Graceful failure handling with detailed logging  
+✅ **Testing Coverage** - Complete test suite for event system (7 test cases)
+
+### Email Content
+
+The notification email includes:
+- **Order Number** - Unique order identifier  
+- **Customer Details** - User name and contact information
+- **Product List** - All ordered items with quantities and prices
+- **Total Amount** - Complete order value
+- **Order Notes** - Any special instructions from customer
+
+### Event Flow
+
+1. **Order Created** → `OrderPlaced` event dispatched
+2. **Event Listener** → `SendOrderNotificationToAdmin` processes event
+3. **Email Generated** → `OrderPlacedNotification` mailable created
+4. **Admin Notified** → Email sent to all administrators
+5. **Error Logging** → Any failures logged for debugging
 
 ## 🎯 Custom Trait Controller Design Pattern
 
