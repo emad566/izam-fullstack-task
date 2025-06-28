@@ -8,6 +8,8 @@ A comprehensive React + Laravel fullstack e-commerce application featuring a mod
 
 - [⏱️ Development Time Tracking](#️-development-time-tracking)
 - [🚀 Live Demo](#-live-demo)
+  - [🔑 Test Credentials](#-test-credentials)
+  - [🗄️ Database Access](#️-database-access)
 - [📚 API Endpoints](#-api-endpoints)
 - [⚡ Quick Setup](#-quick-setup)
 - [🐳 Docker Setup](#-docker-setup)
@@ -31,6 +33,21 @@ A comprehensive React + Laravel fullstack e-commerce application featuring a mod
 
 🌟 **Project Live**: [https://izam-task.emadw3.com](https://izam-task.emadw3.com) - no setup required!  
 🌟 **API Live**: [https://izam-task.emadw3.com/api](https://izam-task.emadw3.com/api) - no setup required!
+
+### 🔑 Test Credentials
+
+**Admin Login:**
+- Email: `admin@admin.com`
+- Password: `12345678`
+
+**User Login:**
+- Email: `user@user.com`  
+- Password: `12345678`
+
+### 🗄️ Database Access
+
+**phpMyAdmin:** [http://izam-task.emadw3.com:3013/](http://izam-task.emadw3.com:3013/) - no authentication required  
+*Direct access to view database structure and data*
 
 ## 📚 API Endpoints
 
