@@ -151,7 +151,6 @@ const ProductCard = (props: Product) => {
       <SideModal
         id={`product-${props.id}`}
         title="Product Details"
-        shouldCloseOnOverlayClick={true}
         size="md"
       >
         <div className="space-y-4">

@@ -18,7 +18,7 @@ const Filters = () => {
       >
         <SlidersHorizontal strokeWidth={1.2} className="size-7" />
       </Button>
-      <SideModal title="Filters" id="filters" shouldCloseOnOverlayClick={true}>
+      <SideModal title="Filters" id="filters">
         <FiltersForm />
       </SideModal>
     </>

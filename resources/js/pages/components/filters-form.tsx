@@ -155,15 +155,7 @@ const FiltersForm = () => {
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <div
-                        className="py-4 px-2"
-                        onPointerDown={(e) => e.stopPropagation()}
-                        onPointerMove={(e) => e.stopPropagation()}
-                        onPointerUp={(e) => e.stopPropagation()}
-                        onTouchStart={(e) => e.stopPropagation()}
-                        onTouchMove={(e) => e.stopPropagation()}
-                        onTouchEnd={(e) => e.stopPropagation()}
-                      >
+                      <div className="py-4 px-2">
                         <DualRangeSlider
                           label={(value) => value}
                           value={field.value}

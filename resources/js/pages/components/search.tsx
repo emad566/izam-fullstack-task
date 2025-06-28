@@ -68,7 +68,7 @@ const Search = ({ className, ...props }: InputProps) => {
       </div>
 
       {/* Mobile Filters Modal */}
-      <SideModal title="Filters" id="filters" shouldCloseOnOverlayClick={true}>
+      <SideModal title="Filters" id="filters">
         <FiltersForm />
       </SideModal>
     </>
