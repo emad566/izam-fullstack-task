@@ -31,34 +31,96 @@ Import the comprehensive Postman collection: **[`assets/IZAM-ecommerce-task-API.
 - ✅ **Organized Structure** - Logical folder organization (Auth/Guest/User/Admin)
 - ✅ **Pre-configured Headers** - Automatic Accept/Content-Type headers
 
-### Authentication
+### Authentication (`/api/auth/`)
 ```
-POST /api/login           # User login
-POST /api/register        # User registration
-POST /api/logout          # User logout
+# User Authentication
+POST /api/auth/user/register      # User registration
+POST /api/auth/user/login         # User login
+POST /api/auth/user/logout        # User logout (authenticated)
+
+# Admin Authentication  
+POST /api/auth/admin/login        # Admin login
+POST /api/auth/admin/logout       # Admin logout (authenticated)
 ```
 
-### Products
+### Guest/Public Routes (`/api/guest/`)
 ```
-GET  /api/products        # List products (with filters)
-GET  /api/products/{id}   # Get single product
+# Categories (Public Read-Only)
+GET  /api/guest/categories        # List categories
+GET  /api/guest/categories/{id}   # Show single category
+
+# Products (Public Read-Only)
+GET  /api/guest/products          # List products (with advanced filtering)
+GET  /api/guest/products/{id}     # Show single product
 ```
 
-### Categories
+### User Routes (`/api/user/`) - Authenticated Users Only
 ```
-GET  /api/categories      # List all categories
+# Orders Management (Users can only manage their own orders)
+GET  /api/user/orders             # List user's orders (with filtering)
+GET  /api/user/orders/create      # Get order creation form data
+POST /api/user/orders             # Create new order
+GET  /api/user/orders/{id}        # Show user's order details
+DELETE /api/user/orders/{id}      # Delete user's order
+PUT  /api/user/orders/{id}/toggleActive/{state}  # Toggle order status
 ```
 
-### Orders
+### Admin Routes (`/api/admin/`) - Admin Only - Full CRUD
 ```
-POST /api/orders          # Create new order
-GET  /api/orders          # User's orders (authenticated)
+# Categories Management (Complete CRUD)
+GET    /api/admin/categories           # List all categories
+GET    /api/admin/categories/create    # Get category creation form data
+POST   /api/admin/categories           # Create new category
+GET    /api/admin/categories/{id}      # Show category details
+GET    /api/admin/categories/{id}/edit # Get category edit form data
+PUT    /api/admin/categories/{id}      # Update category
+DELETE /api/admin/categories/{id}      # Delete category
+PUT    /api/admin/categories/{id}/toggleActive/{state}  # Toggle category status
+
+# Products Management (Complete CRUD + Image Upload)
+GET    /api/admin/products             # List all products (with advanced filtering)
+GET    /api/admin/products/create      # Get product creation form data
+POST   /api/admin/products             # Create new product (with image upload)
+GET    /api/admin/products/{id}        # Show product details
+GET    /api/admin/products/{id}/edit   # Get product edit form data
+PUT    /api/admin/products/{id}        # Update product (with image upload)
+DELETE /api/admin/products/{id}        # Delete product
+PUT    /api/admin/products/{id}/toggleActive/{state}  # Toggle product status
+
+# Orders Management (Complete CRUD)
+GET    /api/admin/orders               # List all orders (with advanced filtering)
+GET    /api/admin/orders/create        # Get order creation form data
+POST   /api/admin/orders               # Create new order
+GET    /api/admin/orders/{id}          # Show order details
+GET    /api/admin/orders/{id}/edit     # Get order edit form data
+PUT    /api/admin/orders/{id}          # Update order (status, notes)
+DELETE /api/admin/orders/{id}          # Delete order
+PUT    /api/admin/orders/{id}/toggleActive/{state}  # Toggle order status
 ```
 
-### Admin (Protected)
+### Advanced Filtering Parameters
 ```
-GET  /api/admin/products  # Admin product management
-GET  /api/admin/orders    # Admin order management
+# Products Filtering (Guest & Admin)
+?category_ids[]=1&category_ids[]=2     # Filter by category IDs
+?category_name=electronics             # Filter by category name (like search)
+?category_names[]=phones&category_names[]=laptops  # Filter by category names
+?min_price=100&max_price=500          # Price range filtering
+?name=macbook                         # Product name search
+?q=laptop                             # General search query
+?page=1&per_page=15                   # Pagination
+?sortColumn=price&sortDirection=ASC   # Sorting
+?date_from=2024-01-01&date_to=2024-12-31  # Date range
+
+# Orders Filtering (User & Admin)
+?status=pending                       # Filter by order status
+?order_number=ORD-001                 # Filter by order number
+?user_name=john                       # Filter by user name (admin only)
+?user_names[]=john&user_names[]=jane  # Filter by user names (admin only)
+?user_ids[]=1&user_ids[]=2            # Filter by user IDs (admin only)
+?product_name=laptop                  # Filter by product name
+?product_names[]=laptop&product_names[]=phone  # Filter by product names
+?category_names[]=electronics         # Filter by category names
+?category_ids[]=1&category_ids[]=2    # Filter by category IDs
 ```
 
 ## ⚡ Quick Setup
