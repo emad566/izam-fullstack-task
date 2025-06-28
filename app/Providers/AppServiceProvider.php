@@ -27,9 +27,9 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         // Only force HTTPS in production
-        if (app()->environment('production')) {
+        // if (app()->environment('production')) {
             URL::forceScheme('https');
-        }
+        // }
 
         Builder::macro('betweenEqual', function ($field, $array) {
             return $this->where($field, '>=', $array[0])

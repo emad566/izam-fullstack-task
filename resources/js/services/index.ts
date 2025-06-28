@@ -2,7 +2,7 @@ import { getSession } from "@/utils/get-session"
 import { logout } from "@/utils/logout"
 import axios from "axios"
 
-const baseURL = "http://localhost:8000/api"
+const baseURL = "https://izam-task.emadw3.com/api"
 
 // Create an Axios instance
 const Api = axios.create({

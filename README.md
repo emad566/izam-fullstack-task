@@ -21,7 +21,7 @@ A comprehensive React + Laravel fullstack e-commerce application featuring a mod
 
 The IZAM E-commerce application is a modern fullstack solution combining a **React TypeScript frontend** with a **Laravel PHP backend**. It demonstrates professional-grade development practices, responsive design, and scalable architecture patterns.
 
-🌟 **Live Demo**: Experience the application at [http://localhost:8000](http://localhost:8000) after setup
+🌟 **Live Demo**: Experience the application at [http://localhost:3010](http://localhost:3010) after setup
 
 ### 🏗️ Architecture Overview
 
@@ -138,15 +138,15 @@ chmod +x docker-setup.sh
 ./docker-setup.sh
 
 # 3. Access the application
-open http://localhost:8000
+open http://localhost:3010
 ```
 
 **🎯 Access Points:**
-- **Frontend Application**: `http://localhost:8000`
-- **API Endpoint**: `http://localhost:8000/api`
-- **Vite Dev Server**: `http://localhost:5173` (development mode)
-- **phpMyAdmin**: `http://localhost:8081`
-- **Database**: `localhost:3307`
+- **Frontend Application**: `http://localhost:3010`
+- **API Endpoint**: `http://localhost:3010/api`
+- **Vite Dev Server**: `http://localhost:3011` (development mode)
+- **phpMyAdmin**: `http://localhost:3013`
+- **Database**: `localhost:3012`
 
 ## 🛠️ Setup Instructions
 
@@ -169,7 +169,7 @@ chmod +x docker-setup.sh
 ./docker-setup.sh
 
 # Access application
-open http://localhost:8000
+open http://localhost:3010
 ```
 
 #### Development Mode (with Hot Reloading)
@@ -181,8 +181,8 @@ make dev
 docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 
 # Access points:
-# Laravel app: http://localhost:8000
-# Vite dev server: http://localhost:5173
+# Laravel app: http://localhost:3010
+# Vite dev server: http://localhost:3011
 ```
 
 #### Available Make Commands
@@ -239,7 +239,7 @@ npm run build
 
 # 6. Start servers
 # Terminal 1: Laravel
-php artisan serve --port=8000
+php artisan serve --port=3010
 
 # Terminal 2: Vite (development)
 npm run dev
@@ -459,13 +459,13 @@ RUN npm run build
 #### Environment Variables
 ```bash
 # Laravel configuration
-APP_URL=http://localhost:8000
+APP_URL=http://localhost:3010
 DB_HOST=database
 REDIS_HOST=redis
 
 # Vite configuration
-VITE_APP_URL=http://localhost:8000
-VITE_DEV_SERVER_URL=http://localhost:5173
+VITE_APP_URL=http://localhost:3010
+VITE_DEV_SERVER_URL=http://localhost:3011
 ```
 
 ## 📚 API Documentation
@@ -521,7 +521,7 @@ GET /api/guest/products?q=shirt&min_price=10&max_price=100&category_ids[]=1&cate
 
 #### User Registration
 ```bash
-curl -X POST http://localhost:8000/api/auth/register \
+curl -X POST http://localhost:3010/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{
     "name": "John Doe",
@@ -533,7 +533,7 @@ curl -X POST http://localhost:8000/api/auth/register \
 
 #### User Login
 ```bash
-curl -X POST http://localhost:8000/api/auth/login \
+curl -X POST http://localhost:3010/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "john@example.com",
@@ -543,7 +543,7 @@ curl -X POST http://localhost:8000/api/auth/login \
 
 #### Create Order
 ```bash
-curl -X POST http://localhost:8000/api/user/orders \
+curl -X POST http://localhost:3010/api/user/orders \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer {token}" \
   -d '{
@@ -609,7 +609,7 @@ public function test_user_can_create_order()
 # Run all backend tests
 make test
 # or
-docker-compose exec app php artisan test
+docker-compose exec izam php artisan test
 
 # Run specific test suite
 php artisan test --testsuite=Feature
@@ -635,7 +635,7 @@ docker-compose -f docker-compose.yml build --no-cache
 docker-compose up -d
 
 # Verify deployment
-curl http://localhost:8000/api/guest/products
+curl http://localhost:3010/api/guest/products
 ```
 
 #### Production Optimizations

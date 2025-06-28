@@ -51,35 +51,35 @@ logs: ## Show container logs
 	@docker-compose logs -f
 
 shell: ## Access application container shell
-	@docker-compose exec app bash
+	@docker-compose exec izam bash
 
 # Laravel commands
 migrate: ## Run database migrations
 	@echo "📊 Running database migrations..."
-	@docker-compose exec app php artisan migrate
+	@docker-compose exec izam php artisan migrate
 
 migrate-fresh: ## Fresh database migration with seeding
-	docker-compose exec app php artisan migrate:fresh --seed
+	docker-compose exec izam php artisan migrate:fresh --seed
 
 seed: ## Seed the database
 	@echo "🌱 Seeding database..."
-	@docker-compose exec app php artisan db:seed
+	@docker-compose exec izam php artisan db:seed
 
 test: ## Run tests
 	@echo "🧪 Running PHP tests..."
-	@docker-compose exec app php artisan test
+	@docker-compose exec izam php artisan test
 
 test-feature: ## Run feature tests only
-	docker-compose exec app php artisan test --testsuite=Feature
+	docker-compose exec izam php artisan test --testsuite=Feature
 
 test-unit: ## Run unit tests only
-	docker-compose exec app php artisan test --testsuite=Unit
+	docker-compose exec izam php artisan test --testsuite=Unit
 
 # Application commands
 install: ## Complete installation and setup
 	@echo "📦 Installing dependencies..."
-	@docker-compose exec app composer install
-	@docker-compose exec app npm install
+	@docker-compose exec izam composer install
+	@docker-compose exec izam npm install
 
 fresh: ## Fresh installation (rebuild everything)
 	make down
@@ -89,32 +89,32 @@ fresh: ## Fresh installation (rebuild everything)
 	make cache
 
 cache: ## Cache Laravel configuration
-	docker-compose exec app php artisan config:cache
-	docker-compose exec app php artisan route:cache
-	docker-compose exec app php artisan view:cache
+	docker-compose exec izam php artisan config:cache
+	docker-compose exec izam php artisan route:cache
+	docker-compose exec izam php artisan view:cache
 
 cache-clear: ## Clear all caches
 	@echo "🧹 Clearing all caches..."
-	@docker-compose exec app php artisan cache:clear
-	@docker-compose exec app php artisan config:clear
-	@docker-compose exec app php artisan route:clear
-	@docker-compose exec app php artisan view:clear
+	@docker-compose exec izam php artisan cache:clear
+	@docker-compose exec izam php artisan config:clear
+	@docker-compose exec izam php artisan route:clear
+	@docker-compose exec izam php artisan view:clear
 
 queue-work: ## Start queue worker
-	docker-compose exec app php artisan queue:work
+	docker-compose exec izam php artisan queue:work
 
 # Maintenance commands
 composer-install: ## Install Composer dependencies
-	docker-compose exec app composer install
+	docker-compose exec izam composer install
 
 composer-update: ## Update Composer dependencies
-	docker-compose exec app composer update
+	docker-compose exec izam composer update
 
 npm-install: ## Install NPM dependencies
-	docker-compose exec app npm install
+	docker-compose exec izam npm install
 
 npm-build: ## Build assets
-	docker-compose exec app npm run build
+	docker-compose exec izam npm run build
 
 # Cleanup commands
 clean: ## Clean up Docker resources
@@ -130,8 +130,8 @@ dev:
 	@echo "🚀 Starting development mode with hot reloading..."
 	@docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 	@echo "✅ Development servers started!"
-	@echo "🌐 Laravel app: http://localhost:8000"
-	@echo "⚡ Vite dev server: http://localhost:5173"
+	@echo "🌐 Laravel app: http://localhost:3010"
+	@echo "⚡ Vite dev server: http://localhost:3011"
 
 dev-down:
 	@echo "⬇️ Stopping development containers..."
@@ -139,7 +139,7 @@ dev-down:
 
 assets-build:
 	@echo "🔨 Building React assets for production..."
-	@docker-compose exec app npm run build
+	@docker-compose exec izam npm run build
 
 assets-dev:
 	@echo "⚡ Starting Vite dev server..."

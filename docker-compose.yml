@@ -1,13 +1,13 @@
 
 services:
   # Laravel Application
-  app:
+  izam:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: izam-app
     ports:
-      - "8000:80"
+      - "3010:80"
     volumes:
       - .:/var/www/html
       - ./storage/app:/var/www/html/storage/app
@@ -34,7 +34,7 @@ services:
     image: mysql:8.0
     container_name: izam-database
     ports:
-      - "3307:3306"
+      - "3012:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: izam_ecommerce
@@ -51,7 +51,7 @@ services:
     image: redis:7-alpine
     container_name: izam-redis
     ports:
-      - "6379:6379"
+      - "3014:6379"
     volumes:
       - redis_data:/data
     networks:
@@ -62,7 +62,7 @@ services:
     image: phpmyadmin/phpmyadmin
     container_name: izam-phpmyadmin
     ports:
-      - "8081:80"
+      - "3013:80"
     environment:
       PMA_HOST: database
       PMA_USER: izam_user
@@ -122,14 +122,14 @@ services:
     container_name: izam-vite
     working_dir: /var/www/html
     ports:
-      - "5173:5173"
+      - "3011:5173"
     volumes:
       - .:/var/www/html
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
     environment:
       - NODE_ENV=development
     depends_on:
-      - app
+      - izam
     networks:
       - izam-network
     profiles:

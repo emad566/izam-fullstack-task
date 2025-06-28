@@ -21,7 +21,7 @@ The Docker setup includes the following services:
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          ▼                       ▼                       ▼
-    Port: 8000              Port: 3306              Port: 6379
+    Port: 3010             Port: 3012             Port: 3014
 
 ┌─────────────────┐    ┌─────────────────┐
 │   phpMyAdmin    │    │  Queue Worker   │
@@ -29,7 +29,7 @@ The Docker setup includes the following services:
 └─────────────────┘    └─────────────────┘
          │
          ▼
-    Port: 8080
+    Port: 3013
 ```
 
 ### Services
@@ -61,13 +61,13 @@ docker-compose up -d --build
 cp docker/environment/app.env .env
 
 # 3. Generate application key
-docker-compose exec app php artisan key:generate
+docker-compose exec izam php artisan key:generate
 
 # 4. Run migrations and seed database
-docker-compose exec app php artisan migrate --seed
+docker-compose exec izam php artisan migrate --seed
 
 # 5. Cache configuration
-docker-compose exec app php artisan config:cache
+docker-compose exec izam php artisan config:cache
 ```
 
 ### Option 3: Using Makefile
@@ -84,15 +84,15 @@ make help  # See all available commands
 
 After successful setup, you can access:
 
-- **Application**: http://localhost:8000
-- **phpMyAdmin**: http://localhost:8080
-- **Database**: localhost:3306
-- **Redis**: localhost:6379
+- **Application**: http://localhost:3010
+- **phpMyAdmin**: http://localhost:3013
+- **Database**: localhost:3012
+- **Redis**: localhost:3014
 
 ### Default Credentials
 
 - **Database**:
-  - Host: `localhost:3306`
+  - Host: `localhost:3012`
   - Database: `izam_ecommerce`
   - Username: `izam_user`
   - Password: `izam_password`
@@ -130,16 +130,16 @@ docker-compose down
 docker-compose logs -f
 
 # Access application container
-docker-compose exec app bash
+docker-compose exec izam bash
 
 # Run tests
-docker-compose exec app php artisan test
+docker-compose exec izam php artisan test
 
 # Run migrations
-docker-compose exec app php artisan migrate
+docker-compose exec izam php artisan migrate
 
 # Clear caches
-docker-compose exec app php artisan cache:clear
+docker-compose exec izam php artisan cache:clear
 ```
 
 ### Using Makefile
@@ -181,13 +181,13 @@ To change default ports, modify `docker-compose.yml`:
 
 ```yaml
 services:
-  app:
+  izam:
     ports:
-      - "8080:80"  # Change from 8000:80
+      - "3010:80"  # Laravel application
   
   database:
     ports:
-      - "3307:3306"  # Change from 3306:3306
+      - "3012:3306"  # MySQL database
 ```
 
 ## 📊 Monitoring and Debugging
@@ -202,7 +202,7 @@ docker-compose ps
 docker stats
 
 # Check specific service logs
-docker-compose logs app
+docker-compose logs izam
 docker-compose logs database
 docker-compose logs redis
 ```
@@ -211,13 +211,13 @@ docker-compose logs redis
 
 ```bash
 # View Laravel logs
-docker-compose exec app tail -f storage/logs/laravel.log
+docker-compose exec izam tail -f storage/logs/laravel.log
 
 # Check Laravel configuration
-docker-compose exec app php artisan config:show
+docker-compose exec izam php artisan config:show
 
 # Run Laravel health checks
-docker-compose exec app php artisan tinker
+docker-compose exec izam php artisan tinker
 ```
 
 ## 🚨 Troubleshooting
@@ -258,15 +258,15 @@ docker-compose restart database
 
 ```bash
 # Generate new application key
-docker-compose exec app php artisan key:generate
+docker-compose exec izam php artisan key:generate
 ```
 
 #### 5. Composer Dependencies
 
 ```bash
 # Install/update dependencies
-docker-compose exec app composer install
-docker-compose exec app composer update
+docker-compose exec izam composer install
+docker-compose exec izam composer update
 ```
 
 ### Performance Optimization
@@ -275,9 +275,9 @@ docker-compose exec app composer update
 
 ```bash
 # Cache Laravel configuration for better performance
-docker-compose exec app php artisan config:cache
-docker-compose exec app php artisan route:cache
-docker-compose exec app php artisan view:cache
+docker-compose exec izam php artisan config:cache
+docker-compose exec izam php artisan route:cache
+docker-compose exec izam php artisan view:cache
 ```
 
 #### 2. Optimize Docker Build

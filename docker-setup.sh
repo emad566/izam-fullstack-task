@@ -92,33 +92,52 @@ print_status "Containers are running ✅"
 # Generate application key if needed
 if [ "$GENERATE_KEY" = true ]; then
     print_status "Generating application key..."
-    docker-compose exec app php artisan key:generate
+    docker-compose exec izam php artisan key:generate
 fi
+
+# Run composer install
+print_status "Running composer install..."
+docker-compose exec izam composer i
+
 
 # Run database migrations
 print_status "Running database migrations..."
-docker-compose exec app php artisan migrate --force
+docker-compose exec izam php artisan migrate --force
 
 # Seed the database
 print_status "Seeding the database..."
-docker-compose exec app php artisan db:seed --force
+docker-compose exec izam php artisan db:seed --force
 
 # Cache configuration
 print_status "Caching configuration..."
-docker-compose exec app php artisan config:cache
-docker-compose exec app php artisan route:cache
+docker-compose exec izam php artisan config:cache
+docker-compose exec izam php artisan route:cache
 
 # Create storage link
 print_status "Creating storage link..."
-docker-compose exec app php artisan storage:link
+docker-compose exec izam php artisan storage:link
+
+# Run npm install
+print_status "Running npm install..."
+docker-compose exec izam npm install
+
+# Run npm run build
+print_status "Running npm run build..."
+docker-compose exec izam npm run build
 
 # Run tests
 print_status "Running tests..."
-docker-compose exec app php artisan test --testsuite=Api
+docker-compose exec izam php artisan test --testsuite=Api
+
+# Cache configuration
+print_status "Caching configuration..."
+docker-compose exec izam php artisan config:cache
+docker-compose exec izam php artisan route:cache
+
 
 # Build React assets
 print_status "Building React assets..."
-if docker-compose exec app npm run build; then
+if docker-compose exec izam npm run build; then
     print_status "React assets built successfully ✅"
 else
     print_warning "Failed to build React assets. You may need to build them manually."
@@ -126,22 +145,22 @@ fi
 
 print_status "Setup completed successfully! 🎉"
 echo ""
-print_status "🌐 Application: http://localhost:8000"
-print_status "🗄️  Database: localhost:3307"
-print_status "📊 phpMyAdmin: http://localhost:8081"
-print_status "🔴 Redis: localhost:6379"
+print_status "🌐 Application: http://localhost:3010"
+print_status "🗄️  Database: localhost:3012"
+print_status "📊 phpMyAdmin: http://localhost:3013"
+print_status "🔴 Redis: localhost:3014"
 echo ""
 print_status "Development mode:"
 print_status "🚀 Start with hot reloading: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d"
-print_status "🌐 Vite dev server: http://localhost:5173"
+print_status "🌐 Vite dev server: http://localhost:3011"
 print_status "📱 Hot reloading enabled for React development"
 echo ""
 print_status "Useful commands:"
 echo "  - Stop containers: docker-compose down"
 echo "  - View logs: docker-compose logs -f"
-echo "  - Access app container: docker-compose exec app bash"
-echo "  - Run tests: docker-compose exec app php artisan test"
-echo "  - Build assets: docker-compose exec app npm run build"
+echo "  - Access izam container: docker-compose exec izam bash"
+echo "  - Run tests: docker-compose exec izam php artisan test"
+echo "  - Build assets: docker-compose exec izam npm run build"
 echo "  - Development mode: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d"
 echo "  - Stop dev mode: docker-compose -f docker-compose.yml -f docker-compose.dev.yml down"
 echo ""

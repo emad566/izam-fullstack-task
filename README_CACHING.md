@@ -84,19 +84,19 @@ Comprehensive test coverage includes:
 
 ```bash
 # First request - hits database, caches result
-curl "http://127.0.0.1:8000/api/admin/products?category_name=electronics&min_price=100"
+curl "http://127.0.0.1:3010/api/admin/products?category_name=electronics&min_price=100"
 
 # Second identical request - served from cache (faster)
-curl "http://127.0.0.1:8000/api/admin/products?category_name=electronics&min_price=100"
+curl "http://127.0.0.1:3010/api/admin/products?category_name=electronics&min_price=100"
 
 # Different filters - different cache key, hits database
-curl "http://127.0.0.1:8000/api/admin/products?category_name=clothing&max_price=50"
+curl "http://127.0.0.1:3010/api/admin/products?category_name=clothing&max_price=50"
 
 # Create new product - invalidates all product caches
-curl -X POST "http://127.0.0.1:8000/api/admin/products" -d '{"name":"New Product",...}'
+curl -X POST "http://127.0.0.1:3010/api/admin/products" -d '{"name":"New Product",...}'
 
 # Next request - cache rebuilt
-curl "http://127.0.0.1:8000/api/admin/products?category_name=electronics&min_price=100"
+curl "http://127.0.0.1:3010/api/admin/products?category_name=electronics&min_price=100"
 ```
 
 ## Technical Implementation
