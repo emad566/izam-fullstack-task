@@ -43,13 +43,13 @@ POST /api/auth/admin/login        # Admin login
 POST /api/auth/admin/logout       # Admin logout (authenticated)
 ```
 
-### Guest/Public Routes (`/api/guest/`)
+### Public Routes (`/api/guest/`) - No Authentication Required
 ```
-# Categories (Public Read-Only)
+# Categories (Accessible by guests and authenticated users)
 GET  /api/guest/categories        # List categories
 GET  /api/guest/categories/{id}   # Show single category
 
-# Products (Public Read-Only)
+# Products (Accessible by guests and authenticated users)
 GET  /api/guest/products          # List products (with advanced filtering)
 GET  /api/guest/products/{id}     # Show single product
 ```
