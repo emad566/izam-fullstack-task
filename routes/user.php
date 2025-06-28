@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\Route;
  */
 
 // Start::Order ===================================================== //
-Route::resource('orders', OrderController::class)->except(['edit', 'update'])->names('orders');
-Route::put('orders/{order}/toggleActive/{state}', [OrderController::class, 'toggleActive'])
-    ->where(['id' => '[0-9]+', 'state' => 'true|false'])->name('orders.toggleActive');
+Route::resource('orders', OrderController::class)->only(['index', 'show']);
 // End::Order ===================================================== //
 
 

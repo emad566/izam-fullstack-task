@@ -56,12 +56,9 @@ GET  /api/guest/products/{id}     # Show single product
 
 ### User Routes (`/api/user/`) - Authenticated Users Only
 ```
-# Orders Management (Users can only manage their own orders)
+# Orders Management (Users can only view their own orders)
 GET  /api/user/orders             # List user's orders (with filtering)
-GET  /api/user/orders/create      # Get order creation form data
-POST /api/user/orders             # Create new order
 GET  /api/user/orders/{id}        # Show user's order details
-DELETE /api/user/orders/{id}      # Delete user's order
 ```
 
 ### Admin Routes (`/api/admin/`) - Admin Only - Full CRUD
