@@ -4,6 +4,20 @@ A comprehensive React + Laravel fullstack e-commerce application featuring a mod
 
 📚 **[Complete Documentation - Click Here for More Details](README-detailed.md)**
 
+## 📋 Table of Contents
+
+- [⏱️ Development Time Tracking](#️-development-time-tracking)
+- [🚀 Live Demo](#-live-demo)
+- [📚 API Endpoints](#-api-endpoints)
+- [⚡ Quick Setup](#-quick-setup)
+- [🔐 Authentication Flow](#-authentication-flow)
+- [🚀 Running Backend & Frontend](#-running-backend--frontend)
+- [🧪 Testing](#-testing)
+- [🎯 Custom Trait Controller Design Pattern](#-custom-trait-controller-design-pattern)
+- [🔐 Multi-Auth System](#-multi-auth-system)
+- [👨‍💻 Development Attribution](#-development-attribution)
+- [📞 Support & Contact](#-support--contact)
+
 ## ⏱️ Development Time Tracking
 
 **Estimated Time:** 24 hours  
