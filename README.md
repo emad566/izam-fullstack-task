@@ -11,6 +11,7 @@ A comprehensive React + Laravel fullstack e-commerce application featuring a mod
   - [🔑 Test Credentials](#-test-credentials)
   - [🗄️ Database Access](#️-database-access)
 - [📚 API Endpoints](#-api-endpoints)
+  - [🚀 Postman Collection Ready-to-Use](#-postman-collection-ready-to-use)
 - [⚡ Quick Setup](#-quick-setup)
 - [🐳 Docker Setup](#-docker-setup)
 - [🔐 Authentication Flow](#-authentication-flow)
