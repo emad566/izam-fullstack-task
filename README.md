@@ -1,3 +1,5 @@
+**Total Time Spent: 18 hours for core development + 10 additional hours for unit testing, code refactoring, documentation, and deployment.**
+
 # IZAM E-commerce Fullstack Application
 
 A comprehensive React + Laravel fullstack e-commerce application featuring a modern React frontend with TypeScript and a robust Laravel RESTful API backend. Built with Docker support, advanced authentication, real-time cart management, and production-ready deployment.
