@@ -77,6 +77,32 @@ POST /api/auth/admin/login        # Admin login
 POST /api/auth/admin/logout       # Admin logout (authenticated)
 ```
 
+**Request Body Examples:**
+```json
+# User Registration
+POST /api/auth/user/register
+{
+    "name": "John Doe",
+    "email": "user@example.com",
+    "password": "12345678",
+    "password_confirmation": "12345678"
+}
+
+# User Login
+POST /api/auth/user/login
+{
+    "email": "user@user.com",
+    "password": "12345678"
+}
+
+# Admin Login
+POST /api/auth/admin/login
+{
+    "email": "admin@admin.com",
+    "password": "12345678"
+}
+```
+
 ### Public Routes (`/api/guest/`) - No Authentication Required
 ```
 # Categories (Accessible by guests and authenticated users)
@@ -126,6 +152,51 @@ GET    /api/admin/orders/{id}/edit     # Get order edit form data
 PUT    /api/admin/orders/{id}          # Update order (status, notes)
 DELETE /api/admin/orders/{id}          # Delete order
 PUT    /api/admin/orders/{id}/toggleActive/{state}  # Toggle order status
+```
+
+**Admin Request Body Examples:**
+```json
+# Create Category
+POST /api/admin/categories
+{
+    "name": "Electronics",
+    "description": "Electronic devices and accessories"
+}
+
+# Create Product (form-data for image upload)
+POST /api/admin/products
+Content-Type: multipart/form-data
+{
+    "name": "MacBook Pro",
+    "description": "Latest MacBook Pro with M2 chip",
+    "price": 1299.99,
+    "stock": 50,
+    "category_id": 1,
+    "image": [file upload]
+}
+
+# Create Order
+POST /api/admin/orders
+{
+    "products": [
+        {
+            "product_id": 1,
+            "quantity": 2
+        },
+        {
+            "product_id": 5,
+            "quantity": 1
+        }
+    ],
+    "notes": "Express delivery requested"
+}
+
+# Update Order
+PUT /api/admin/orders/{id}
+{
+    "status": "completed",
+    "notes": "Order shipped successfully"
+}
 ```
 
 ### Advanced Filtering Parameters
@@ -247,7 +318,7 @@ php artisan test --testsuite=Api
 ### Controller Traits System
 ```php
 // Modular controller functionality
-IndexTrait::class    # List resources
+IndexTrait::class    # List and filter resources
 ShowTrait::class     # Show single resource
 EditTrait::class     # Update resources
 DestroyTrait::class  # Delete resources
