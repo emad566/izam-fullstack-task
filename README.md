@@ -485,7 +485,7 @@ ToggleActiveTrait::class # Toggle status
 
 **Developer**: Emadeldeen Soliman  
 **GitHub**: [github.com/emad566](https://github.com/emad566)  
-**LinkedIn**: [Emad El-Deen Soliman](https://www.linkedin.com/in/emadeldeen-soliman/)
+**LinkedIn**: [Emadeldeen Soliman](https://www.linkedin.com/in/emadw3/)
 
 **Project Repository**: [IZAM Fullstack Task](https://github.com/emad566/izam-fullstack-task)  
 **Live Demo**: [https://izam-task.emadw3.com](https://izam-task.emadw3.com)
