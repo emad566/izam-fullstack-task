@@ -10,11 +10,13 @@ A comprehensive React + Laravel fullstack e-commerce application featuring a mod
 - [🚀 Live Demo](#-live-demo)
 - [📚 API Endpoints](#-api-endpoints)
 - [⚡ Quick Setup](#-quick-setup)
+- [🐳 Docker Setup](#-docker-setup)
 - [🔐 Authentication Flow](#-authentication-flow)
 - [🚀 Running Backend & Frontend](#-running-backend--frontend)
 - [🧪 Testing](#-testing)
 - [🎯 Custom Trait Controller Design Pattern](#-custom-trait-controller-design-pattern)
 - [🔐 Multi-Auth System](#-multi-auth-system)
+- [🛡️ Security Features](#️-security-features)
 - [👨‍💻 Development Attribution](#-development-attribution)
 - [📞 Support & Contact](#-support--contact)
 
@@ -148,6 +150,36 @@ chmod +x docker-setup.sh
 open http://localhost:8000
 ```
 
+## 🐳 Docker Setup
+
+### Production Mode (Recommended)
+```bash
+# Full production setup with Docker
+docker-compose up -d
+
+# Access points:
+# Frontend + Backend: http://localhost:8000
+# phpMyAdmin: http://localhost:8081
+# Database: localhost:3307
+```
+
+### Development Mode
+```bash
+# Development with hot reloading
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+# Access points:
+# Laravel: http://localhost:8000
+# Vite Dev Server: http://localhost:5173
+```
+
+### Docker Features
+- ✅ **Automated Setup** - One-command deployment
+- ✅ **Multi-Service** - Laravel + MySQL + Redis + phpMyAdmin
+- ✅ **Hot Reloading** - React development with Vite
+- ✅ **Production Ready** - Optimized containers
+- ✅ **Database Management** - phpMyAdmin interface
+
 ## 🔐 Authentication Flow
 
 ### Multi-Guard System
@@ -230,6 +262,27 @@ ToggleActiveTrait::class # Toggle status
 - **User Routes**: `/api/user/*` - Customer access
 - **Admin Routes**: `/api/admin/*` - Administrative access
 - **Guest Routes**: `/api/auth/*` - Public access
+
+## 🛡️ Security Features
+
+### Input Validation & Sanitization
+- ✅ **Custom Form Requests** - Security-first validation with automatic input sanitization
+- ✅ **XSS Prevention** - Input filtering and output escaping
+- ✅ **SQL Injection Protection** - Parameterized queries and input validation
+- ✅ **File Upload Security** - Type validation and secure storage
+
+### Authentication & Authorization
+- ✅ **Multi-Guard System** - Separate user and admin authentication with token isolation
+- ✅ **Laravel Sanctum** - Secure API token management
+- ✅ **Role-Based Access** - Granular permission system
+- ✅ **Token Scoping** - Prevents privilege escalation between guards
+
+### Advanced Security
+- ✅ **CSRF Protection** - Laravel's built-in CSRF protection
+- ✅ **Rate Limiting** - API throttling to prevent abuse
+- ✅ **Security Headers** - CORS and HTTP security headers
+- ✅ **Password Security** - Bcrypt hashing with strong validation rules
+- ✅ **Error Handling** - Secure error responses without information leakage
 
 ## 👨‍💻 Development Attribution
 
