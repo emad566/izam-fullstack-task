@@ -112,6 +112,10 @@ docker-compose exec app php artisan route:cache
 print_status "Creating storage link..."
 docker-compose exec app php artisan storage:link
 
+# Run tests
+print_status "Running tests..."
+docker-compose exec app php artisan test --testsuite=Api
+
 # Build React assets
 print_status "Building React assets..."
 if docker-compose exec app npm run build; then
