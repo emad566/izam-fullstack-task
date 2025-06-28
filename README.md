@@ -229,8 +229,8 @@ docker-compose -f docker-compose.yml up -d
 ## 🧪 Testing
 
 ```bash
-# Run all tests
-php artisan test
+# Run all API tests
+php artisan test --testsuite=Api
 
 # Test coverage: 109 tests, 752 assertions
 # Includes: API endpoints, Authentication, Security, Controllers
