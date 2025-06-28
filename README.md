@@ -62,7 +62,6 @@ GET  /api/user/orders/create      # Get order creation form data
 POST /api/user/orders             # Create new order
 GET  /api/user/orders/{id}        # Show user's order details
 DELETE /api/user/orders/{id}      # Delete user's order
-PUT  /api/user/orders/{id}/toggleActive/{state}  # Toggle order status
 ```
 
 ### Admin Routes (`/api/admin/`) - Admin Only - Full CRUD
